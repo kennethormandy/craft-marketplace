@@ -1,17 +1,5 @@
 # Marketplace
 
-## Getting started
-
-```sh
-# Require OAuth plugins (these have been modified and I need to get the changes merged)
-composer require venveo/craft-oauthclient
-composer require adam-paterson/oauth2-stripe
-
-# install OAuth plugins, and the Marketplace plugin
-./craft install/plugin oauthclient
-./craft install/plugin marketplace
-```
-
 ## Features
 
 - Includes two new fields: Marketplace Button and Marketplace Payee
@@ -24,18 +12,29 @@ composer require adam-paterson/oauth2-stripe
 - Users can see all orders where the first/only line item has them as the payee
 - When refunding an order, the associated transfer is also reversed from the connected account
 
+## Getting started
+
+```sh
+# Install OAuth Client plugin
+./craft install/plugin oauthclient
+
+# Install Marketplace plugin
+./craft install/plugin marketplace
+```
+
+Next, you can configure the OAuth Client plugin.
+
 ### Add Stripe OAuth app
 
-~~**Important** Manually made this change in vendor package, and haven’t committed it yet. Need to make this change to base url: https://github.com/terehru/oauth2-stripe/commit/94d6f5652e4bd468d12511eb0d6fe82cfea99dad~~ Customizing this without hard-coding the URL has been opened as a PR, I am using my own version here in the meantime.
+1. Register new app. The handle must be `stripe`. The name is up to you—probably “Stripe” or “Stripe Connect.”
+2. Choose the provider “Stripe” from the dropdown. It will be available in the dropdown as long as you’ve installed the Marketplace plugin too.
+3. Set the Client ID (the specific Stripe Connect Client ID from the Stripe Connect settings) and the Client Secret (your normal Stripe Secret Key). Typically, you’d want to use environment variables for these, so they can easily be switched between Stripe’s Test and Live modes in development versus production
+4. Set scope to `read_only` or `read_write` (`read_only` seems sufficient with what I’ve tested so far, but might need `read_write` to not just read existing transactions)
 
-Correct way would probably be to add support for an option that would change the base url, but looks like I would need to add this to craft-oauthclient (doesn’t have any mechanism of configuring these URLs) and to oauth2-stripe (might let you set a base url instead, I got this working) so for now, adding the express string to the URL is easier
+Optional additional steps:
 
-1. Register new app
-2. Name “Stripe” or “Stripe Connect” and handle must be “stripe”
-3. Set Client ID (the specific Stripe Connect Client ID from the Stripe Connect settings) and Client Secret (your normal Stripe Secret Key) to Stripe environment variables
-4. Set provider to Stripe
-5. Set scope to `read_only` or `read_write`, not sure which yet (`read_only` seems fine with what I’ve tested so far, but might need `read_write` to not just read existing transactions)
-6. Add the Redirect URI to Stripe, so Stripe can redirect users back to your application after connecting with the OAuth flow
+- *Use Stripe Connect Express* If you’re using Stripe Connect Express, under “Advanced,” set the Authorize URL to the Stripe Connect Express endpoint: `https://connect.stripe.com/express/oauth/authorize` (otherwise, you’ll be sending potential connected apps to the Standard version of Stripe Connect).
+- *Redirect back to your app* Add the Redirect URI from the “Setup Info” tab to your Stripe Connect settings on Stripe. At the time of writing, this is stored in the Stripe Dashboard under: Settings → Connect settings → Integration. Stripe can redirect users back to your application after connecting with the OAuth flow.
 
 ### Add Stripe button field to user profiles
 
