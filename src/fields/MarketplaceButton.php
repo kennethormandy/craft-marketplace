@@ -45,7 +45,7 @@ class MarketplaceButton extends Field
      *
      * @var string
      */
-    public $someAttribute = 'Some Default';
+    // public $someAttribute = 'Some Default';
 
     // Static Methods
     // =========================================================================
@@ -77,10 +77,10 @@ class MarketplaceButton extends Field
     public function rules()
     {
         $rules = parent::rules();
-        $rules = array_merge($rules, [
-            ['someAttribute', 'string'],
-            ['someAttribute', 'default', 'value' => 'Some Default'],
-        ]);
+        // $rules = array_merge($rules, [
+        //     ['someAttribute', 'string'],
+        //     ['someAttribute', 'default', 'value' => 'Some Default'],
+        // ]);
         return $rules;
     }
 

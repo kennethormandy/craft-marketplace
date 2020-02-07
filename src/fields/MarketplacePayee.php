@@ -38,7 +38,7 @@ class MarketplacePayee extends Field
      *
      * @var string
      */
-    public $someAttribute = 'Some Default';
+    // public $someAttribute = 'Some Default';
 
     // Static Methods
     // =========================================================================
