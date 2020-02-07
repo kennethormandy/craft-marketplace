@@ -1,0 +1,55 @@
+{
+  "name": "kennethormandy/craft-marketplace",
+  "description": "",
+  "version": "0.2.0",
+  "type": "craft-plugin",
+  "license": "proprietary",
+  "keywords": [
+    "craft",
+    "commerce",
+    "stripe"
+  ],
+  "authors": [
+    {
+      "name": "Kenneth Ormandy",
+      "homepage": "https://kennethormandy.com"
+    }
+  ],
+  "support": {
+    "email": "hello@kennethormandy.com",
+    "issues": "https://github.com/kennethormandy/craft-marketplace/issues?state=open",
+    "source": "https://github.com/kennethormandy/craft-marketplace",
+    "docs": "https://github.com/kennethormandy/craft-marketplace/blob/master/README.md"
+  },
+  "require": {
+    "craftcms/cms": "^3.1.0",
+    "stripe/stripe-php": "^6.1",
+    "adam-paterson/oauth2-stripe": "dev-master",
+    "venveo/craft-oauthclient": "dev-master"
+  },
+  "prefer-stable": true,
+  "repositories": [
+    {
+      "type": "path",
+      "url": "https://github.com/kennethormandy/craft-oauthclient"
+    },
+    {
+      "type": "path",
+      "url": "https://github.com/kennethormandy/oauth2-stripe"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "kennethormandy\\marketplace\\": "src/"
+    }
+  },
+  "extra": {
+    "handle": "marketplace",
+    "name": "Marketplace for Craft Commerce",
+    "class": "kennethormandy\\marketplace\\Marketplace",
+    "documentationUrl": "https://github.com/kennethormandy/craft-marketplace/blob/master/README.md",
+    "components": {
+      "hanldesService": "kennethormandy\\marketplace\\services\\HandlesService"
+    }
+  }
+}

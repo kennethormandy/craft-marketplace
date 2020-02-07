@@ -1,0 +1,22 @@
+{#
+/**
+ * @link      https://github.com/kennethormandy/craft-marketplace
+ * @package   Marketplace
+ * @since     0.2.0
+ */
+#}
+
+{% import "_includes/forms" as forms %}
+{# @var craft \craft\web\twig\variables\CraftVariable #}
+
+{{ forms.autosuggestField({
+    label: 'Stripe Secret Key',
+    instructions: 'The Stripe secret API key for the parent Stripe account, that other Stripe accounts will be connected to.',
+    id: 'secretApiKey',
+    name: 'secretApiKey',
+    class: 'code',
+    placeholder: 'sk_live_AaAaAaAaAaAaAaAaAaAaAaAa',
+    value: settings.secretApiKey,
+    suggestEnvVars: true
+  })
+}}

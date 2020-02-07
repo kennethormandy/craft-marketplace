@@ -1,0 +1,164 @@
+{# @var craft \craft\web\twig\variables\CraftVariable #}
+{#
+/**
+ * Stripe Connection plugin for Craft CMS 3.x
+ *
+ * MarketplaceButton Field Input
+ *
+ * @author    Kenneth Ormandy
+ * @copyright Copyright (c) 2019 Kenneth Ormandy
+ * @link      https://kennethormandy.com
+ * @package   Marketplace
+ * @since     0.1.0
+ */
+#}
+
+{#
+{% set title = 'Your Orders' %}
+{% set elementType = 'craft\\commerce\\elements\\Order' %}
+{% set showSiteMenu = false %}
+{% set sources = craft.orders().all() %}
+{% extends "_layouts/elementindex" %}
+#}
+
+{% import "_includes/forms" as forms %}
+
+{#
+{{ forms.field({
+  label: 'Some Field',
+  instructions: 'Enter some text here.',
+}) }}
+#}
+
+{# TODO Not doing any validation to actually check if the
+   field was attached to a user versus some other kind
+   of element right now #}
+{% set user = element %}
+
+{# This doesn’t really seem to work as expected #}
+{% set app = craft.oauth.getAppByHandle('stripe') %}
+
+{% set context = {
+  user: user
+} %}
+
+{% if app %}
+    {% set tokens = app.getValidTokensForUser(user) %}
+    {% set active = tokens|length and value %}
+    {% set currentUserViewing = currentUser and user and currentUser.id == user.id %}
+
+    <div class="field">
+      <div class="value flex">
+        <div class="flex-grow">
+          <span class="status {{ active ? 'active' : 'inactive' }}">
+          </span> {{ active ? 'Connected' : 'Not connected' }} to {{ app.name }}</div>
+      </div>
+    </div>
+
+    {% if active and currentUserViewing %}
+      {# Working but messy approach of getting Stripe Express Dashboard login URL #}
+      <div class="field">
+        <a class="btn" target="_blank" href="{{ stripeLogin.url }}">Login to {{ app.name }} Dashboard</a>
+      </div>
+
+      {# Was never able to get this action URL to work properly
+      <form method="POST" action="marketplace/account/create-login-link" accept-charset="UTF-8">
+        {{ csrfInput() }}
+        <!-- <input type="hidden" name="redirect" value="/admin/myaccount"> -->
+        <!-- <input type="hidden" name="action" value="admin/marketplace/account/create-login-link"> -->
+        <!-- actionInput('marketplace/account/create-login-link') -->
+        <input type="hidden" name="stripe_user_id" value="{{ value }}" />
+        <input class="btn" type="submit" value="Submit to action" />
+      </form>
+       #}
+    {% else %}
+      {# Show the connect button #}
+      <div class="field">
+        <div class="heading">
+          <label>Authorize</label>
+        </div>
+        <div class="input">
+          {% if not currentUser or not user or currentUser.id != user.id %}
+            <p>Only the logged in user may authorize their account.</p>
+          {% else %}
+            <a class="btn"
+               target="_blank"
+               href="{{ app.getRedirectUrl(context) }}">
+              Authorize with {{ app.name }}
+            </a>
+          {% endif %}
+        </div>
+      </div>
+    {% endif %}
+      
+    {% if value %}
+      <div class="field">
+        <div class="heading">
+          <label for="{{ name }}">{{ app.name }} ID</label>
+        </div>
+        <div class="input">
+          {{ forms.text({
+            id: name,
+            name: name,
+            value: value,
+            disabled: true,
+          }) }}
+        </div>
+      </div>
+      
+      {# There are more full-formed Craft layouts and includes you
+       # can bring in here, which would include filtering and sorting #}
+      {% if active and (
+        currentUserViewing or
+        currentUser.can('commerce-manageOrders')
+      ) %}
+      <div>
+        <h2>Orders</h2>
+        
+        {# TODO This could be replaced with a query before Twig,
+         # where the orders are already filtered by the involved user,
+         # rather than doing that here in the template. Also makes the
+         # “no orders” message easier. #}
+        {% set orders = craft.orders().isCompleted().all() %}
+
+        {% if not orders|length %}
+          <p>No orders to show.</p>
+        {% else %}
+          <table class="data fullwidth">
+            <thead>
+              <th>Order</th>
+              <th>Payee</th>
+              <th>{{ "Total Paid"|t('commerce') }}</th>
+              <th>Date Paid</th>
+            </thead>
+            <tbody>
+            {% for order in orders %}
+              {% if order.lineItems|length %}
+                {# Only support one line item right now #}
+                {% set lineItem = order.lineItems|first %}
+                {% if lineItem.purchasable.product and lineItem.purchasable.product[payeeHandle] is defined %}
+                  {% set payeeId = lineItem.purchasable.product[payeeHandle] %}
+                  {% if user.id == payeeId %}
+                    {% set payee = craft.users.id(payeeId).one() %}
+                    <tr>
+                      <td>
+                        <a href="/admin/commerce/orders/{{ order.id }}">{{ order.shortNumber }}</a>
+                      </td>
+                      <td>{{ payee }}</td>
+                      <td>{{ order.totalPaid|currency(order.currency) }}</td>
+                      <td>{{ order.datePaid|date }}</td>
+                    </tr>
+                  {% endif %}
+                {% endif %}
+              {% endif %}
+            {% endfor %}
+            </tbody>
+          </table>
+        {% endif %}
+        
+      </div>
+      {% endif %}
+    {% endif %}
+{% else %}
+    Could not find app to authorize with.
+{% endif %}

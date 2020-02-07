@@ -1,0 +1,28 @@
+{# @var craft \craft\web\twig\variables\CraftVariable #}
+{#
+/**
+ * Stripe Connection plugin for Craft CMS
+ *
+ * MarketplaceButton Field Settings
+ *
+ * @author    Kenneth Ormandy
+ * @copyright Copyright (c) 2019 Kenneth Ormandy
+ * @link      https://kennethormandy.com
+ * @package   Marketplace
+ * @since     0.1.0
+ */
+#}
+
+{% import "_includes/forms" as forms %}
+
+{#
+{% do view.registerAssetBundle("kennethormandy\\marketplace\\assetbundles\\marketplace\\MarketplaceAsset") %}
+#}
+
+{{ forms.textField({
+    label: 'Some Attribute',
+    instructions: 'Enter some attribute here.',
+    id: 'someAttribute',
+    name: 'someAttribute',
+    value: field['someAttribute']})
+}}

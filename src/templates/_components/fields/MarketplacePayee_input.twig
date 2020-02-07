@@ -1,0 +1,35 @@
+{# @var craft \craft\web\twig\variables\CraftVariable #}
+{#
+/**
+ * Stripe Connection plugin for Craft CMS 3.x
+ *
+ * MarketplaceButton Field Input
+ *
+ * @author    Kenneth Ormandy
+ * @copyright Copyright (c) 2019 Kenneth Ormandy
+ * @link      https://kennethormandy.com
+ * @package   Marketplace
+ * @since     0.1.0
+ */
+#}
+
+{% import "_includes/forms" as forms %}
+
+{% set payeeUser = craft.users.id(payee).all() %}
+
+{{ forms.elementSelectField({
+    id: 'payee',
+    label: "Payee"|t('marketplace'),
+    name: 'payee',
+    elements: payeeUser ? payeeUser : null,
+    elementType: userElementType,
+    limit: 1,
+    criteria: userOptionCriteria,
+    selectionLabel: "Choose"|t('app'),
+}) }}
+
+<script type="text/javascript">
+    var input = document.getElementById('{{ namespacedId }}');
+
+    console.log('input', input)
+</script>
