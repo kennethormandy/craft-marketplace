@@ -22,20 +22,18 @@
     "docs": "https://github.com/kennethormandy/craft-marketplace/blob/master/README.md"
   },
   "require": {
-    "craftcms/cms": "^3.1.0",
+    "adam-paterson/oauth2-stripe": "dev-ko-baseurl",
+    "craftcms/cms": "^3.4",
+    "craftcms/commerce": "^3.0",
     "stripe/stripe-php": "^6.1",
-    "adam-paterson/oauth2-stripe": "dev-master",
-    "venveo/craft-oauthclient": "dev-master"
+    "venveo/craft-oauthclient": "^2.1.4"
   },
+  "minimum-stability": "dev",
   "prefer-stable": true,
   "repositories": [
     {
-      "type": "path",
-      "url": "https://github.com/kennethormandy/craft-oauthclient"
-    },
-    {
-      "type": "path",
-      "url": "https://github.com/kennethormandy/oauth2-stripe"
+      "type": "git",
+      "url": "https://github.com/kennethormandy/oauth2-stripe.git"
     }
   ],
   "autoload": {
