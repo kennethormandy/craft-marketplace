@@ -1,8 +1,8 @@
 <?php
 /**
- * Stripe Connection plugin for Craft CMS 3.x
+ * Marketplace plugin for Craft CMS 3.x
  *
- * Stripe Connection
+ * Marketplace
  *
  * @link      https://kennethormandy.com
  * @copyright Copyright (c) 2019 Kenneth Ormandy
@@ -23,7 +23,7 @@ use Stripe\Stripe;
 use Stripe\Account;
 
 /**
- * MarketplaceButton Field
+ * MarketplaceConnectButton Field
  *
  * Whenever someone creates a new field in Craft, they must specify what
  * type of field it is. The system comes with a handful of field types baked in,
@@ -35,7 +35,7 @@ use Stripe\Account;
  * @package   Marketplace
  * @since     0.1.0
  */
-class MarketplaceButton extends Field
+class MarketplaceConnectButton extends Field
 {
     // Public Properties
     // =========================================================================
@@ -58,7 +58,7 @@ class MarketplaceButton extends Field
     public static function displayName(): string
 
     {
-        return Craft::t('marketplace', 'Stripe Connection Button');
+        return Craft::t('marketplace', 'Marketplace Connect Button');
     }
 
     // Public Methods
@@ -233,7 +233,7 @@ class MarketplaceButton extends Field
     {
         // Render the settings template
         return Craft::$app->getView()->renderTemplate(
-            'marketplace/_components/fields/MarketplaceButton_settings',
+            'marketplace/_components/fields/MarketplaceConnectButton_settings',
             [
                 'field' => $this,
             ]
@@ -341,7 +341,7 @@ class MarketplaceButton extends Field
 
     {
         // Register our asset bundle
-        // Craft::$app->getView()->registerAssetBundle(MarketplaceButtonFieldAsset::class);
+        // Craft::$app->getView()->registerAssetBundle(MarketplaceConnectButtonFieldAsset::class);
 
         // Get our id and namespace
         $id = Craft::$app->getView()->formatInputId($this->handle);
@@ -355,7 +355,7 @@ class MarketplaceButton extends Field
             'prefix' => Craft::$app->getView()->namespaceInputId(''),
             ];
         $jsonVars = Json::encode($jsonVars);
-        Craft::$app->getView()->registerJs("$('#{$namespacedId}-field').MarketplaceMarketplaceButton(" . $jsonVars . ");");
+        Craft::$app->getView()->registerJs("$('#{$namespacedId}-field').MarketplaceMarketplaceConnectButton(" . $jsonVars . ");");
 
         $stripeResp = [
           // TODO Change this to a remote documentation page or
@@ -378,7 +378,7 @@ class MarketplaceButton extends Field
         
         // Render the input template
         return Craft::$app->getView()->renderTemplate(
-            'marketplace/_components/fields/MarketplaceButton_input',
+            'marketplace/_components/fields/MarketplaceConnectButton_input',
             [
                 'name' => $this->handle,
                 'value' => $value,

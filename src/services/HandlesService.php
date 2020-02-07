@@ -5,7 +5,7 @@ use Craft;
 use craft\services\Fields;
 use craft\base\Component;
 use kennethormandy\marketplace\Marketplace;
-use kennethormandy\marketplace\fields\MarketplaceButton as MarketplaceButtonField;
+use kennethormandy\marketplace\fields\MarketplaceConnectButton as MarketplaceConnectButtonField;
 use kennethormandy\marketplace\fields\MarketplacePayee as MarketplacePayeeField;
 
 class HandlesService extends Component
@@ -26,7 +26,7 @@ class HandlesService extends Component
 
         if ($fields && count($fields) >= 1) {
             foreach ($fields as $key => $value) {
-                if ($value instanceof MarketplaceButtonField) {
+                if ($value instanceof MarketplaceConnectButtonField) {
                     return $value['handle'];
                 }
             }

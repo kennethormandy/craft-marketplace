@@ -50,7 +50,7 @@ class MarketplacePayee extends Field
      */
     public static function displayName(): string
     {
-        return Craft::t('marketplace', 'Stripe Connection Payee');
+        return Craft::t('marketplace', 'Marketplace Payee');
     }
 
     // Public Methods

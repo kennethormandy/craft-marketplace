@@ -1,8 +1,8 @@
 <?php
 /**
- * Stripe Connection plugin for Craft CMS 3.x
+ * Marketplace plugin for Craft CMS 3.x
  *
- * Stripe Connection
+ * Marketplace
  *
  * @link      https://kennethormandy.com
  * @copyright Copyright © 2019–2020 Kenneth Ormandy
@@ -35,7 +35,7 @@ use venveo\oauthclient\services\Tokens;
 use venveo\oauthclient\events\TokenEvent;
 
 use kennethormandy\marketplace\provider\StripeProvider;
-use kennethormandy\marketplace\fields\MarketplaceButton as MarketplaceButtonField;
+use kennethormandy\marketplace\fields\MarketplaceConnectButton as MarketplaceConnectButtonField;
 use kennethormandy\marketplace\fields\MarketplacePayee as MarketplacePayeeField;
 use kennethormandy\marketplace\controllers\AccountController;
 use kennethormandy\marketplace\services\HandlesService;
@@ -75,7 +75,7 @@ class Marketplace extends BasePlugin
         ]);
         
         Craft::info(
-            'Stripe Connection plugin loaded',
+            'Marketplace plugin loaded',
             __METHOD__
         );
         
@@ -93,7 +93,7 @@ class Marketplace extends BasePlugin
             Fields::class,
             Fields::EVENT_REGISTER_FIELD_TYPES,
             function (RegisterComponentTypesEvent $event) {
-                $event->types[] = MarketplaceButtonField::class;
+                $event->types[] = MarketplaceConnectButtonField::class;
                 $event->types[] = MarketplacePayeeField::class;
             }
         );
@@ -136,7 +136,7 @@ class Marketplace extends BasePlugin
 
                         // …this is returning nothing, not actually getting the $stripeConnectHandle
                         Craft::info(
-                            'Got Stripe Connection handle ' . $stripeConnectHandle,
+                            'Got Marketplace handle ' . $stripeConnectHandle,
                             __METHOD__
                         );
 
@@ -335,12 +335,12 @@ class Marketplace extends BasePlugin
         
                     if ($hardCodedApproach === 'destination-charge') {
                         Craft::info(
-                            '[Stripe Connection request] [' . $hardCodedApproach . '] ' . json_encode($e->request),
+                            '[Marketplace request] [' . $hardCodedApproach . '] ' . json_encode($e->request),
                             __METHOD__
                         );
         
                         Craft::info(
-                            '[Stripe Connection request] [' . $hardCodedApproach . '] destination ' . $payeeStripeAccountId,
+                            '[Marketplace request] [' . $hardCodedApproach . '] destination ' . $payeeStripeAccountId,
                             __METHOD__
                         );
         
@@ -360,7 +360,7 @@ class Marketplace extends BasePlugin
                 ];
         
                         Craft::info(
-                            '[Stripe Connection request modified] [' . $hardCodedApproach . '] ' . json_encode($e->request),
+                            '[Marketplace request modified] [' . $hardCodedApproach . '] ' . json_encode($e->request),
                             __METHOD__
                         );
                     } elseif ($hardCodedApproach === 'direct-charge') {
