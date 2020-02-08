@@ -2,7 +2,7 @@
 
 namespace kennethormandy\marketplace\provider;
 
-use kennethormandy\OAuth2\Client\Provider\Stripe as LeagueProvider;
+use AdamPaterson\OAuth2\Client\Provider\Stripe as LeagueProvider;
 use venveo\oauthclient\base\Provider;
 
 class StripeProvider extends Provider
