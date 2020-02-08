@@ -15,16 +15,13 @@
 
 {% import "_includes/forms" as forms %}
 
-{% set payeeUser = craft.users.id(payee).all() %}
-
 {{ forms.elementSelectField({
-    id: 'payee',
+    id: id,
     label: "Payee"|t('marketplace'),
-    name: 'payee',
-    elements: payeeUser ? payeeUser : null,
+    name: name,
+    elements: (payee is defined and payee ? [payee]),
     elementType: userElementType,
     limit: 1,
-    criteria: userOptionCriteria,
     selectionLabel: "Choose"|t('app'),
 }) }}
 

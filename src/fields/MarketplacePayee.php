@@ -195,10 +195,12 @@ class MarketplacePayee extends Field
         $id = Craft::$app->getView()->formatInputId($this->handle);
         $namespacedId = Craft::$app->getView()->namespaceInputId($id);
 
-        $payee = [];
+        $payee = null;
         $payeeHandle = Marketplace::$plugin->handlesService->getPayeeHandle();
-        if (isset($element[$payeeHandle])) {
-            $payee = $element[$payeeHandle];
+
+        if (isset($element[$payeeHandle]) && $element[$payeeHandle]) {
+            $payeeId = $element[$payeeHandle];
+            $payee = User::find()->id($payeeId)->one();              
         }
         
         // Render the input template
