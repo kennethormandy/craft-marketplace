@@ -31,6 +31,7 @@ use venveo\oauthclient\services\Providers;
 use venveo\oauthclient\services\Apps as AppsService;
 use venveo\oauthclient\events\AuthorizationUrlEvent;
 
+use venveo\oauthclient\base\Provider;
 use venveo\oauthclient\services\Tokens;
 use venveo\oauthclient\events\TokenEvent;
 
@@ -104,16 +105,15 @@ class Marketplace extends BasePlugin
         // Stirpe Account ID provided by Stripe, and save that to
         // the plugin’s custom field
         Event::on(
-            Tokens::class,
-            Tokens::EVENT_BEFORE_TOKEN_SAVED,
+            Provider::class,
+            Provider::EVENT_CREATE_TOKEN_MODEL_FROM_RESPONSE,
             function (TokenEvent $event) {
-                Craft::info('EVENT_BEFORE_TOKEN_SAVED', __METHOD__);
-                Craft::info(json_encode($event), __METHOD__);
+                $stripeResponse = $event->responseToken;
 
-                $token = $event->token;
-                if (isset($token)) {
-                    $stripeResponse = $token->response;
+                Craft::info('EVENT_CREATE_TOKEN_MODEL_FROM_RESPONSE', __METHOD__);
+                Craft::info(json_encode($stripeResponse), __METHOD__);
 
+                if (isset($stripeResponse)) {
                     Craft::info('Stripe response', __METHOD__);
                     Craft::info(json_encode($stripeResponse), __METHOD__);
                 
