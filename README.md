@@ -27,14 +27,14 @@ Next, you can configure the OAuth Client plugin.
 ### Add Stripe OAuth app
 
 1. Register new app. The handle must be `stripe`. The name is up to you—probably “Stripe” or “Stripe Connect.”
-2. Choose the provider “Stripe” from the dropdown. It will be available in the dropdown as long as you’ve installed the Marketplace plugin too.
+2. Choose either “Stripe Connect” or “Stripe Connect Express” from the dropdown. They will be available in the dropdown as long as you’ve installed the Marketplace plugin too.
+  - If the customer’s transaction appears to be directly with the payee, and the payee is transparently responsible for refunds and support, you will probably want to use “Stripe Connect”
+  - If the customer’s transaction is with the platform, and would expect to come to the platform for refunds and support, you will probably want to use “Stripe Connect Express”
+  - This is my own quick summary. To make your choice, follow Stripe’s extensive documentation and comparison chart: https://stripe.com/docs/connect/accounts
+  - This is inconvenient to change once you’ve started connecting real accounts in live mode, but easy enough to change while in development
 3. Set the Client ID (the specific Stripe Connect Client ID from the Stripe Connect settings) and the Client Secret (your normal Stripe Secret Key). Typically, you’d want to use environment variables for these, so they can easily be switched between Stripe’s Test and Live modes in development versus production
 4. Set scope to `read_only` or `read_write` (`read_only` seems sufficient with what I’ve tested so far, but might need `read_write` to not just read existing transactions)
-
-Optional additional steps:
-
-- *Use Stripe Connect Express* If you’re using Stripe Connect Express, under “Advanced,” set the Authorize URL to the Stripe Connect Express endpoint: `https://connect.stripe.com/express/oauth/authorize` (otherwise, you’ll be sending potential connected apps to the Standard version of Stripe Connect).
-- *Redirect back to your app* Add the Redirect URI from the “Setup Info” tab to your Stripe Connect settings on Stripe. At the time of writing, this is stored in the Stripe Dashboard under: Settings → Connect settings → Integration. Stripe can redirect users back to your application after connecting with the OAuth flow.
+5. Add the Redirect URI from the “Setup Info” tab to your Stripe Connect settings on Stripe. At the time of writing, this is stored in the Stripe Dashboard under: Settings → Connect settings → Integration. Stripe can redirect users back to your application after connecting with the OAuth flow.
 
 ### Add Stripe button field to user profiles
 
