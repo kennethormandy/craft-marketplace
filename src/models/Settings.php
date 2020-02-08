@@ -34,6 +34,13 @@ class Settings extends Model
      */
     public function getSecretApiKey(): string
     {
+      if (!isset($this->secretApiKey) || !$this->secretApiKey) {
+        // Message is based on underlying Stripe error, if you return
+        // an empty string.
+        // TODO Dynamically use plugin name here
+        throw new \yii\base\Exception('No Stripe API key provided to the Craft Marketplace plugin. You can generate API keys from the Stripe web interface. See https://stripe.com/api for details.');
+      }
+      
       return Craft::parseEnv($this->secretApiKey);
     }
     
