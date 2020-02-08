@@ -5,7 +5,7 @@ namespace kennethormandy\marketplace\provider;
 use AdamPaterson\OAuth2\Client\Provider\Stripe as LeagueProvider;
 use venveo\oauthclient\base\Provider;
 
-class StripeProvider extends Provider
+class StripeConnectProvider extends Provider
 {
     /**
      * @inheritDoc
@@ -13,7 +13,7 @@ class StripeProvider extends Provider
     public static function displayName(): string
     {
         // This is what is displayed in the CP when registering an App
-        return 'Stripe';
+        return 'Stripe Connect';
     }
 
     public static function getProviderClass(): string

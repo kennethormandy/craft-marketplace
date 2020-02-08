@@ -34,7 +34,8 @@ use venveo\oauthclient\events\AuthorizationUrlEvent;
 use venveo\oauthclient\services\Tokens;
 use venveo\oauthclient\events\TokenEvent;
 
-use kennethormandy\marketplace\provider\StripeProvider;
+use kennethormandy\marketplace\provider\StripeConnectProvider;
+use kennethormandy\marketplace\provider\StripeConnectExpressProvider;
 use kennethormandy\marketplace\fields\MarketplaceConnectButton as MarketplaceConnectButtonField;
 use kennethormandy\marketplace\fields\MarketplacePayee as MarketplacePayeeField;
 use kennethormandy\marketplace\controllers\AccountController;
@@ -84,7 +85,8 @@ class Marketplace extends BasePlugin
             Providers::class,
             Providers::EVENT_REGISTER_PROVIDER_TYPES,
             function (RegisterComponentTypesEvent $event) {
-                $event->types[] = StripeProvider::class;
+                $event->types[] = StripeConnectProvider::class;
+                $event->types[] = StripeConnectExpressProvider::class;
             }
         );
         
