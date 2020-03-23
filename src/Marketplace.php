@@ -412,7 +412,8 @@ class Marketplace extends BasePlugin
      * supposed to be able to view this order), but might also might
      * still work better to add a whole new Marketplace tab that shows you
      * the same default order views as Commerce, but filtered down to only 
-     * show your orders. */
+     * show your orders.
+     * https://docs.craftcms.com/v3/extend/template-hooks.html */
     private function _reviseOrderTemplate()
     {
       Craft::$app->getView()->hook('cp.commerce.order.edit.main-pane', function(array &$context) {
