@@ -129,6 +129,7 @@
               <th>Order</th>
               <th>Payee</th>
               <th>{{ "Total Paid"|t('commerce') }}</th>
+              <th>Date Ordered</th>
               <th>Date Paid</th>
             </thead>
             <tbody>
@@ -146,7 +147,8 @@
                       </td>
                       <td>{{ payee }}</td>
                       <td>{{ order.totalPaid|currency(order.currency) }}</td>
-                      <td>{{ order.datePaid|date }}</td>
+                      <td>{{ order.dateOrdered ? order.dateOrdered|date : '' }}</td>
+                      <td>{{ order.datePaid ? order.datePaid|date ? '' }}</td>
                     </tr>
                   {% endif %}
                 {% endif %}
