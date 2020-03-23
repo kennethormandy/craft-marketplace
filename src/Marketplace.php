@@ -417,6 +417,15 @@ class Marketplace extends BasePlugin
     private function _reviseOrderTemplate()
     {
       Craft::$app->getView()->hook('cp.commerce.order.edit.main-pane', function(array &$context) {
+        return Craft::$app->view->renderTemplate(
+            'marketplace/order-edit',
+            [
+                'order' => $context['order']
+            ]
+        );
+      });
+      
+      Craft::$app->getView()->hook('cp.commerce.order.edit.main-pane', function(array &$context) {
 
         // This is a demo using the same logic already in
         // MarketplaceConnectButton_input. Would want to turn this
@@ -429,12 +438,18 @@ class Marketplace extends BasePlugin
           if ($product) {
             $payeeId = $product[$payeeHandle];
             if ($payeeId) {
-              $payee = \craft\elements\User::find()
+              $payee = User::find()
                 ->id($payeeId)
                 ->one();
               
               if ($payee) {
-                return '<strong>Payee</strong> ' . $payee;                
+                return Craft::$app->view->renderTemplate(
+                    'marketplace/order-edit-main-pane',
+                    [
+                        'order' => $context['order'],
+                        'payee' => $payee
+                    ]
+                );
               }
             }
           }
