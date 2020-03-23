@@ -1,5 +1,13 @@
 # Release Notes for Marketplace
 
+## Unreleased
+
+### Added
+- Adds demo of listing payee on default order page
+
+### Fixed
+- Fixed date paid showing as current date if order had been refunded
+
 ## 0.3.0 - 2019-02-07
 
 ### Added
