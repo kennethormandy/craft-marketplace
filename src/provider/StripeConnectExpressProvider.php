@@ -8,6 +8,8 @@ use venveo\oauthclient\base\Provider;
 // This also works, but now have it working with original
 // approach, with baseUrl.
 // TODO $express from Plugin Settings or Auth Settings
+
+// TODO Probably possible to remove kennethormandy/oauth2-stripe with this
 class LeagueProviderCustomized extends LeagueProvider {
     public function getBaseAuthorizationUrl(): string
     {
