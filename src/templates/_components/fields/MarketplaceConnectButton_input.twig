@@ -146,7 +146,22 @@
                         <a href="/admin/commerce/orders/{{ order.id }}">{{ order.shortNumber }}</a>
                       </td>
                       <td>{{ payee }}</td>
-                      <td>{{ order.totalPaid|currency(order.currency) }}</td>
+                      <td>
+                        {{ order.totalPaid|currency(order.currency) }}
+
+                        <!--
+                          {% if order.transactions and order.transactions|length >= 1 %}
+                          <ul>
+                            {% for transaction in order.transactions %}
+                              {% if transaction.status|title == 'Success' %}
+                                <li>{{ transaction.type|title }} {{ transaction.amount|currency(transaction.currency) }}</li>
+                              {% endif %}
+                            {% endfor %}
+                          </ul>
+                          {% endif %}
+                        -->
+
+                      </td>
                       <td>{{ order.dateOrdered ? order.dateOrdered|date : '' }}</td>
                       <td>{{ order.datePaid ? order.datePaid|date ? '' }}</td>
                     </tr>
