@@ -406,6 +406,30 @@ class Marketplace extends BasePlugin
         );
     }
     
+    // This logic is also very similar to Button input
+    private function _getPayeeFromOrder($order)
+    {
+      $payeeHandle = Marketplace::$plugin->handlesService->getPayeeHandle();
+      if ($order && $order['lineItems'] && sizeof($order['lineItems']) >= 1) {
+        $firstLineItem = $order['lineItems'][0];
+        $product = $firstLineItem['purchasable']['product'];
+        if ($product) {
+          $payeeId = $product[$payeeHandle];
+          if ($payeeId) {
+            $payee = User::find()
+              ->id($payeeId)
+              ->one();
+              
+            if ($payee) {
+              return $payee;
+            }
+          }
+        }
+      }
+      
+      return null;
+    }
+    
     /* Adds a quick demo of using template hooks to add the
      * payee to the order editing page. Could use this to try
      * and modify permissions (ex. redirect you away if you aren’t
@@ -417,42 +441,28 @@ class Marketplace extends BasePlugin
     private function _reviseOrderTemplate()
     {
       Craft::$app->getView()->hook('cp.commerce.order.edit.main-pane', function(array &$context) {
-        return Craft::$app->view->renderTemplate(
-            'marketplace/order-edit',
-            [
-                'order' => $context['order']
-            ]
-        );
+        $payee = $this->_getPayeeFromOrder($context['order']);
+        if ($payee) {
+          return Craft::$app->view->renderTemplate(
+              'marketplace/order-edit',
+              [
+                  'order' => $context['order'],
+                  'payee' => $payee
+              ]
+          );          
+        }
       });
       
       Craft::$app->getView()->hook('cp.commerce.order.edit.main-pane', function(array &$context) {
-
-        // This is a demo using the same logic already in
-        // MarketplaceConnectButton_input. Would want to turn this
-        // into Twig if we actually go ahead with using it.
-        $payeeHandle = Marketplace::$plugin->handlesService->getPayeeHandle();
-        $order = $context['order'];
-        if ($order && $order['lineItems'] && sizeof($order['lineItems']) >= 1) {
-          $firstLineItem = $order['lineItems'][0];
-          $product = $firstLineItem['purchasable']['product'];
-          if ($product) {
-            $payeeId = $product[$payeeHandle];
-            if ($payeeId) {
-              $payee = User::find()
-                ->id($payeeId)
-                ->one();
-              
-              if ($payee) {
-                return Craft::$app->view->renderTemplate(
-                    'marketplace/order-edit-main-pane',
-                    [
-                        'order' => $context['order'],
-                        'payee' => $payee
-                    ]
-                );
-              }
-            }
-          }
+        $payee = $this->_getPayeeFromOrder($context['order']);
+        if ($payee) {
+          return Craft::$app->view->renderTemplate(
+              'marketplace/order-edit-main-pane',
+              [
+                  'order' => $context['order'],
+                  'payee' => $payee
+              ]
+          );
         }
       });
     }
