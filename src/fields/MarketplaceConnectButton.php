@@ -374,6 +374,7 @@ class MarketplaceConnectButton extends Field
             $stripeResp = Account::createLoginLink($value);
         }
         
+        $appHandle = Marketplace::$plugin->handlesService->getAppHandle();
         $payeeHandle = Marketplace::$plugin->handlesService->getPayeeHandle();
         
         // Render the input template
@@ -391,6 +392,7 @@ class MarketplaceConnectButton extends Field
                 // of element right now
                 'element' => $element,
                 
+                'appHandle' => $appHandle ? $appHandle : '',
                 'payeeHandle' => $payeeHandle,
                 
                 'stripeLogin' => $stripeResp

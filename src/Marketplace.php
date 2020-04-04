@@ -27,6 +27,7 @@ use craft\commerce\events\RefundTransactionEvent;
 use craft\commerce\services\Payments;
 use yii\base\Event;
 
+use venveo\oauthclient\Plugin as OAuthPlugin;
 use venveo\oauthclient\services\Providers;
 use venveo\oauthclient\services\Apps as AppsService;
 use venveo\oauthclient\events\AuthorizationUrlEvent;
@@ -153,17 +154,22 @@ class Marketplace extends BasePlugin
                 }
             }
         );
-                        
-        // Handle Stripe redirect back to Craft
-        // Haven’t really tested this yet
+
         Event::on(
             AppsService::class,
             AppsService::EVENT_GET_URL_OPTIONS,
             function (AuthorizationUrlEvent $e) {
                 Craft::info('EVENT_GET_URL_OPTIONS', __METHOD__);
                 Craft::info(json_encode($e), __METHOD__);
+                $appHandle = Marketplace::$plugin->getSettings()->getAppHandle();
 
-                if ($e->app->handle === 'stripe') {
+                Craft::info('Get App handle '. $appHandle . ' '. $e->app->handle, __METHOD__);
+
+                // TODO We want to check the handle matches, and the type
+                // of provider is our Stripe provider, as you could in theory
+                // have an app wit hthe handle `stripe` that matches that is
+                // actually the Google provider (or whatever)
+                if ($e->app->handle === $appHandle) {
                     if ($e->context && isset($e->context['user'])) {
                         $user = $e->context['user'];
                         $userId = $user['id'];
@@ -195,6 +201,8 @@ class Marketplace extends BasePlugin
                         if (isset($user['lastName'])) {
                             $e->options['stripe_user[last_name]'] = $user['lastName'];
                         }
+                        
+                        // TODO Handle Stripe redirect back to Craft
                     }
                 }
             
@@ -504,10 +512,33 @@ class Marketplace extends BasePlugin
      */
     protected function settingsHtml(): string
     {
+        $oauthPlugin = OAuthPlugin::$plugin;
+        // TODO Might need to only do this if the handle isn’t set
+        // (ie. if the settings for the related OAuth app are empty)
+        $apps = $oauthPlugin->apps->getAllApps();
+        $app = $oauthPlugin->apps->createApp([]);
+        $supportedApps = [];
+
+        foreach ($apps as $key => $app) {
+          if (
+            $app &&
+            $app->provider &&
+
+            // TODO This would check against the list of supported providers
+            //      …but right now we are really only supporting this one.
+            $app->provider == 'kennethormandy\marketplace\provider\StripeConnectExpressProvider'
+
+          ) {
+            $supportedApps[] = $app;
+          }
+        }
+
         return Craft::$app->view->renderTemplate(
             'marketplace/settings',
             [
-                'settings' => $this->getSettings()
+                'settings' => $this->getSettings(),
+                'supportedApps' => $supportedApps,
+                'app' => $app
             ]
         );
     }

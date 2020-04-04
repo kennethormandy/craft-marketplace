@@ -37,7 +37,7 @@ Next, you can configure the OAuth Client plugin.
 
 ### Add Stripe OAuth app
 
-1. Register new app. The handle must be `stripe`. The name is up to you—probably “Stripe” or “Stripe Connect.”
+1. Register new app. The handle must be `stripe` (this is configurable through a global setting now, but needs to be changed to a dropdown based on the available OAuth apps. You should be able to select the correct OAuth App provider from the settings, and ideally create it with the correct config in the first place). The name is up to you—probably “Stripe” or “Stripe Connect.”
 2. Choose either “Stripe Connect” or “Stripe Connect Express” from the dropdown. They will be available in the dropdown as long as you’ve installed the Marketplace plugin too.
   - If the customer’s transaction appears to be directly with the payee, and the payee is transparently responsible for refunds and support, you will probably want to use “Stripe Connect”
   - If the customer’s transaction is with the platform, and would expect to come to the platform for refunds and support, you will probably want to use “Stripe Connect Express”

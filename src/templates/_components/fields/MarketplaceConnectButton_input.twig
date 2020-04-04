@@ -36,7 +36,7 @@
 {% set user = element %}
 
 {# This doesn’t really seem to work as expected #}
-{% set app = craft.oauth.getAppByHandle('stripe') %}
+{% set app = craft.oauth.getAppByHandle(appHandle) %}
 
 {% set context = {
   user: user

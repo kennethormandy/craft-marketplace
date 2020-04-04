@@ -59,4 +59,16 @@ class HandlesService extends Component
       
         return null;
     }
+    
+    /**
+     * The CMS admin can set the OAuth API field handle
+     * to whatever they want. We have already determined
+     * what the selected app handle is in the settings, but
+     * this keeps all the handles in HandlesService.
+     */
+    public function getAppHandle()
+    {
+        $appHandle = Marketplace::$plugin->getSettings()->getAppHandle();
+        return $appHandle;
+    }
 }
