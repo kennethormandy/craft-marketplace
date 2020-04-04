@@ -4,9 +4,11 @@
 
 ### Added
 - Adds demo of listing payee on default order page
+- Adds support for selecting the OAuth app to use
 
 ### Fixed
 - Fixed date paid showing as current date if order had been refunded
+- The OAuth app handle no longer needs to be called `stripe` specifically
 
 ## 0.3.0 - 2019-02-07
 
