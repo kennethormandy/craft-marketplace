@@ -52,6 +52,11 @@ use Stripe\Transfer;
 
 class Marketplace extends BasePlugin
 {
+    const EDITION_LITE = 'lite';
+    // NOTE Edition marker doesn’t show, unless there
+    //      is more than one edition. https://git.io/JvAIY
+    // const EDITION_PRO = 'pro';
+
     // Public Properties
     // =========================================================================
 
@@ -67,6 +72,13 @@ class Marketplace extends BasePlugin
      * @var Plugin
      */
     public static $plugin;
+    public static function editions(): array
+    {
+        return [
+            self::EDITION_LITE,
+            // self::EDITION_PRO,
+        ];
+    }
 
     public function init()
     {
