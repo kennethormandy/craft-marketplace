@@ -11,7 +11,7 @@
 - Fixed date paid showing as current date if order had been refunded
 - The OAuth app handle no longer needs to be called `stripe` specifically
 
-## 0.3.0 - 2019-02-07
+## 0.3.0 - 2020-02-07
 
 ### Added
 - Added proper saving of token without forked dependencies
@@ -24,7 +24,7 @@
 ### Changed
 - Moved into stand-alone repository
 
-## 0.2.0 - 2019-01-10
+## 0.2.0 - 2020-01-10
 
 ### Added
 - Added settings panel
