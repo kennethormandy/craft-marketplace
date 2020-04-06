@@ -35,11 +35,14 @@
    of element right now #}
 {% set user = element %}
 
-{# This doesn’t really seem to work as expected #}
 {% set app = craft.oauth.getAppByHandle(appHandle) %}
 
+{# TODO Alternatively, could only send along userId in context,
+ # and then query user in event. #}
+{# Pathname and Hash are added via JS. #}
 {% set context = {
-  user: user
+  contextName: 'MarketplaceConnectButton',
+  user: user,
 } %}
 
 {% if app %}
@@ -83,9 +86,29 @@
           {% else %}
             <a class="btn"
                target="_blank"
+               id="{{ id }}-authorize"
                href="{{ app.getRedirectUrl(context) }}">
               Authorize with {{ app.name }}
             </a>
+
+            {# Get current page and hash for redirect #}
+            <script>
+                var elAuthorize = document.getElementById('{{ namespacedId }}-authorize');
+                if (elAuthorize) {
+                  var loc = {
+                    pathname: '/admin',
+                    hash: ''
+                  }
+
+                  if (window && window.location && typeof window.location === 'object') {
+                    loc = window.location
+                  }
+
+                  if (encodeURIComponent) {
+                    elAuthorize.href = `${elAuthorize.href}&context[location][pathname]=${encodeURIComponent(loc.pathname)}&context[location][hash]=${encodeURIComponent(loc.hash)}`
+                  }
+                }
+            </script>
           {% endif %}
         </div>
       </div>
@@ -98,7 +121,7 @@
         </div>
         <div class="input">
           {{ forms.text({
-            id: name,
+            id: id,
             name: name,
             value: value,
             disabled: true,

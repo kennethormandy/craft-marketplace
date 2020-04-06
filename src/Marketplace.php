@@ -19,6 +19,7 @@ use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterUrlRulesEvent;
 use craft\web\UrlManager;
 use craft\elements\User;
+use craft\helpers\UrlHelper;
 
 use craft\commerce\models\Transaction;
 use craft\commerce\stripe\events\BuildGatewayRequestEvent;
@@ -31,6 +32,8 @@ use venveo\oauthclient\Plugin as OAuthPlugin;
 use venveo\oauthclient\services\Providers;
 use venveo\oauthclient\services\Apps as AppsService;
 use venveo\oauthclient\events\AuthorizationUrlEvent;
+use venveo\oauthclient\events\AuthorizationEvent;
+use venveo\oauthclient\controllers\AuthorizeController;
 
 use venveo\oauthclient\base\Provider;
 use venveo\oauthclient\services\Tokens;
@@ -209,6 +212,31 @@ class Marketplace extends BasePlugin
                 return $e;
             }
         );
+        
+        Event::on(
+          AuthorizeController::class,
+          AuthorizeController::EVENT_BEFORE_AUTHENTICATE,
+          function (AuthorizationEvent $event)
+          {
+              // Craft::info('EVENT_BEFORE_AUTHENTICATE', __METHOD__);
+              if (
+                $event->context &&
+                $event->context['location'] &&
+                $event->context['location']['pathname'] &&
+                $event->context['contextName'] === 'MarketplaceConnectButton') {
+                  $loc = $event->context['location'];
+                  $pathname = $loc['pathname'];
+                  if ($loc['hash']) {
+                    $pathname = $pathname . $loc['hash'];
+                  }
+
+                  $returnUrl = UrlHelper::cpUrl($pathname, null, null);
+                  Craft::info('Return URL', __METHOD__);
+                  Craft::info($returnUrl, __METHOD__);
+                  $event->returnUrl = $returnUrl;
+              }
+          }
+      );
 
         /**
         * Logging in Craft involves using one of the following methods:
