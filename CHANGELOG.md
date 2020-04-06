@@ -3,8 +3,9 @@
 ## Unreleased
 
 ### Added
-- Adds demo of listing payee on default order page
-- Adds support for selecting the OAuth app to use
+- Added demo of listing payee on default order page
+- Added support for selecting the OAuth app to use
+- Added dynamic redirect to current view after auth
 
 ### Fixed
 - Fixed date paid showing as current date if order had been refunded
