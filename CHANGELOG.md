@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.4.0 - 2020-04-06
+
 ### Added
 - Added demo of listing payee on default order page
 - Added support for selecting the OAuth app to use
