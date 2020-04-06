@@ -14,17 +14,6 @@
 
 ## Getting started
 
-**Note** Right now I still have this in the installing project’s `composer.json`, as well as this package’s `composer.json`:
-
-```json
-{
-  "type": "git",
-  "url": "https://github.com/kennethormandy/oauth2-stripe.git"
-}
-```
-
-Unclear if that will work once this package is published, or if I will nee to publish my fork to Packagist as well.
-
 ```sh
 # Install OAuth Client plugin
 ./craft install/plugin oauthclient
