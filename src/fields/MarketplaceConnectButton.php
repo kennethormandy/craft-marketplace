@@ -344,18 +344,19 @@ class MarketplaceConnectButton extends Field
         // Craft::$app->getView()->registerAssetBundle(MarketplaceConnectButtonFieldAsset::class);
 
         // Get our id and namespace
-        $id = Craft::$app->getView()->formatInputId($this->handle);
+        $name = $this->handle;
+        $id = Craft::$app->getView()->formatInputId($name);
         $namespacedId = Craft::$app->getView()->namespaceInputId($id);
 
         // Variables to pass down to our field JavaScript to let it namespace properly
-        $jsonVars = [
-            'id' => $id,
-            'name' => $this->handle,
-            'namespace' => $namespacedId,
-            'prefix' => Craft::$app->getView()->namespaceInputId(''),
-            ];
-        $jsonVars = Json::encode($jsonVars);
-        Craft::$app->getView()->registerJs("$('#{$namespacedId}-field').MarketplaceMarketplaceConnectButton(" . $jsonVars . ");");
+        // $jsonVars = [
+        //     'id' => $id,
+        //     'name' => $this->handle,
+        //     'namespace' => $namespacedId,
+        //     'prefix' => Craft::$app->getView()->namespaceInputId(''),
+        //     ];
+        // $jsonVars = Json::encode($jsonVars);
+        // Craft::$app->getView()->registerJs("$('#{$namespacedId}-field').MarketplaceConnectButton(" . $jsonVars . ");");
 
         $stripeResp = [
           // TODO Change this to a remote documentation page or
