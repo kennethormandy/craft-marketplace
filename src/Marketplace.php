@@ -352,7 +352,7 @@ class Marketplace extends BasePlugin
         
                     $purchasable = $lineItemOnly->purchasable;
                     $payeeHandle = $this->handlesService->getPayeeHandle();
-                    if (isset($purchasable[$payeeHandle])) {
+                    if (isset($purchasable[$payeeHandle]) && $purchasable[$payeeHandle] !== null) {
                         if (is_numeric($purchasable[$payeeHandle])) {
                           // Craft Commerce v3 Digital Products
                           $payeeId = $purchasable[$payeeHandle];
