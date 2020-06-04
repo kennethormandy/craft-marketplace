@@ -353,9 +353,15 @@ class Marketplace extends BasePlugin
                     $purchasable = $lineItemOnly->purchasable;
                     $payeeHandle = $this->handlesService->getPayeeHandle();
                     if (isset($purchasable[$payeeHandle])) {
-                        // TODO Digital Products?
-                        $purchasablePayee = $purchasable[$payeeHandle]->one();
-                    } elseif (isset($purchasable->product[$payeeHandle])) {
+                        if (is_numeric($purchasable[$payeeHandle])) {
+                          // Craft Commerce v3 Digital Products
+                          $payeeId = $purchasable[$payeeHandle];
+                          $purchasablePayee = User::find()->id($payeeId)->one();
+                        } else {
+                          // Craft Commerce v2 Digital Products?
+                          $purchasablePayee = $purchasable[$payeeHandle]->one();
+                        }
+                    } elseif (isset($purchasable->product[$payeeHandle]) && $purchasable->product[$payeeHandle] !== null) {
                         // All other products
                         $payeeId = $purchasable->product[$payeeHandle];
                         $purchasablePayee = User::find()->id($payeeId)->one();
