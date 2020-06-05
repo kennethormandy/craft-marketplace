@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+## v0.5.0 - 2020-06-04
+
+### Added 
+- Added Lite edition config
+- Adds support for Digital Products on Craft v3.4 and Craft Commerce v3
+
+### Fixed
+- Fixed check when no orders or line items exist
+- Fixed fallback to default Stripe account on Craft Commerce v3
+- Fixed Stripe OAuth dependency install
+
 ## 0.4.0 - 2020-04-06
 
 ### Added
