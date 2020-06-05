@@ -32,7 +32,7 @@
   "prefer-stable": true,
   "repositories": [
     {
-      "type": "git",
+      "type": "github",
       "url": "https://github.com/kennethormandy/oauth2-stripe.git"
     }
   ],
