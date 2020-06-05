@@ -14,6 +14,15 @@
 
 ## Getting started
 
+First, require the plugin and its main dependency through the Craft CMS dashboard, or by using the command line:
+
+```sh
+# Require Marketplace plugin
+composer require kennethormandy/craft-marketplace
+```
+
+…and, install the plugins:
+
 ```sh
 # Install OAuth Client plugin
 ./craft install/plugin oauthclient
