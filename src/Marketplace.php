@@ -45,6 +45,7 @@ use kennethormandy\marketplace\fields\MarketplaceConnectButton as MarketplaceCon
 use kennethormandy\marketplace\fields\MarketplacePayee as MarketplacePayeeField;
 use kennethormandy\marketplace\controllers\AccountController;
 use kennethormandy\marketplace\services\HandlesService;
+use kennethormandy\marketplace\services\FeesService;
 use kennethormandy\marketplace\models\Settings;
 
 use Stripe\Stripe;
@@ -89,7 +90,9 @@ class Marketplace extends BasePlugin
         
         // Register services
         $this->setComponents([
+            // TODO Rename to just “handles” for nicer API
             'handlesService' => HandlesService::class,
+            'fees' => FeesService::class,
         ]);
         
         Craft::info(
@@ -564,6 +567,7 @@ class Marketplace extends BasePlugin
         $apps = $oauthPlugin->apps->getAllApps();
         $app = $oauthPlugin->apps->createApp([]);
         $supportedApps = [];
+        $fees = Marketplace::$plugin->fees->getAllFees();
 
         foreach ($apps as $key => $app) {
           if (
@@ -584,7 +588,8 @@ class Marketplace extends BasePlugin
             [
                 'settings' => $this->getSettings(),
                 'supportedApps' => $supportedApps,
-                'app' => $app
+                'app' => $app,
+                'fees' => $fees
             ]
         );
     }

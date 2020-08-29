@@ -36,27 +36,71 @@
     name: 'appHandle',
     options: supportedApps|map((obj) => { label: "#{obj.name} (#{obj.handle})", value: obj.handle })
   }) }}
+
+  {# Maybe there’s just one fee for now, and an upgrade option
+   # is a more complex fee structre, ex. percent and flat, or other
+   # conditionals. In the meantime, it would just be the one % fee,
+   # or maybe one configurable flat or % fee, and then wait to add anything
+   # else until there is demand or need. #}
+
+   <h2>Fees</h2>
+
+   {% if fees|length %}
+     <ul>
+       {% for fee in fees %}
+         <li><pre><code>{{ fee|json_encode }}</code></pre></li>
+       {% endfor %}
+     </ul>
+   {% else %}
+     <p>No fees set.</p>
+   {% endif %}
+
+  <div style="display: flex;">
+    <div style="padding-right: 1rem">
+      {{ forms.textField({
+        label: 'Fee Handle',
+        name: 'handle',
+        id: 'handle',
+        instructions: '',
+        type: 'text',
+        value: '',
+        required: true
+      }) }}
+    </div>
+    <div style="padding-right: 1rem">
+      {{ forms.textField({
+        label: 'Fee Name',
+        name: 'feeName',
+        id: 'feeName',
+        instructions: '',
+        type: 'text',
+        value: '',
+        required: true
+      }) }}
+    </div>
+    <div style="padding-right: 1rem">
+      {{ forms.textField({
+        label: 'Fee Value',
+        name: 'feeValue',
+        id: 'feeValue',
+        instructions: '',
+        type: 'number',
+        value: 0,
+        required: true
+      }) }}
+    </div>
+    <div>
+      {{ forms.selectField({
+        label: 'Fee Type',
+        name: 'feeType',
+        id: 'feeType',
+        options: [
+          { label: '$ (Flat fee)', value: 'flat-fee' },
+          { label: '% (Percent of price)', value: 'price-percentage' }
+        ],
+        required: true
+      }) }}
+    </div>
+  </div>
+
 {% endif %}
-
-{#
-
-<form method="post" accept-charset="UTF-8" data-confirm-unload>
-  {{ hiddenInput('id', app.id) }}
-  {{ actionInput('oauthclient/apps/save') }}
-  {{ csrfInput() }}
-
-  {{ forms.textField({
-      label: 'Name'|t('oauthclient'),
-      instructions: 'Give your app a descriptive name, like Google, HubSpot CRM, or Jeff'|t('oauthclient'),
-      name: 'name',
-      first: true,
-      id: 'name',
-      value: app.name,
-      required: true,
-      errors: app.getErrors('name'),
-  }) }}
-
-  <div class="btn submit formsubmit add icon">Register New App (In progress)</div>
-</form>
-
-#}
