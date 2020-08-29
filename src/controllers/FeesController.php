@@ -86,6 +86,6 @@ class FeesController extends Controller
         }
         
         $session->setNotice(Craft::t('marketplace', 'Fee saved'));
-        return $this->redirect(UrlHelper::cpUrl('marketplace/fees'));
+        return $this->redirect(UrlHelper::cpUrl('settings/plugins/marketplace'));
     }
 }
