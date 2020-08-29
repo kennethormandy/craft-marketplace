@@ -59,10 +59,9 @@ class FeesService extends Component
       
       $record->siteId = $fee->siteId;
       $record->handle = $fee->handle;
-
-      // $record->name = $fee->name;
-      // $record->value = $fee->value;
-      // $record->type = $fee->type;
+      $record->name = $fee->name;
+      $record->value = $fee->value;
+      $record->type = $fee->type;
       
       $record->validate();
       $record->addErrors($record->getErrors());
@@ -93,9 +92,9 @@ class FeesService extends Component
                 'dateUpdated',
                 'uid',
                 'handle',
-                // 'name',
-                // 'value',
-                // 'type',
+                'name',
+                'value',
+                'type',
             ])
             ->from(['{{%marketplace_fees}}']);
     }

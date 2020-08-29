@@ -75,12 +75,9 @@ class Install extends Migration
                     // Custom columns in the table
                     'siteId' => $this->integer()->notNull(),
                     'handle' => $this->string(255)->notNull()->defaultValue(''),
-
-                    // handle;
-                    // name;
-                    // value;
-                    // type;
-
+                    'name' => $this->string(255)->notNull()->defaultValue(''),
+                    'value' => $this->float()->notNull(),
+                    'type' => $this->string(255)->notNull()->defaultValue(''),
                 ]
             );
         }
@@ -95,11 +92,7 @@ class Install extends Migration
     {
         // marketplace_fees table
         $this->createIndex(
-            $this->db->getIndexName(
-                '{{%marketplace_fees}}',
-                'handle',
-                true
-            ),
+            $this->db->getIndexName('{{%marketplace_fees}}', 'handle', true),
             '{{%marketplace_fees}}',
             'handle',
             true

@@ -24,18 +24,16 @@ class Fee extends Model
 
   public $siteId;
   public $handle;
-
-  // public $name;
-  // public $value;
-  // public $type;
+  public $name;
+  public $value;
+  public $type;
   
   /**
    * @inheritdoc
    */
   public function rules() {
     return [
-      // [['handle', 'name', 'value', 'type'], 'required']
-      [['handle'], 'required']
+      [['siteId', 'handle', 'name', 'value', 'type'], 'required']
     ];
   }
 }

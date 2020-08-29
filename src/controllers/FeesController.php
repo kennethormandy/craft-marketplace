@@ -65,13 +65,13 @@ class FeesController extends Controller
         $config = [
             'id' => $request->getBodyParam('id'),
             'handle' => $request->getRequiredBodyParam('handle'),
-            // 'name' => $request->getRequiredBodyParam('name'),
+            'name' => $request->getRequiredBodyParam('name'),
+            'value' => $request->getRequiredBodyParam('value'),
+            'type' => $request->getRequiredBodyParam('type'),
         ];
         
         /** @var FeeModel $fee */
         $fee = $feesService->createFee($config);
-        
-        // return var_dump($fee);
         
         $session = Craft::$app->session;
         
