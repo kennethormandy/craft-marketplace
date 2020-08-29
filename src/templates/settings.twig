@@ -45,19 +45,38 @@
 
    <h2>Fees</h2>
 
+   {% set feeTypeLabelByValue = {
+     'flat-fee': '$ (Flat fee)',
+     'price-percentage': '% (Percent of price)'
+   } %}
+
    {% if fees is defined and fees|length %}
-     <ul>
-       {% for fee in fees %}
-         <li>
-           <strong>{{ fee.handle }}</strong><br/>
-           <pre><code>{{ fee|json_encode }}</code></pre>
-         </li>
-       {% endfor %}
-     </ul>
+     <table>
+       <thead>
+         <tr>
+           <th>Name</th>
+           <th>Handle</th>
+           <th>Value</th>
+           <th>Type</th
+         </tr>
+       </thead>
+       <tbody>
+         {% for fee in fees %}
+           <tr>
+             <th>{{ fee.name }}</th>
+             <td><code>{{ fee.handle }}</code></td>
+             <td>{{ fee.value }}</td>
+             <td>{{ fee.type }}</td>
+           </tr>
+         {% endfor %}
+       </tbody>
+     </table>
    {% else %}
      <p>No fees set.</p>
    {% endif %}
    
-   <a href="/admin/marketplace/fees/new">Add a new fee</a>
+   <p>
+     <a href="/admin/marketplace/fees/new">Add a new fee</a>
+   </p>
 
 {% endif %}
