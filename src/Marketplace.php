@@ -44,6 +44,7 @@ use kennethormandy\marketplace\provider\StripeConnectExpressProvider;
 use kennethormandy\marketplace\fields\MarketplaceConnectButton as MarketplaceConnectButtonField;
 use kennethormandy\marketplace\fields\MarketplacePayee as MarketplacePayeeField;
 use kennethormandy\marketplace\controllers\AccountController;
+use kennethormandy\marketplace\controllers\FeesController;
 use kennethormandy\marketplace\services\HandlesService;
 use kennethormandy\marketplace\services\FeesService;
 use kennethormandy\marketplace\models\Settings;
@@ -529,15 +530,13 @@ class Marketplace extends BasePlugin
      */
     private function _registerCpRoutes()
     {
-        Event::on(
-            UrlManager::class,
-            UrlManager::EVENT_REGISTER_CP_URL_RULES,
-            function (RegisterUrlRulesEvent $event) {
-                $event->rules = array_merge($event->rules, [
-            'marketplace/account/create-login-link' => 'marketplace/account/create-login-link',
-          ]);
-            }
-        );
+        Event::on(UrlManager::class, UrlManager::EVENT_REGISTER_CP_URL_RULES, function (RegisterUrlRulesEvent $event) {
+            $event->rules = array_merge($event->rules, [
+                'marketplace/account/create-login-link' => 'marketplace/account/create-login-link',
+                'marketplace/fees' => 'marketplace/fees/index',
+                'marketplace/fees/new' => 'marketplace/fees/edit',
+            ]);
+        });
     }
     
     // Protected Methods

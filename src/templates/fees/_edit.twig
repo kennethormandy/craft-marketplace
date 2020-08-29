@@ -1,0 +1,21 @@
+{% extends "_layouts/cp" %}
+{% import "_includes/forms" as forms %}
+
+{% block content %}
+<form method="post" action="" accept-charset="UTF-8">
+  {{ actionInput('marketplace/fees/save') }}
+  {{ csrfInput() }}
+
+  {{ forms.textField({
+    label: 'Fee Handle',
+    name: 'handle',
+    id: 'handle',
+    instructions: '',
+    type: 'text',
+    value: '',
+    required: true
+  }) }}
+
+  <input type="submit" value="Generate" />
+</form>
+{% endblock %}

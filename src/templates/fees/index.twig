@@ -1,0 +1,11 @@
+<h2>Fees</h2>
+
+{% if fees is defined and fees|length %}
+  <ul>
+    {% for fee in fees %}
+      <li><pre><code>{{ fee|json_encode }}</code></pre></li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>No fees set.</p>
+{% endif %}

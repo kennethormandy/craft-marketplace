@@ -21,17 +21,21 @@ class Fee extends Model
   public $dateCreated;
   public $dateUpdated;
   public $uid;
+
+  public $siteId;
   public $handle;
-  public $name;
-  public $value;
-  public $type;
+
+  // public $name;
+  // public $value;
+  // public $type;
   
   /**
    * @inheritdoc
    */
   public function rules() {
     return [
-      [['name', 'value', 'type'], 'required']
-    ]
+      // [['handle', 'name', 'value', 'type'], 'required']
+      [['handle'], 'required']
+    ];
   }
 }
