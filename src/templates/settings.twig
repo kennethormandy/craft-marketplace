@@ -45,62 +45,19 @@
 
    <h2>Fees</h2>
 
-   {% if fees|length %}
+   {% if fees is defined and fees|length %}
      <ul>
        {% for fee in fees %}
-         <li><pre><code>{{ fee|json_encode }}</code></pre></li>
+         <li>
+           <strong>{{ fee.handle }}</strong><br/>
+           <pre><code>{{ fee|json_encode }}</code></pre>
+         </li>
        {% endfor %}
      </ul>
    {% else %}
      <p>No fees set.</p>
    {% endif %}
-
-  <div style="display: flex;">
-    <div style="padding-right: 1rem">
-      {{ forms.textField({
-        label: 'Fee Handle',
-        name: 'handle',
-        id: 'handle',
-        instructions: '',
-        type: 'text',
-        value: '',
-        required: true
-      }) }}
-    </div>
-    <div style="padding-right: 1rem">
-      {{ forms.textField({
-        label: 'Fee Name',
-        name: 'feeName',
-        id: 'feeName',
-        instructions: '',
-        type: 'text',
-        value: '',
-        required: true
-      }) }}
-    </div>
-    <div style="padding-right: 1rem">
-      {{ forms.textField({
-        label: 'Fee Value',
-        name: 'feeValue',
-        id: 'feeValue',
-        instructions: '',
-        type: 'number',
-        value: 0,
-        required: true
-      }) }}
-    </div>
-    <div>
-      {{ forms.selectField({
-        label: 'Fee Type',
-        name: 'feeType',
-        id: 'feeType',
-        options: [
-          { label: '$ (Flat fee)', value: 'flat-fee' },
-          { label: '% (Percent of price)', value: 'price-percentage' }
-        ],
-        required: true
-      }) }}
-    </div>
-  </div>
+   
+   <a href="/admin/marketplace/fees/new">Add a new fee</a>
 
 {% endif %}

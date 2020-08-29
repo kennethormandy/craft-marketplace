@@ -6,16 +6,55 @@
   {{ actionInput('marketplace/fees/save') }}
   {{ csrfInput() }}
 
-  {{ forms.textField({
-    label: 'Fee Handle',
-    name: 'handle',
-    id: 'handle',
-    instructions: '',
-    type: 'text',
-    value: '',
-    required: true
-  }) }}
+  <div style="display: flex;">
+    <div style="padding-right: 1rem">
+      {{ forms.textField({
+        label: 'Handle',
+        name: 'handle',
+        id: 'handle',
+        instructions: '',
+        type: 'text',
+        value: '',
+        required: true
+      }) }}
+    </div>
+    <div style="padding-right: 1rem">
+      {{ forms.textField({
+        label: 'Name',
+        name: 'name',
+        id: 'name',
+        instructions: '',
+        type: 'text',
+        value: '',
+        required: true
+      }) }}
+    </div>
+    <div style="padding-right: 1rem">
+      {{ forms.textField({
+        label: 'Value',
+        name: 'value',
+        id: 'value',
+        instructions: '',
+        type: 'number',
+        value: 0,
+        min: 0,
+        required: true
+      }) }}
+    </div>
+    <div>
+      {{ forms.selectField({
+        label: 'Type',
+        name: 'type',
+        id: 'type',
+        options: [
+          { label: '$ (Flat fee)', value: 'flat-fee' },
+          { label: '% (Percent of price)', value: 'price-percentage' }
+        ],
+        required: true
+      }) }}
+    </div>
+  </div>
 
-  <input type="submit" value="Generate" />
+  <input type="submit" value="Add" />
 </form>
 {% endblock %}
