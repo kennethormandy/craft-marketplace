@@ -57,7 +57,8 @@ class FeesService extends Component
             $this->_FEES_BY_HANDLE[$fee->handle] = $fee;
         }
 
-        return $rows;
+        $this->_ALL_FEES_FETCHED = true;
+        return $this->_FEES_BY_ID;
     }
     
     /**

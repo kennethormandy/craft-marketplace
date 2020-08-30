@@ -332,8 +332,7 @@ class Marketplace extends BasePlugin
                 // $hardCodedApproach = 'direct-charge';
                 $hardCodedApproach = 'destination-charge';
         
-                // Must be a positive integer (in cents)
-                $hardCodedApplicationFee = 0;
+                $applicationFees = Marketplace::$plugin->fees->getAllFees();
         
                 // Make Destination Charges behave more like Direct Charges
                 // https://stripe.com/docs/payments/connected-accounts#charge-on-behalf-of-a-connected-account
@@ -407,8 +406,42 @@ class Marketplace extends BasePlugin
                         );
         
                         // Apply application fee, if it’s a positive int
-                        if ($hardCodedApplicationFee && is_int($hardCodedApplicationFee) && $hardCodedApplicationFee > 0) {
-                            $e->request['application_fee_amount'] = $hardCodedApplicationFee;
+                        if ($applicationFees && sizeof($applicationFees) >= 1) {
+
+                            $feeCounter = 0;
+                            foreach ($applicationFees as $feeId => $fee) {
+                              // TODO Only supporting 1 fee for Lite edition
+                              if ($feeCounter === 0) {
+                                  $liteApplicationFee = $fee;
+                              }
+
+                              $feeCounter++;
+                            }
+                            
+                            if (
+                              $liteApplicationFee &&
+                              is_int($liteApplicationFee->value) &&
+                              $liteApplicationFee->value > 0
+                            ) {
+                                $liteApplicationFeeAmount = 0;
+
+                                if ($liteApplicationFee->type === 'price-percentage') {
+                                    // Ex. 12.50% fee stored in DB as 1250
+                                    $percent = ($liteApplicationFee->value / 100);
+
+                                    // $10 subtotal * 12.5 = 125 cent application fee
+                                    $liteApplicationFeeAmount = $order->itemSubtotal * $percent;
+                                } else if ($liteApplicationFee->type === 'flat-fee') {
+
+                                    // Ex. $10 fee stored in DB as 1000 = 1000 cent fee
+                                    $liteApplicationFeeAmount = $liteApplicationFee->value;
+                                }
+                                                                
+                                // Must be a positive integer (in cents)
+                                if ($liteApplicationFeeAmount > 0) {
+                                    $e->request['application_fee_amount'] = $liteApplicationFeeAmount;
+                                }
+                            }
                         }
         
                         if ($hardCodedOnBehalfOf) {
