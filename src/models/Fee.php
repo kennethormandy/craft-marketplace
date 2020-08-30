@@ -20,6 +20,7 @@ class Fee extends Model
   public $id;
   public $dateCreated;
   public $dateUpdated;
+  public $dateDeleted;
   public $uid;
 
   public $siteId;

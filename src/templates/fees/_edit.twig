@@ -62,4 +62,17 @@
 
   <input type="submit" value="{{ fee.id ? 'Edit' : 'Add' }}" />
 </form>
+
+{% if fee and fee.id %}
+  <form method="post" action="" accept-charset="UTF-8">
+    {{ actionInput('marketplace/fees/delete') }}
+    {{ csrfInput() }}
+    
+    <input type="hidden" name="id" value="{{ fee.id }}" />
+    <input type="hidden" name="handle" value="{{ fee.handle }}" />
+    
+    <input type="submit" value="Delete fee {{ fee.name }}" />
+  </form>
+{% endif %}
+
 {% endblock %}

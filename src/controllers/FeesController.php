@@ -88,4 +88,29 @@ class FeesController extends Controller
         $session->setNotice(Craft::t('marketplace', 'Fee saved'));
         return $this->redirect(UrlHelper::cpUrl('settings/plugins/marketplace'));
     }
+    
+    public function actionDelete($handle = null, $fee = null)
+    {
+      $this->requireAdmin();
+      $this->requirePostRequest();
+
+      $request = Craft::$app->getRequest();
+      $feeId = $request->getBodyParam('id');
+      $fee = Marketplace::$plugin->fees->getFeeById($feeId);
+      
+      $session = Craft::$app->session;
+
+      if (!Marketplace::$plugin->fees->deleteFee($fee->id)) {
+        $session->setError(Craft::t('marketplace', 'Failed to delete fee'));
+
+        Craft::$app->getUrlManager()->setRouteParams([
+          'fee' => $fee
+        ]);
+        
+        return null;
+      }
+      
+      $session->setNotice(Craft::t('marketplace', 'Fee deleted'));
+      return $this->redirect(UrlHelper::cpUrl('settings/plugins/marketplace'));
+    }
 }

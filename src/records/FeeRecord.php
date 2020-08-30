@@ -4,6 +4,7 @@ namespace kennethormandy\marketplace\records;
 
 use Craft;
 use craft\db\ActiveRecord;
+use craft\db\SoftDeleteTrait;
 
 /**
  * Fee Record
@@ -14,6 +15,8 @@ use craft\db\ActiveRecord;
  */
 class FeeRecord extends ActiveRecord
 {
+    use SoftDeleteTrait;
+  
     // Public Static Methods
     // =========================================================================
 

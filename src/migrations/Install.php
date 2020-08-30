@@ -70,6 +70,7 @@ class Install extends Migration
                     'id' => $this->primaryKey(),
                     'dateCreated' => $this->dateTime()->notNull(),
                     'dateUpdated' => $this->dateTime()->notNull(),
+                    'dateDeleted' => $this->dateTime()->null(),
                     'uid' => $this->uid(),
                     
                     // Custom columns in the table
