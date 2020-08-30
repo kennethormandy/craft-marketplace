@@ -40,7 +40,7 @@
         id: 'value',
         instructions: '',
         type: 'number',
-        value: fee.value ? fee.value : 0,
+        value: fee.value ? fee.value / 100 : 0,
         min: 0,
         required: true
       }) }}
