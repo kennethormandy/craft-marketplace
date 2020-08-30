@@ -77,7 +77,7 @@ class Install extends Migration
                     'siteId' => $this->integer()->notNull(),
                     'handle' => $this->string(255)->notNull()->defaultValue(''),
                     'name' => $this->string(255)->notNull()->defaultValue(''),
-                    'value' => $this->float()->notNull(),
+                    'value' => $this->integer()->notNull(),
                     'type' => $this->string(255)->notNull()->defaultValue(''),
                 ]
             );
