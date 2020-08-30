@@ -151,7 +151,12 @@ class FeesService extends Component
       $record->siteId = $fee->siteId;
       $record->handle = $fee->handle;
       $record->name = $fee->name;
-      $record->value = $fee->value;
+
+      // Ex. recieve 10 from the form for a 10 flat fee
+      // Store in the DB as 1000, because we store it in “cents”
+      // for when we pass it to Stripe and to avoid floats
+      $record->value = (int)$fee->value * 100;
+
       $record->type = $fee->type;
       
       $record->validate();
