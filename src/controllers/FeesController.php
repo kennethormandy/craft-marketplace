@@ -39,7 +39,7 @@ class FeesController extends Controller
         $feesService = Marketplace::$plugin->fees;
         
         if (!$variables['fee'] && $variables['handle']) {
-            $variables['fee'] = $feesService->getAppByHandle($variables['handle']);
+            $variables['fee'] = $feesService->getFeeByHandle($variables['handle']);
         }
         if (!$variables['fee']) {
             $variables['fee'] = $feesService->createFee([]);

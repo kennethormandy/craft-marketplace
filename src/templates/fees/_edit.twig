@@ -6,6 +6,10 @@
   {{ actionInput('marketplace/fees/save') }}
   {{ csrfInput() }}
 
+  {% if fee and fee.id %}
+    <input type="hidden" name="id" value="{{ fee.id }}" />
+  {% endif %}
+
   <div style="display: flex;">
     <div style="padding-right: 1rem">
       {{ forms.textField({
@@ -14,7 +18,7 @@
         id: 'handle',
         instructions: '',
         type: 'text',
-        value: '',
+        value: fee.handle ? fee.handle : '',
         required: true
       }) }}
     </div>
@@ -25,7 +29,7 @@
         id: 'name',
         instructions: '',
         type: 'text',
-        value: '',
+        value: fee.name ? fee.name : '',
         required: true
       }) }}
     </div>
@@ -36,7 +40,7 @@
         id: 'value',
         instructions: '',
         type: 'number',
-        value: 0,
+        value: fee.value ? fee.value : 0,
         min: 0,
         required: true
       }) }}
@@ -50,11 +54,12 @@
           { label: '$ (Flat fee)', value: 'flat-fee' },
           { label: '% (Percent of price)', value: 'price-percentage' }
         ],
+        value: fee.value ? fee.value : '',
         required: true
       }) }}
     </div>
   </div>
 
-  <input type="submit" value="Add" />
+  <input type="submit" value="{{ fee.id ? 'Edit' : 'Add' }}" />
 </form>
 {% endblock %}

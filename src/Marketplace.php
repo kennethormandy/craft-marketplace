@@ -534,6 +534,8 @@ class Marketplace extends BasePlugin
             $event->rules = array_merge($event->rules, [
                 'marketplace/account/create-login-link' => 'marketplace/account/create-login-link',
                 'marketplace/fees/new' => 'marketplace/fees/edit',
+                'marketplace/fees/<handle:{handle}>' => 'marketplace/fees/edit',
+
             ]);
         });
     }

@@ -63,7 +63,7 @@
        <tbody>
          {% for fee in fees %}
            <tr>
-             <th>{{ fee.name }}</th>
+             <th><a href="/admin/marketplace/fees/{{ fee.handle }}">{{ fee.name }}</a></th>
              <td><code>{{ fee.handle }}</code></td>
              <td>{{ fee.value }}</td>
              <td>{{ fee.type }}</td>
