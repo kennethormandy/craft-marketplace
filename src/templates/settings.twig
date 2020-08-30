@@ -51,29 +51,29 @@
    } %}
 
    {% if fees is defined and fees|length %}
-     <table>
-       <thead>
-         <tr>
-           <th>Name</th>
-           <th>Handle</th>
-           <th>Value</th>
-           <th>Type</th
-         </tr>
-       </thead>
-       <tbody>
-         {% for fee in fees %}
-           <tr {% if loop.index > 1 %}style="opacity: 0.5"{% endif %}>
-             <th><a href="/admin/marketplace/fees/{{ fee.handle }}">{{ fee.name }}</a></th>
-             <td><code>{{ fee.handle }}</code></td>
-             <td>{{ fee.value }}</td>
-             <td>{{ fee.type }}</td>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Handle</th>
+          <th>Value</th>
+          <th>Type</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for fee in fees %}
+          <tr {% if loop.index > 1 %}style="opacity: 0.5"{% endif %}>
+            <th><a href="/admin/marketplace/fees/{{ fee.handle }}">{{ fee.name }}</a></th>
+            <td><code>{{ fee.handle }}</code></td>
+            <td>{{ fee.value / 100 }} (stored as <code>{{ fee.value }}</code>)</td>
+            <td>{{ fee.type }}</td>
            </tr>
          {% endfor %}
-       </tbody>
-     </table>
-   {% else %}
-     <p>No fees set.</p>
-   {% endif %}
+      </tbody>
+    </table>
+    {% else %}
+      <p>No fees set.</p>
+    {% endif %}
    
    <p>
      <a href="/admin/marketplace/fees/new">Add a fee</a>
