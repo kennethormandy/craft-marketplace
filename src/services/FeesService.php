@@ -47,7 +47,7 @@ class FeesService extends Component
         }
         
         $rows = $this->_createFeeQuery()
-            ->orderBy(['handle' => SORT_ASC])
+            ->orderBy(['dateCreated' => SORT_ASC])
             ->all();
             
         foreach ($rows as $row) {
