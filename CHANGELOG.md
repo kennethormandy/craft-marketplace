@@ -5,6 +5,7 @@
 ### Added
 - Added ability to customize Fees
 - Added `buy.html` example template, with as few modifications as possible
+- Added [Craft License](https://github.com/kennethormandy/craft-marketplace/blob/main/LICENSE.md) file
 
 ## v0.5.0 - 2020-06-04
 
