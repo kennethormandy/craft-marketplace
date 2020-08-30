@@ -62,7 +62,7 @@
        </thead>
        <tbody>
          {% for fee in fees %}
-           <tr>
+           <tr {% if loop.index > 1 %}style="opacity: 0.5"{% endif %}>
              <th><a href="/admin/marketplace/fees/{{ fee.handle }}">{{ fee.name }}</a></th>
              <td><code>{{ fee.handle }}</code></td>
              <td>{{ fee.value }}</td>
@@ -76,7 +76,7 @@
    {% endif %}
    
    <p>
-     <a href="/admin/marketplace/fees/new">Add a new fee</a>
+     <a href="/admin/marketplace/fees/new">Add a fee</a>
    </p>
 
 {% endif %}
