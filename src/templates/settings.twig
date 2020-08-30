@@ -65,7 +65,7 @@
           <tr {% if loop.index > 1 %}style="opacity: 0.5"{% endif %}>
             <th><a href="/admin/marketplace/fees/{{ fee.handle }}">{{ fee.name }}</a></th>
             <td><code>{{ fee.handle }}</code></td>
-            <td>{{ fee.value / 100 }} (stored as <code>{{ fee.value }}</code>)</td>
+            <td>{{ fee.value / 100 }}</td>
             <td>{{ fee.type }}</td>
            </tr>
          {% endfor %}
