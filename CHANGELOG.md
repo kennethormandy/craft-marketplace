@@ -2,11 +2,15 @@
 
 ## Unreleased
 
+### Added
+- Added ability to customize Fees
+- Added `buy.html` example template, with as few modifications as possible
+
 ## v0.5.0 - 2020-06-04
 
 ### Added 
 - Added Lite edition config
-- Adds support for Digital Products on Craft v3.4 and Craft Commerce v3
+- Added support for Digital Products on Craft v3.4 and Craft Commerce v3
 
 ### Fixed
 - Fixed check when no orders or line items exist
