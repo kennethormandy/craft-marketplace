@@ -1,0 +1,26 @@
+actor: Tester
+paths:
+  tests: tests
+  log: tests/_output
+  data: tests/_data
+  support: tests/_support
+  envs: tests/_envs
+bootstrap: _bootstrap.php
+# params:
+#   - tests/.env
+modules:
+  config:
+    \craft\test\Craft:
+      configFile: "tests/_craft/config/test.php"
+      entryUrl: "https://craft-marketplace.ddev.site/index.php"
+      projectConfig: {}
+      migrations: []
+      # Empty array, or array of objects
+      plugins:
+        - { class: Marketplace, handle: "marketplace" }
+      cleanup: true
+      transaction: true
+      # This will clear the db, so the db should be configured
+      # to be the a different, test db, or remove this config
+      # to use your main db without clearing
+      dbSetup: { clean: true, setupCraft: true }
