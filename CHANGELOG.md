@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Added testing framework
+
 ## v0.6.0 - 2020-08-30
 
 ### Added
