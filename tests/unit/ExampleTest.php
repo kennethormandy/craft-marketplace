@@ -1,22 +1,27 @@
-<?php 
-class ExampleTest extends \Codeception\Test\Unit
+<?php
+
+namespace kennethormandy\marketplace\tests;
+
+use Codeception\Test\Unit;
+
+use UnitTester;
+use Craft;
+
+class ExampleTest extends Unit
 {
     /**
-     * @var \UnitTester
+     * @var UnitTester
      */
     protected $tester;
-    
-    protected function _before()
-    {
-    }
 
-    protected function _after()
+    public function testExample()
     {
-    }
+        Craft::$app->setEdition(Craft::Pro);
 
-    // tests
-    public function testSomeFeature()
-    {
+        codecept_debug('Craft set edition example test');
 
+        $this->assertSame(
+            Craft::Pro,
+            Craft::$app->getEdition());
     }
 }
