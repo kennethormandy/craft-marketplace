@@ -237,8 +237,8 @@ class Marketplace extends BasePlugin
               // Craft::info('EVENT_BEFORE_AUTHENTICATE', __METHOD__);
               if (
                 $event->context &&
-                $event->context['location'] &&
-                $event->context['location']['pathname'] &&
+                isset($event->context['location']) &&
+                isset($event->context['location']['pathname']) &&
                 $event->context['contextName'] === 'MarketplaceConnectButton') {
                   $loc = $event->context['location'];
                   $pathname = $loc['pathname'];
