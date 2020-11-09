@@ -370,7 +370,7 @@ class Marketplace extends BasePlugin
                         $purchasablePayee = User::find()->id($payeeId)->one();
                     } else {
                         Craft::info(
-                            'Stripe ' . $hardCodedApproach . ' no User Payee configured, paying to parent account.',
+                            '[Marketplace] Stripe ' . $hardCodedApproach . ' no User Payee configured, paying to parent account.',
                             __METHOD__
                         );
         
@@ -382,7 +382,7 @@ class Marketplace extends BasePlugin
         
                     if (!$payeeStripeAccountId) {
                         Craft::info(
-                            'Stripe ' . $hardCodedApproach . ' no User Payee Account ID, paying to parent account.',
+                            '[Marketplace] Stripe ' . $hardCodedApproach . ' no User Payee Account ID, paying to parent account.',
                             __METHOD__
                         );
         
