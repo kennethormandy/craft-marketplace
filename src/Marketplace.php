@@ -418,11 +418,7 @@ class Marketplace extends BasePlugin
                               $feeCounter++;
                             }
                             
-                            if (
-                              $liteApplicationFee &&
-                              is_int($liteApplicationFee->value) &&
-                              $liteApplicationFee->value > 0
-                            ) {
+                            if ($liteApplicationFee && (int)$liteApplicationFee->value > 0) {
                                 $liteApplicationFeeAmount = 0;
 
                                 if ($liteApplicationFee->type === 'price-percentage') {
@@ -430,15 +426,15 @@ class Marketplace extends BasePlugin
                                     $percent = ($liteApplicationFee->value / 100);
 
                                     // $10 subtotal * 12.5 = 125 cent application fee
-                                    $liteApplicationFeeAmount = $order->itemSubtotal * $percent;
+                                    $liteApplicationFeeAmount = (int)$order->itemSubtotal * $percent;
                                 } else if ($liteApplicationFee->type === 'flat-fee') {
 
                                     // Ex. $10 fee stored in DB as 1000 = 1000 cent fee
-                                    $liteApplicationFeeAmount = $liteApplicationFee->value;
+                                    $liteApplicationFeeAmount = (int)$liteApplicationFee->value;
                                 }
                                                                 
                                 // Must be a positive integer (in cents)
-                                if ($liteApplicationFeeAmount > 0) {
+                                if ($liteApplicationFeeAmount > 0 && is_int($liteApplicationFeeAmount)) {
                                     $e->request['application_fee_amount'] = $liteApplicationFeeAmount;
                                 }
                             }
