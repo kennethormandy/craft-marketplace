@@ -79,6 +79,14 @@ class Install extends Migration
                     'name' => $this->string(255)->notNull()->defaultValue(''),
                     'value' => $this->integer()->notNull(),
                     'type' => $this->string(255)->notNull()->defaultValue(''),
+
+                    // Not adding an order column here, because the fees should
+                    // all be applied against the order total, rather than
+                    // having any kind of order of operations. Ex. if you had
+                    // a $1.00 fee and a 10% fee on a $50 order, the fee is $6:
+                    // ($1) + ($50 * 0.1) = $6.00
+                    // It would NOT be $5.10, which would rquire an order:
+                    // ($50 + $1) * 0.1 = $5.10 
                 ]
             );
         }
