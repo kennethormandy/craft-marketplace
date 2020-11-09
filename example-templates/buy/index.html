@@ -150,7 +150,10 @@ Buy your hand-crafted free-range coastal artisan t-shirt.
 
     <form method="POST" class="add-to-cart-form">
         <input type="hidden" name="action" value="commerce/payments/pay">
-        <input type="hidden" name="gatewayId" value="2"> {# Change to your Stripe gateway ID #}
+
+        {# Marketplace – Change to your Stripe gateway ID #}
+        <input type="hidden" name="gatewayId" value="2">
+
         {{ redirectInput('buy/confirm?number={number}') }}
         {{ csrfInput() }}
     <div class="p-10 pt-8">
@@ -161,8 +164,10 @@ Buy your hand-crafted free-range coastal artisan t-shirt.
             <h2 class="text-lg">Your Payment Information</h2>
         </div>
         {% if showPaymentForm %}
+
+        {# Marketplace – Show Stripe form, not dummy form #}
         {{ cart.gateway.getPaymentFormHtml({})|raw }}
-        {# Craft Marketplace – Show Stripe form, not dummy form #}
+
         {#
         <div class="flex flex-wrap">
             <div class="w-3/4 md:w-1/2-almost mb-4 md:mb-0">
@@ -258,7 +263,7 @@ Buy your hand-crafted free-range coastal artisan t-shirt.
     </div>
 </div> <!-- end list-items -->
 
-{# Craft Marketplace #}
+{# Marketplace #}
 <div class="my-4">
   {% set productId = cart.lineItems[0].snapshot.product.id %}
   {% set product = craft.products({ id: productId }).one() %}
