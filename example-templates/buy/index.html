@@ -155,8 +155,14 @@ Buy your hand-crafted free-range coastal artisan t-shirt.
     <form method="POST" class="add-to-cart-form">
         <input type="hidden" name="action" value="commerce/payments/pay">
 
-        {# Marketplace – Change to your Stripe gateway ID #}
-        <input type="hidden" name="gatewayId" value="2">
+        {# Marketplace – Use Stripe instead of Dummy Payment Gateway #}
+        {% set stripeGateway = null %}
+        {% for gateway in craft.commerce.gateways.allCustomerEnabledGateways %}
+          {% if className(gateway) == 'craft\\commerce\\stripe\\gateways\\PaymentIntents' %}
+            {% set stripeGateway = gateway %}
+          {% endif %}
+        {% endfor %}
+        <input type="hidden" name="gatewayId" value="{{ stripeGateway ? stripeGateway.id : 1 }}">
 
         {{ redirectInput('buy/confirm?number={number}') }}
         {{ csrfInput() }}
@@ -169,10 +175,11 @@ Buy your hand-crafted free-range coastal artisan t-shirt.
         </div>
         {% if showPaymentForm %}
 
-        {# Marketplace – Show Stripe form, not dummy form #}
-        {{ cart.gateway.getPaymentFormHtml({})|raw }}
+        {# Marketplace – Show Stripe form, not Dummy form #}
+        {% if stripeGateway %}
+          {{ stripeGateway.getPaymentFormHtml({})|raw }}
+        {% else %}
 
-        {#
         <div class="flex flex-wrap">
             <div class="w-3/4 md:w-1/2-almost mb-4 md:mb-0">
                 <label for="payment" class="block text-sm mb-2">First Name</label>
@@ -208,7 +215,7 @@ Buy your hand-crafted free-range coastal artisan t-shirt.
                 {% if paymentForm is defined and paymentForm.getFirstError('year') %}<span class="text-red-500">{{ paymentForm.getFirstError('year') }}</span>{% endif %}
             </div>
         </div>
-        #}
+        {% endif %}
         {% endif %}
     </div>
     <div class="pl-10 pr-10 pt-5 pb-0">
