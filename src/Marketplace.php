@@ -273,10 +273,12 @@ class Marketplace extends BasePlugin
         * http://www.yiiframework.com/doc-2.0/guide-runtime-logging.html
         */
         
-        // Could provide more options around this, ex. who is responsible for
-        // the refund, the platform or connected account?
-        // Refund the application fee too? Etc.
-        // TODO Actually want to do this after, but trying to block it right now
+        // Full and Parial refunds are supported here.
+        // TODO Could provide more options around this, ex: Who is responsible
+        // for the refund, the platform or connected account? Should the
+        // platform application fee be refunded? (Currently, it is not, so the
+        // connected account ends up paying the platform for the refund—which
+        // might be appropriate in some situations, but not others. 
         Event::on(
             Payments::class,
             Payments::EVENT_BEFORE_REFUND_TRANSACTION,
