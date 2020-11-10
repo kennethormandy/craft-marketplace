@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 500 500">
+  <defs>
+    <style>
+      .a {
+        fill: none;
+      }
+
+      .b {
+        fill: #897391;
+      }
+
+      .c {
+        clip-path: url(#a);
+      }
+
+      .d {
+        fill: #563d5e;
+      }
+
+      .e {
+        fill: #422f4c;
+      }
+
+      .f {
+        fill: #fff;
+      }
+
+      .g {
+        fill: #d8d0dd;
+      }
+    </style>
+    <clipPath id="a">
+      <circle class="a" cx="250" cy="250" r="250"/>
+    </clipPath>
+  </defs>
+  <g class="c">
+    <circle class="b" cx="250" cy="250" r="250"/>
+    <polyline class="d" points="305.56 186.25 305.56 316.25 240.74 316.25 407.41 316.25 55.56 316.25 55.56 186.25 185.19 316.25 296.3 186.25"/>
+    <polygon class="e" points="296.3 186.25 305.56 186.25 305.56 196.18 206.03 316.6 185.19 316.25 296.3 186.25"/>
+    <polygon class="f" points="111.11 316.25 0 316.25 55.56 256.67 111.11 316.25"/>
+    <polygon class="f" points="482.29 196.18 491.55 186.25 482.29 186.25 407.41 186.25 388.89 186.25 305.56 186.25 296.3 186.25 305.56 196.18 305.56 316.25 388.89 316.25 482.29 316.25 491.55 316.25 482.29 306.32 482.29 196.18"/>
+    <rect class="e" y="316.25" width="500" height="185"/>
+    <polygon class="f" points="263.36 283.22 166.67 186.25 157.41 186.25 55.55 186.25 46.3 186.25 111.11 241.96 185.19 316.25 263.36 316.25 263.36 283.22"/>
+    <rect class="e" x="132.69" y="296.25" width="15" height="20"/>
+    <rect class="g" x="386.42" y="296.25" width="15" height="20"/>
+    <rect class="g" x="49.16" y="296.25" width="15" height="20"/>
+    <rect class="g" x="314.63" y="271.11" width="49.23" height="12.57"/>
+    <rect class="g" x="369.31" y="271.11" width="49.23" height="12.57"/>
+    <rect class="g" x="423.99" y="271.11" width="49.23" height="12.57"/>
+    <rect class="g" x="314.63" y="252.38" width="49.23" height="12.57"/>
+    <rect class="g" x="423.99" y="252.38" width="49.23" height="12.57"/>
+    <rect class="g" x="369.31" y="252.38" width="49.23" height="12.57"/>
+    <rect class="g" x="314.63" y="233.65" width="49.23" height="12.57"/>
+    <rect class="g" x="423.99" y="233.65" width="49.23" height="12.57"/>
+    <rect class="g" x="369.31" y="233.65" width="49.23" height="12.57"/>
+    <rect class="g" x="314.63" y="214.92" width="49.23" height="12.57"/>
+    <rect class="g" x="369.31" y="214.92" width="49.23" height="12.57"/>
+    <rect class="g" x="423.99" y="214.92" width="49.23" height="12.57"/>
+    <rect class="g" x="314.63" y="196.18" width="49.23" height="12.57"/>
+    <rect class="g" x="423.99" y="196.18" width="49.23" height="12.57"/>
+    <rect class="g" x="369.31" y="196.18" width="49.23" height="12.57"/>
+    <circle class="e" cx="73.54" cy="238.2" r="9.39"/>
+  </g>
+</svg>
