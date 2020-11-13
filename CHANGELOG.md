@@ -2,8 +2,15 @@
 
 ## Unreleased
 
+## v1.0.0 - 2020-11-13
+
+### Added
+- Adds new README, images, and plugin icon
 - Added testing framework
 - Added latest changes from Craft Commerce to example template
+- Added Stripe PHP v7 to allowed version range, for latest Stripe Payment Gateway plugin
+
+### Fixed
 - Fixed use of connection button from OAuth plugin settings page
 
 ## v0.6.0 - 2020-08-30

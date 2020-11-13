@@ -1,8 +1,8 @@
-<img src="./src/icon.svg" alt="Craft Marketplace for Craft Commerce icon" width="150" />
+<img src="./src/icon.svg" alt="Marketplace for Craft Commerce icon" width="150" />
 
 # Marketplace for Craft Commerce
 
-Make your Craft ecommerce site into a Marketplace: add payees for different products, charge a fee for your platform, and handle the payouts automatically via Stripe Connect.
+Make your Craft ecommerce site into a Marketplace: add payees to products, charge a fee for your platform, and handle payouts automatically via Stripe Connect.
 
 Marketplace Lite for Craft Commerce Lite now available!
 
