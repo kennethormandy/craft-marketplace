@@ -16,45 +16,32 @@ Marketplace Lite for Craft Commerce Lite now available!
 
 # Documentation
 
-1. Prerequisites <!-- Maybe keep the prereqs as a paragraph in the install section, and then move the Stripe Connect app part as the first item under configure? -->
-   - Create a Stripe Connect app in Test Mode
-2. Install
-3. Configure
-   - OAuth 2.0 Client
-   - <!-- Maybe include Connect vs. Express here? -->
-   - Redirect from Stripe to Craft CMS
-   - Configure Marketplace for Craft Commerce
-4. Add Marketplace fields
-5. General use
-   - Add a new user
-   - Add the User as a Payee on a Product
-   - Add a Fee for your platform
-   - Customize the Buy Template
-6. Further Reading <!-- Maybe move those two sections as Further Reading that we link to instead? -->
-   - Stripe Connect vs. Stripe Connect Express
-   - Creating a Stripe Connect app
+1. Install
+2. Configure
+  - Create a Stripe Connect app in Test Mode
+  - OAuth 2.0 Client
+  - Redirect from Stripe to Craft CMS
+  - Configure Marketplace for Craft Commerce
+3. Add Marketplace fields
+4. General use
+  - Add a new user
+  - Add the User as a Payee on a Product
+  - Add a Fee for your platform
+  - Customize the Buy Template
 
-## Prerequisites
+<!-- Maybe move those two sections as Further Reading that we link to instead?
 
-To getting started, you should already have a Stripe account, and Craft Commerce the Stripe for Craft Commerce Payment Gateway installed in Craft CMS.
-
-If you haven’t already, you’ll also need to create a new Stripe Connect application while in Test mode in your Stripe Dashboard.
-
-### Create a Stripe Connect app in Test mode
-
-<!--
-
-![](https://placehold.it/800x600)
+6. Further Reading
+  - Creating a Stripe Connect app (either in more detail, so we can skip over that in the intro, or advanced settings like the design assets)
+  - Stripe Connect vs. Stripe Connect Express
 
 -->
 
-<!-- TODO Add basic instructions for getting your Stripe Connect key from the Stripe Dashboard -->
-
-When you are ready to go to production, you’ll need to do this again with your Stripe Dashboard set to Live mode.
-
 ## Install
 
-Next, you’ll install the Marketplace for Craft Commerce, and the OAuth 2.0 Client that it uses.
+To getting started, you should already have a Stripe account, and Craft Commerce the Stripe for Craft Commerce Payment Gateway installed in Craft CMS.
+
+First, you’ll install the Marketplace for Craft Commerce, and the OAuth 2.0 Client that it uses:
 
 ![](./docs/images/marketplace-docs-1.png)
 
@@ -71,9 +58,24 @@ composer require kennethormandy/craft-marketplace
 ./craft install/plugin marketplace
 ```
 
-Next, you can configure the OAuth Client plugin.
 
 ## Configure
+
+If you haven’t already, you’ll also need to create a new Stripe Connect application while in Test mode in your Stripe Dashboard.
+
+### Create a Stripe Connect app in Test mode
+
+<!--
+
+![](https://placehold.it/800x600)
+
+-->
+
+<!-- TODO Add basic instructions for getting your Stripe Connect key from the Stripe Dashboard -->
+
+When you are ready to go to production, you’ll need to do this again with your Stripe Dashboard set to Live mode.
+
+Now, you can configure the OAuth Client plugin to use with your new Stripe Connect settings.
 
 ### OAuth 2.0 Client
 
@@ -112,6 +114,7 @@ Now that your OAuth App has been created, you can select it as the app to use, i
 
 You can also set up a Fee now, or leave it blank. This is described later in [Add a Fee](#add-a-fee)
 
+
 ## Add Marketplace fields
 
 Marketplace contains two new fields for you to use:
@@ -132,6 +135,7 @@ For example, using the Clothing products that come with a fresh Craft Commerce i
 You’ll also want to create a new Marketplace Connect Button field, and add it as a new field for Users. For example:
 
 ![](./docs/images/marketplace-docs-5.png)
+
 
 ## General use
 
