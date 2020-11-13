@@ -1,29 +1,69 @@
-# Marketplace
+<img src="./src/icon.svg" alt="Craft Marketplace for Craft Commerce icon" width="150" />
+
+# Craft Marketplace<br/><small>for Craft Commerce</small>
+
+Make your Craft ecommerce site into a Marketplace: add payees for different products, charge a fee for your platform, and handle the payouts automatically via Stripe Connect.
+
+Marketplace Lite for Craft Commerce Lite now available!
 
 ## Features
 
-- Includes two new fields: Marketplace Button and Marketplace Payee
-- By adding the Marketplace Button to User profiles, users can register for Stripe Connect Express (or, in theory, regular), via the Craft OAuth plugin, and their account ID will be stored
-- By adding the Marketplace Payee field to products, you can say a certain product should be paid to a user
-- For single line-item orders, when paying, the order will be paid to the payee
-- There is a \$0 transaction fee applied, but that is something we will expose via settings
-- The charge is not made `on_behalf_of` users, but we could decide to expose that via a setting
-- After authorizing, users can click a button in their profile and see their payment schedule
-- Users can see all orders where the first/only line item has them as the payee
-- When refunding an order, the associated transfer is also reversed from the connected account
+- For Craft Commerce Lite
+- For Stripe Payment Gateway
+- Set Users as Payees on Products
+- Charge a flat or percent Fee
+- Automatically split payments
 
-## Getting started
+# Documentation
 
-First, require the plugin and its main dependency through the Craft CMS dashboard, or by using the command line:
+1. Prerequisites <!-- Maybe keep the prereqs as a paragraph in the install section, and then move the Stripe Connect app part as the first item under configure? -->
+   - Create a Stripe Connect app in Test Mode
+2. Install
+3. Configure
+   - OAuth 2.0 Client
+   - <!-- Maybe include Connect vs. Express here? -->
+   - Redirect from Stripe to Craft CMS
+   - Configure Marketplace for Craft Commerce
+4. Add Marketplace fields
+5. General use
+   - Add a new user
+   - Add the User as a Payee on a Product
+   - Add a Fee for your platform
+   - Customize the Buy Template
+6. Further Reading <!-- Maybe move those two sections as Further Reading that we link to instead? -->
+   - Stripe Connect vs. Stripe Connect Express
+   - Creating a Stripe Connect app
+
+## Prerequisites
+
+To getting started, you should already have a Stripe account, and Craft Commerce the Stripe for Craft Commerce Payment Gateway installed in Craft CMS.
+
+If you haven’t already, you’ll also need to create a new Stripe Connect application while in Test mode in your Stripe Dashboard.
+
+### Create a Stripe Connect app in Test mode
+
+<!--
+
+![](https://placehold.it/800x600)
+
+-->
+
+<!-- TODO Add basic instructions for getting your Stripe Connect key from the Stripe Dashboard -->
+
+When you are ready to go to production, you’ll need to do this again with your Stripe Dashboard set to Live mode.
+
+## Install
+
+Next, you’ll install the Marketplace for Craft Commerce, and the OAuth 2.0 Client that it uses.
+
+![](./docs/images/marketplace-docs-1.png)
+
+This can be done through the Craft CMS dashboard, or using the command line:
 
 ```sh
 # Require Marketplace plugin
 composer require kennethormandy/craft-marketplace
-```
 
-…and, install the plugins:
-
-```sh
 # Install OAuth Client plugin
 ./craft install/plugin oauthclient
 
@@ -33,28 +73,148 @@ composer require kennethormandy/craft-marketplace
 
 Next, you can configure the OAuth Client plugin.
 
-### Add Stripe OAuth app
+## Configure
 
-1. Register new app. The handle must be `stripe` (this is configurable through a global setting now, but needs to be changed to a dropdown based on the available OAuth apps. You should be able to select the correct OAuth App provider from the settings, and ideally create it with the correct config in the first place). The name is up to you—probably “Stripe” or “Stripe Connect.”
-2. Choose either “Stripe Connect” or “Stripe Connect Express” from the dropdown. They will be available in the dropdown as long as you’ve installed the Marketplace plugin too.
+### OAuth 2.0 Client
+
+Register a new OAuth App:
+
+![](./docs/images/marketplace-docs-3.png)
+
+<table>
+<thead>
+<tr><th>Field</th><th>Value</th><th>Notes</th></tr>
+</thead>
+<tbody>
+<tr><td>Name</td><td>Stripe Connect</td><td>…or whatever name you’d like</td></tr>
+<tr><td>Handle</td><td><code>stripeConnect</code></td><td>…or whatever name you’d like</td></tr>
+<tr><td>Provider</td><td>Stripe Connect Express</td><td></td></tr>
+<tr><td>Client ID</td><td>Ex. <code>ca_AaBbCc…</code></td><td>Your Stripe Connect Client ID, from the Stripe Connect settings in the Stripe Dashboard.</td></tr>
+<tr><td>Client Secret</td><td>Ex. <code>sk_AaBbCc…</code> or <code>sk_test_AaBbCc…</code></td><td>Your regular Stripe Secret Key from the Stripe Dashboard.</td></tr>
+</tbody>
+</table>
+
+You’ll probably want to make your Stripe Connect Client ID and your Stripe Secret Key into [environment variables](https://craftcms.com/docs/3.x/config/#environmental-configuration). Then, you can easily switch from [Stripe Test keys to Live keys](https://stripe.com/docs/keys#test-live-modes), depending on the environment.
+
+### Redirect from Stripe to Craft CMS
+
+After saving your OAuth App, copy the Redirect URI from the “Setup Info.” You’ll want to add this to your Stripe Connect settings in the Stripe Dashboard. At the time of writing, this is stored in the Stripe Dashboard under: Settings → Connect settings → Integration.
+
+![](./docs/images/marketplace-docs-4.png)
+
+Now, Stripe will be able to redirect sellers on your platform back to Craft CMS after saving their Stripe details.
+
+### Configure Marketplace for Craft Commerce
+
+Now that your OAuth App has been created, you can select it as the app to use, in the Marketplace for Craft Commerce settings. You’ll also need to fill in your Stripe Secret Key here too.
+
+![](./docs/images/marketplace-docs-7.png)
+
+You can also set up a Fee now, or leave it blank. This is described later in [Add a Fee](#add-a-fee)
+
+## Add Marketplace fields
+
+Marketplace contains two new fields for you to use:
+
+- **Marketplace Payee**, which makes it possible to specify the primary Payee on a given Craft Commerce Product.
+- **Marketplace Connect Button**, gives users a button to connect and review their payout details
+
+You’ll want to create a new Marketplace Payee field, and add it as a new field on the relevant Product Types.
+
+![](./docs/images/marketplace-docs-6.png)
+
+For example, using the Clothing products that come with a fresh Craft Commerce install, you’d add the field to Commerce → System Settings → Product Types → Clothing → Product Fields:
+
+![](./docs/images/marketplace-docs-10.png)
+
+<!-- TODO Had  a better screenshot for this, of modifying the Commerce Product fields. -->
+
+You’ll also want to create a new Marketplace Connect Button field, and add it as a new field for Users. For example:
+
+![](./docs/images/marketplace-docs-5.png)
+
+## General use
+
+<!-- This is a bad title -->
+
+At this point, everything necessary has been configured. The following example will use the default Craft Commerce products to finish setting up the site with Payees, a fee that the Platform charges, and some optional modifications to the default Craft Commerce Twig templates.
+
+### Add a new user
+
+- Add a new user
+- Give that user permissions to login to Craft, and to auth with your new Stripe Connect OAuth app
+
+<!-- There is a screenshot for this, but listing permissions is maybe more useful anyway -->
+
+Minimum necessary permissions:
+
+- **General** Access the control panel
+- **OAuth Client** Login to Apps
+- **OAuth Client** Login to Apps: Login to “Stripe Connect” app (or whatever you called your Stripe Connect app)
+
+Login as that user (When you connect accounts, right now the associated token is always based on the logged in user account, rather than the profile of the person you are looking at. ie. you have to “Login as user” to test connecting their account, and you shouldn’t be able to see this field (or it should be disabled) unless you are looking at your own profile).
+
+![](./docs/images/marketplace-docs-9.png)
+
+- Connect a new account, using Stripe Connect Express
+- You should be redirected back to your own Craft CMS application, per [Redirect from Stripe to Craft CMS](#redirect-from-stripe-to-craft-cms).
+
+### Add the User as a Payee on a Product
+
+Let’s imagine this new user makes one of the Clothing Product we have on our store, and we want them to be paid for it. Now, we can go to that Product, and set them as the Payee:
+
+![](./docs/images/marketplace-docs-10.png)
+
+### Add a Fee for your platform
+
+![](./docs/images/marketplace-listing-5.png)
+
+### Customize the Buy Template
+
+Everything is configured! If you have filled in some content and have:
+
+- The Stripe Payment Gateway in Test mode
+- At least one Craft CMS User connected using Stripe, and
+- At least one Commerce Product with that user set as a Payee
+
+…you can run through test purchases and see the results in your Stripe dashboard.
+
+Your Craft Commerce templates don’t _require_ any modifications to handle this, but depending on the kind of store or marketplace your are running, you might decide to make some. For example, you might show the Payee to the end cusomter. Imagine “Jane Example” designed “The Last Knee-High” product that comes pre-filled on Craft Commerce, and you want to show them in the default Craft Commerce buy templates:
+
+![](./docs/images/marketplace-docs-11.png)
+
+The templates stored in `example-templates` in this repository are the minimum changes to use Marketplace with a default Craft Commerce install. The template changes are only to switch from using the Dummy Payment Gateway, from the default install, to Stripe, and to show the customer who the Payee is, which is optional.
+
+As long as you’re using the Stripe Payment Gateway already, none of these changes are required to use Marketplace.
+
+<!-- TODO Not sure whether I’ll include this yet or not
+
+## Stripe Connect versus Stripe Connect Express
+
+Choose either “Stripe Connect” or “Stripe Connect Express” from the dropdown. They will be available in the dropdown as long as you’ve installed the Marketplace plugin too.
   - If the customer’s transaction appears to be directly with the payee, and the payee is transparently responsible for refunds and support, you will probably want to use “Stripe Connect”
   - If the customer’s transaction is with the platform, and would expect to come to the platform for refunds and support, you will probably want to use “Stripe Connect Express”
   - This is my own quick summary. To make your choice, follow Stripe’s extensive documentation and comparison chart: https://stripe.com/docs/connect/accounts
   - This is inconvenient to change once you’ve started connecting real accounts in live mode, but easy enough to change while in development
-3. Set the Client ID (the specific Stripe Connect Client ID from the Stripe Connect settings) and the Client Secret (your normal Stripe Secret Key). Typically, you’d want to use environment variables for these, so they can easily be switched between Stripe’s Test and Live modes in development versus production
-4. Set scope to `read_only` or `read_write` (`read_only` seems sufficient with what I’ve tested so far, but might need `read_write` to not just read existing transactions)
-5. Add the Redirect URI from the “Setup Info” tab to your Stripe Connect settings on Stripe. At the time of writing, this is stored in the Stripe Dashboard under: Settings → Connect settings → Integration. Stripe can redirect users back to your application after connecting with the OAuth flow.
 
-### Add Stripe button field to user profiles
+-->
 
-- Add a new field that uses the Marketplace Button field type
-- Add this to user profiles as appropriate for your platform
-- When you connect accounts, right now the associated token is always based on the logged in user account, rather than the profile of the person you are looking at. ie. you have to “Login as user” to test connecting their account, and you shouldn’t be able to see this field (or it should be disabled) unless you are looking at your own profile
+<!--
 
-~~In the future, this plugin might automatically install `venveo/craft-oauthclient` and `adam-paterson/oauth2-stripe` for you, but for now it remains a separate plugin you install yourself, and then Marketplace uses.~~ These have been customized for the moment. Also, it is possible to create a OAuth App programatically with `venveo/craft-oauthclient`, so we could do that too. But we’d still need the user’s Stripe environment variables anyway.
+# Promo image captions
 
-And this also means if you wanted to do any additional customization, the OAuth flow is already handled for you. You still get all the benefits of the parent plugin.
+Add Marketplace Buttons to User profiles, so Users or User Groups that you want to be paid out by your platform can up their payment information. This is managed by Stripe Connect Express, and facilitated for you by the Marketplace plugin.
 
-## License
+Users who you want to become Payees will be walked through the Stripe on boarding process, when the click the connection button. Once their account is authorized, this will show in their Craft CMS profile, and in your Stripe Dashboard.
 
-See the [LICENSE.md](./LICENSE.md) file.
+Here, a User has connected their account with Stripe, and you’ve indicated they should be paid for a $10 Craft Commerce product, with your platform taking a $1.23 fee (incl. Stripe’s standard fee you’d pay on any transaction).
+
+Once a User has successfully set up their connection to your platform via Stripe, they will be able to open a minimal Stripe Dashboard to revise their account information, see their payout schedule, etc.
+
+Marketplace gives you another new field to set Payees on Craft Commerce Products (and Digital Products). Indicate that a certain User should be paid out when a Customer purchases that Product.
+
+Configure flat-rate or percentage fees for your platform to make, out of the transaction total.
+
+If it makes sense for your platform, optionally display Payee information to your Customers. There is a full demo of setting this entire flow up with the default Craft Commerce Lite template included in the Marketplace documentation. The only code necessary is if you want to modify your Twig templates.
+
+-->
