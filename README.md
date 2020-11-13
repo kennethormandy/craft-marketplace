@@ -16,18 +16,18 @@ Marketplace Lite for Craft Commerce Lite now available!
 
 # Documentation
 
-1. Install
-2. Configure
-  - Create a Stripe Connect app in Test Mode
-  - OAuth 2.0 Client
-  - Redirect from Stripe to Craft CMS
-  - Configure Marketplace for Craft Commerce
-3. Add Marketplace fields
-4. General use
-  - Add a new user
-  - Add the User as a Payee on a Product
-  - Add a Fee for your platform
-  - Customize the Buy Template
+1. [Install](#install)
+2. [Configure](#configure)
+    - [Create a Stripe Connect app](#create-a-stripe-connect-app)
+    - [OAuth 2.0 Client](#oauth-20-client)
+    - [Redirect from Stripe to Craft CMS](#redirect-from-stripe-to-craft-cms)
+    - [Configure Marketplace for Craft Commerce](#configure-marketplace-for-craft-commerce)
+3. [Add Marketplace fields](#add-marketplace-fields)
+4. [General use](#general-use)
+    - [Add a new user](#add-a-new-user)
+    - [Add the User as a Payee on a Product](#add-the-user-as-a-payee-on-a-product)
+    - [Add a Fee for your platform](#add-a-fee-for-your-platform)
+    - [Customize the Buy Template](#customize-the-buy-template)
 
 <!-- Maybe move those two sections as Further Reading that we link to instead?
 
@@ -63,7 +63,7 @@ composer require kennethormandy/craft-marketplace
 
 If you haven’t already, you’ll also need to create a new Stripe Connect application while in Test mode in your Stripe Dashboard.
 
-### Create a Stripe Connect app in Test mode
+### Create a Stripe Connect app
 
 <!--
 
