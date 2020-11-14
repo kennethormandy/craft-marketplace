@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## v1.0.1 - 2020-11-13
+
+- Fixes install of `oauth2-stripe` dependency
+
 ## v1.0.0 - 2020-11-13
 
 ### Added
