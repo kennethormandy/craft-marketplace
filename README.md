@@ -1,10 +1,10 @@
-<img src="./src/icon.svg" alt="Marketplace for Craft Commerce icon" width="150" />
+<a href="https://plugins.craftcms.com/marketplace" target="_blank"><img src="./src/icon.svg" alt="Marketplace for Craft Commerce icon" width="150" /></a>
 
 # Marketplace for Craft Commerce
 
 Make your Craft ecommerce site into a Marketplace: add payees to products, charge a fee for your platform, and handle payouts automatically via Stripe Connect.
 
-Marketplace Lite for Craft Commerce Lite now available!
+[Marketplace Lite for Craft Commerce Lite now available!](https://plugins.craftcms.com/marketplace)
 
 ## Features
 
