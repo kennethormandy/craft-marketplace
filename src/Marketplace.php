@@ -349,27 +349,27 @@ class Marketplace extends BasePlugin
                     if (!($order && $order->lineItems && sizeof($order->lineItems) >= 1)) {
                         return;
                     }
-        
+                    
                     // Only supports one line item right now,
                     // otherwise we’d probably need different
                     // Stripe transfer approach
                     $lineItemOnly = $order->lineItems[0];
-        
+                    
                     $purchasable = $lineItemOnly->purchasable;
                     $payeeHandle = $this->handlesService->getPayeeHandle();
                     if (isset($purchasable[$payeeHandle]) && $purchasable[$payeeHandle] !== null) {
                         if (is_numeric($purchasable[$payeeHandle])) {
                           // Craft Commerce v3 Digital Products
-                          $payeeId = $purchasable[$payeeHandle];
-                          $purchasablePayee = User::find()->id($payeeId)->one();
+                          $payeeUserId = $purchasable[$payeeHandle];
+                          $purchasablePayeeUser = User::find()->id($payeeUserId)->one();
                         } else {
                           // Craft Commerce v2 Digital Products?
-                          $purchasablePayee = $purchasable[$payeeHandle]->one();
+                          $purchasablePayeeUser = $purchasable[$payeeHandle]->one();
                         }
                     } elseif (isset($purchasable->product[$payeeHandle]) && $purchasable->product[$payeeHandle] !== null) {
                         // All other products
-                        $payeeId = $purchasable->product[$payeeHandle];
-                        $purchasablePayee = User::find()->id($payeeId)->one();
+                        $payeeUserId = $purchasable->product[$payeeHandle];
+                        $purchasablePayeeUser = User::find()->id($payeeUserId)->one();
                     } else {
                         Craft::info(
                             '[Marketplace] Stripe ' . $hardCodedApproach . ' no User Payee configured, paying to parent account.',
@@ -379,8 +379,8 @@ class Marketplace extends BasePlugin
                         return;
                     }
         
-                    $stripeConnectHandle = $this->handlesService->getButtonHandle($purchasablePayee);
-                    $payeeStripeAccountId = $purchasablePayee[$stripeConnectHandle];
+                    $stripeConnectHandle = $this->handlesService->getButtonHandle($purchasablePayeeUser);
+                    $payeeStripeAccountId = $purchasablePayeeUser[$stripeConnectHandle];
         
                     if (!$payeeStripeAccountId) {
                         Craft::info(
