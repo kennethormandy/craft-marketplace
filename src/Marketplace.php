@@ -47,6 +47,7 @@ use kennethormandy\marketplace\controllers\AccountController;
 use kennethormandy\marketplace\controllers\FeesController;
 use kennethormandy\marketplace\services\HandlesService;
 use kennethormandy\marketplace\services\FeesService;
+use kennethormandy\marketplace\services\PayeesService;
 use kennethormandy\marketplace\models\Settings;
 
 use Stripe\Stripe;
@@ -94,6 +95,7 @@ class Marketplace extends BasePlugin
             // TODO Rename to just “handles” for nicer API
             'handlesService' => HandlesService::class,
             'fees' => FeesService::class,
+            'payees' => PayeesService::class,
         ]);
         
         Craft::info(
@@ -354,33 +356,9 @@ class Marketplace extends BasePlugin
                     // otherwise we’d probably need different
                     // Stripe transfer approach
                     $lineItemOnly = $order->lineItems[0];
-                    
                     $purchasable = $lineItemOnly->purchasable;
-                    $payeeHandle = $this->handlesService->getPayeeHandle();
-                    if (isset($purchasable[$payeeHandle]) && $purchasable[$payeeHandle] !== null) {
-                        if (is_numeric($purchasable[$payeeHandle])) {
-                          // Craft Commerce v3 Digital Products
-                          $payeeUserId = $purchasable[$payeeHandle];
-                          $purchasablePayeeUser = User::find()->id($payeeUserId)->one();
-                        } else {
-                          // Craft Commerce v2 Digital Products?
-                          $purchasablePayeeUser = $purchasable[$payeeHandle]->one();
-                        }
-                    } elseif (isset($purchasable->product[$payeeHandle]) && $purchasable->product[$payeeHandle] !== null) {
-                        // All other products
-                        $payeeUserId = $purchasable->product[$payeeHandle];
-                        $purchasablePayeeUser = User::find()->id($payeeUserId)->one();
-                    } else {
-                        Craft::info(
-                            '[Marketplace] Stripe ' . $hardCodedApproach . ' no User Payee configured, paying to parent account.',
-                            __METHOD__
-                        );
-        
-                        return;
-                    }
-        
-                    $stripeConnectHandle = $this->handlesService->getButtonHandle($purchasablePayeeUser);
-                    $payeeStripeAccountId = $purchasablePayeeUser[$stripeConnectHandle];
+
+                    $payeeStripeAccountId = $this->payees->getGatewayId($purchasable);
         
                     if (!$payeeStripeAccountId) {
                         Craft::info(
