@@ -352,13 +352,7 @@ class Marketplace extends BasePlugin
                         return;
                     }
                     
-                    // Only supports one line item right now,
-                    // otherwise we’d probably need different
-                    // Stripe transfer approach
-                    $lineItemOnly = $order->lineItems[0];
-                    $purchasable = $lineItemOnly->purchasable;
-
-                    $payeeStripeAccountId = $this->payees->getGatewayId($purchasable);
+                    $payeeStripeAccountId = $this->payees->getGatewayId($order);
         
                     if (!$payeeStripeAccountId) {
                         Craft::info(
