@@ -19,7 +19,7 @@ class PayeesService extends Component
         parent::init();
     }
     
-    public function getGatewayId(Order $order) {
+    public function getGatewayAccountId(Order $order) {
       // TODO Pro, more than one line item allowed, probably all with
       //      the same payee at first. Similar TODO in Marketplace.php
       // Only supports one line item right now,

@@ -352,7 +352,7 @@ class Marketplace extends BasePlugin
                         return;
                     }
                     
-                    $payeeStripeAccountId = $this->payees->getGatewayId($order);
+                    $payeeStripeAccountId = $this->payees->getGatewayAccountId($order);
         
                     if (!$payeeStripeAccountId) {
                         Craft::info(
