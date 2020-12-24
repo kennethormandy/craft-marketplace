@@ -11,4 +11,5 @@ use craft\events\ModelEvent;
 class PayeesEvent extends ModelEvent
 {
   public $order;
+  public $gatewayAccountId;
 }

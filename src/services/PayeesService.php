@@ -27,6 +27,9 @@ class PayeesService extends Component
       // Stripe transfer approach
       $lineItemOnly = $order->lineItems[0];
       $purchasable = $lineItemOnly->purchasable;
+      
+      $event = new PayeesEvent();
+      $event->order = $order;
 
       $payeeHandle = Marketplace::$plugin->handlesService->getPayeeHandle();
       if (isset($purchasable[$payeeHandle]) && $purchasable[$payeeHandle] !== null) {
@@ -51,29 +54,20 @@ class PayeesService extends Component
           return;
       }
       
-      if ($this->hasEventHandlers(self::EVENT_AFTER_DETERMINE_PAYEES)) {
-          $event = new PayeesEvent([ 'order' => $order ]);
-          $result = $this->trigger(self::EVENT_AFTER_DETERMINE_PAYEES, $event);
-          
-          // TODO Check type is User
-          // TODO Allow return of User, or string which we treat as the $stripeConnectHandle?
-          if (isset($result)) {
-            $purchasablePayeeUser = $result;
-          }
-      }
-
       $stripeConnectHandle = Marketplace::$plugin->handlesService->getButtonHandle($purchasablePayeeUser);
-
-      // TODO Deal with a missing handle better, since you
-      //      could have used the Event to give us a User that
-      //      doesn’t actually have the field
-
       $payeeStripeAccountId = $purchasablePayeeUser[$stripeConnectHandle];
+      
+      $event->gatewayAccountId = $payeeStripeAccountId;
+
+      if ($this->hasEventHandlers(self::EVENT_AFTER_DETERMINE_PAYEES)) {
+          $this->trigger(self::EVENT_AFTER_DETERMINE_PAYEES, $event);
+      }
 
       // There is another conditional in Marketplace.php rather than
       // here that notifies if $payeeStripeAccountId is missing—
       // should that live in the service instead?
 
-      return $payeeStripeAccountId;
+      // We use the event here so an end user can override this
+      return $event->gatewayAccountId;
     }
 }
