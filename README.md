@@ -28,6 +28,8 @@ Make your Craft ecommerce site into a Marketplace: add payees to products, charg
     - [Add the User as a Payee on a Product](#add-the-user-as-a-payee-on-a-product)
     - [Add a Fee for your platform](#add-a-fee-for-your-platform)
     - [Customize the Buy Template](#customize-the-buy-template)
+5. [Advanced use](#advanced-use)
+    - [Events](#events)  
 
 <!-- Maybe move those two sections as Further Reading that we link to instead?
 
@@ -190,6 +192,32 @@ Your Craft Commerce templates don’t _require_ any modifications to handle this
 The templates stored in `example-templates` in this repository are the minimum changes to use Marketplace with a default Craft Commerce install. The template changes are only to switch from using the Dummy Payment Gateway, from the default install, to Stripe, and to show the customer who the Payee is, which is optional.
 
 As long as you’re using the Stripe Payment Gateway already, none of these changes are required to use Marketplace.
+
+## Advanced use
+
+### Events
+
+- `kennethormandy\marketplace\services\PayeesService`
+  - `PayeesService::EVENT_BEFORE_DETERMINE_PAYEES`
+  - `PayeesService::EVENT_AFTER_DETERMINE_PAYEES`
+
+```php
+use Craft;
+use yii\base\Event;
+use kennethormandy\marketplace\events\PayeesEvent;
+use kennethormandy\marketplace\services\PayeesService;
+
+// …
+
+Event::on(
+    PayeesService::class,
+    PayeesService::EVENT_AFTER_DETERMINE_PAYEES,
+    function (PayeesEvent $event) {
+        $order = $event->order;
+        Craft::info("Handle EVENT_AFTER_DETERMINE_PAYEES event here", __METHOD__);
+    }
+);
+```
 
 <!-- TODO Not sure whether I’ll include this yet or not
 
