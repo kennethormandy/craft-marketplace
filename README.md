@@ -198,23 +198,26 @@ As long as you’re using the Stripe Payment Gateway already, none of these chan
 ### Events
 
 - `kennethormandy\marketplace\services\PayeesService`
-  - `PayeesService::EVENT_BEFORE_DETERMINE_PAYEES`
-  - `PayeesService::EVENT_AFTER_DETERMINE_PAYEES`
+  - `PayeesService::EVENT_BEFORE_DETERMINE_PAYEE`
+  - `PayeesService::EVENT_AFTER_DETERMINE_PAYEE`
 
 ```php
 use Craft;
 use yii\base\Event;
-use kennethormandy\marketplace\events\PayeesEvent;
 use kennethormandy\marketplace\services\PayeesService;
 
 // …
 
 Event::on(
     PayeesService::class,
-    PayeesService::EVENT_AFTER_DETERMINE_PAYEES,
-    function (PayeesEvent $event) {
-        $order = $event->order;
-        Craft::info("Handle EVENT_AFTER_DETERMINE_PAYEES event here", __METHOD__);
+    PayeesService::EVENT_AFTER_DETERMINE_PAYEE,
+    function (Event $event) {
+        $lineItem = $event->lineItem;
+
+        // Ex. Manually override the Stripe Account ID
+        $event->gatewayAccountId = "acct_abc123";
+
+        Craft::info("Handle EVENT_AFTER_DETERMINE_PAYEE event here", __METHOD__);
     }
 );
 ```

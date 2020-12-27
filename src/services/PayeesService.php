@@ -4,32 +4,30 @@ namespace kennethormandy\marketplace\services;
 use Craft;
 use craft\base\Component;
 use craft\elements\User;
-use craft\commerce\elements\Order;
+use craft\commerce\models\LineItem;
 
 use kennethormandy\marketplace\Marketplace;
-use kennethormandy\marketplace\events\PayeesEvent;
+use kennethormandy\marketplace\events\PayeeEvent;
 
 class PayeesService extends Component
 {
-    // public const EVENT_BEFORE_DETERMINE_PAYEES = 'EVENT_BEFORE_DETERMINE_PAYEES';
-    public const EVENT_AFTER_DETERMINE_PAYEES = 'EVENT_AFTER_DETERMINE_PAYEES';
+    public const EVENT_BEFORE_DETERMINE_PAYEE = 'EVENT_BEFORE_DETERMINE_PAYEE';
+    public const EVENT_AFTER_DETERMINE_PAYEE = 'EVENT_AFTER_DETERMINE_PAYEE';
   
     public function init()
     {
         parent::init();
     }
     
-    public function getGatewayAccountId(Order $order) {
-      // TODO Pro, more than one line item allowed, probably all with
-      //      the same payee at first. Similar TODO in Marketplace.php
-      // Only supports one line item right now,
-      // otherwise we’d probably need different
-      // Stripe transfer approach
-      $lineItemOnly = $order->lineItems[0];
-      $purchasable = $lineItemOnly->purchasable;
+    public function getGatewayAccountId(LineItem $lineItem) {
+      $purchasable = $lineItem->purchasable;
+      $event = new PayeeEvent();
+      $event->lineItem = $lineItem;
+      $event->gatewayAccountId = null;
       
-      $event = new PayeesEvent();
-      $event->order = $order;
+      if ($this->hasEventHandlers(self::EVENT_BEFORE_DETERMINE_PAYEE)) {
+          $this->trigger(self::EVENT_BEFORE_DETERMINE_PAYEE, $event);
+      }
 
       $payeeHandle = Marketplace::$plugin->handlesService->getPayeeHandle();
       if (isset($purchasable[$payeeHandle]) && $purchasable[$payeeHandle] !== null) {
@@ -59,8 +57,8 @@ class PayeesService extends Component
       
       $event->gatewayAccountId = $payeeStripeAccountId;
 
-      if ($this->hasEventHandlers(self::EVENT_AFTER_DETERMINE_PAYEES)) {
-          $this->trigger(self::EVENT_AFTER_DETERMINE_PAYEES, $event);
+      if ($this->hasEventHandlers(self::EVENT_AFTER_DETERMINE_PAYEE)) {
+          $this->trigger(self::EVENT_AFTER_DETERMINE_PAYEE, $event);
       }
 
       // There is another conditional in Marketplace.php rather than
