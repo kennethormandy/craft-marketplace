@@ -12,8 +12,6 @@ namespace kennethormandy\marketplace;
 
 use Craft;
 use craft\base\Plugin as BasePlugin;
-use craft\services\Plugins;
-use craft\events\PluginEvent;
 use craft\services\Fields;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterUrlRulesEvent;
@@ -21,7 +19,6 @@ use craft\web\UrlManager;
 use craft\elements\User;
 use craft\helpers\UrlHelper;
 
-use craft\commerce\models\Transaction;
 use craft\commerce\stripe\events\BuildGatewayRequestEvent;
 use craft\commerce\stripe\base\Gateway as StripeGateway;
 use craft\commerce\events\RefundTransactionEvent;
@@ -36,7 +33,6 @@ use venveo\oauthclient\events\AuthorizationEvent;
 use venveo\oauthclient\controllers\AuthorizeController;
 
 use venveo\oauthclient\base\Provider;
-use venveo\oauthclient\services\Tokens;
 use venveo\oauthclient\events\TokenEvent;
 
 use kennethormandy\marketplace\provider\StripeConnectProvider;
