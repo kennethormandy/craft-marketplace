@@ -8,9 +8,11 @@ class ViewBuyCest
 
     public function signInSuccessfully(AcceptanceTester $I)
     {
-        $I->amOnPage('/buy');
+        $I->wait(5);
+        
+        $I->amOnPage('/buy/add');
         $I->see('Buy your hand-crafted');
-        $I->click('Buy The Last Knee-High ($60.00)', '.m-10 a');
+        $I->click('a.bg-blue-commerce');
         $I->see('Adding');
 
         // The form is auto-submitted via JS, which we don’t have
@@ -36,5 +38,10 @@ class ViewBuyCest
         // /buy?step=2
         $I->see('Your Address');
         $I->click('Next');
+
+        // /buy?step=3
+        $I->see('Your Payment Information');
+        $I->fillField('.CardNumberField-input-wrapper input[type="text"]', '4242 4242 4242 4242');
+
     }
 }

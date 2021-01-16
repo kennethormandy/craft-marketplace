@@ -7,7 +7,24 @@
 actor: AcceptanceTester
 modules:
     enabled:
-        - PhpBrowser:
-            url: http://localhost
+        # - PhpBrowser:
+        #     url: http://localhost
+        - WebDriver:
+            # Tried every variant of this. Works with http://example.com
+            # but not with `http://craft-marketplace.ddev.site/`, `web`,
+            # or `localhost`, even though those all work with
+            # `curl` in the container. I did get a screenshot sometimes,
+            # but not based on any config changes, like there is a race
+            # condition somewhere.
+
+            # possible that it’s working, but redirecting to https?
+            # or web is working, but redirecting to craft-marketplace.ddev.site
+            # when it needs to stay as web?
+            url: http://web/
+            browser: chrome
+            host: selenium-hub
+            capabilities:
+               "goog:chromeOptions": "--headless --disable-extensions --no-sandbox"
+               "chromeOptions": "--headless --disable-extensions --no-sandbox"
         - \Helper\Acceptance
 step_decorators: ~        
