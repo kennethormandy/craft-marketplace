@@ -214,7 +214,8 @@ Event::on(
     function (Event $event) {
         $lineItem = $event->lineItem;
 
-        // Ex. Manually override the Stripe Account ID
+        // Ex. Manually override the Stripe Account ID, based on
+        // a specific case for your marketplace
         $event->gatewayAccountId = "acct_abc123";
 
         Craft::info("Handle EVENT_AFTER_DETERMINE_PAYEE event here", __METHOD__);
