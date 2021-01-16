@@ -1,6 +1,7 @@
-actor: Tester
+actor_suffix: Tester
 paths:
   tests: tests
+  output: tests/_output
   log: tests/_output
   data: tests/_data
   support: tests/_support
@@ -8,11 +9,14 @@ paths:
 bootstrap: _bootstrap.php
 params:
   - tests/.env
+extensions:
+  enabled:
+    - Codeception\Extension\RunFailed
 modules:
   config:
     \craft\test\Craft:
       configFile: "tests/_craft/config/test.php"
-      entryUrl: "https://your-site-url.test/index.php"
+      entryUrl: "http://craft-marketplace.ddev.site/index.php"
       projectConfig: {}
       migrations: []
       # Empty array, or array of objects
