@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-## v1.1.0 - 2020-12-27
+## v1.1.0 - 2021-01-16
 
 - Adds `PayeesServices` [and initial developer events](https://github.com/kennethormandy/craft-marketplace/tree/ko-payees-service#events), with `EVENT_BEFORE_DETERMINE_PAYEE` and `EVENT_AFTER_DETERMINE_PAYEE`, [#12](https://github.com/kennethormandy/craft-marketplace/issues/12)
 - Removed unused imports
