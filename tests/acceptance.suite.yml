@@ -13,7 +13,11 @@ modules:
             url: http://craft-marketplace.ddev.site/
             browser: chrome
             host: selenium
+            # These settings don’t seem to be working properly, but if the
+            # environment variables are set so the default url is http
+            # instead of https, it will work without redirecting for now
+            acceptInsecureCerts: true
             # capabilities:
-            #    "goog:chromeOptions": "--headless --no-sandbox --allow-insecure-localhost"
+            #     "goog:chromeOptions": "--allow-insecure-localhost --ignore-certificate-errors"
         - \Helper\Acceptance
 step_decorators: ~        
