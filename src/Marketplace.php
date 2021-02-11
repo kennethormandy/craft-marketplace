@@ -374,7 +374,7 @@ class Marketplace extends BasePlugin
                       $lineItemPayees = [];
                       foreach ($order->lineItems as $key => $lineItem) {
                         if ($key > 0) {
-                          $payeeCurrent = $this->payees->getGatewayAccountId($lineItemOnly)
+                          $payeeCurrent = $this->payees->getGatewayAccountId($lineItemOnly);
                           if ($payeeCurrent != $payeeStripeAccountId) {
                             $payeesSame = false;
                             return;
