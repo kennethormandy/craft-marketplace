@@ -340,28 +340,57 @@ class Marketplace extends BasePlugin
         
                 if ($e->transaction->type === 'purchase') {
                     $order = $e->transaction->order;
-        
-                    // Don’t use the plugin if we have more than one line item
-                    // TODO Instead, maybe we should not use the plugin if we have
-                    //      two or more payees that differ between line items
-                    if (!($order && $order->lineItems && sizeof($order->lineItems) >= 1)) {
-                        return;
+
+                    if (!$order || !$order->lineItems || sizeof($order->lineItems) == 0) {
+                      return;
                     }
                     
-                    // TODO Pro, more than one line item allowed, probably all with
-                    //      the same payee at first. Similar TODO in Marketplace.php
-                    // Only supports one line item right now.
+                    // By default only supports one line item, to match Commerce Lite
                     $lineItemOnly = $order->lineItems[0];
-                    
                     $payeeStripeAccountId = $this->payees->getGatewayAccountId($lineItemOnly);
-        
+
                     if (!$payeeStripeAccountId) {
                         Craft::info(
-                            '[Marketplace] Stripe ' . $hardCodedApproach . ' no User Payee Account ID, paying to parent account.',
+                            '[Marketplace] Stripe ' . $hardCodedApproach . ' no User Payee Account ID. Paying to parent account.',
                             __METHOD__
                         );
         
                         return;
+                    }
+
+                    // If there’s more than one line item, we check they all have the
+                    // same payees, and allow the payment splitting as long as
+                    // they all match.
+                    if (sizeof($order->lineItems) > 1) {
+                      // Iterate over line items, and get payees
+                      // If one payee is different from all others, return
+                      // Maybe we don’t actually need a setting then: you are just gaining
+                      // a new feature if try and run through multiple line items with
+                      // Commerce Pro AND they are all the same payee. Otherwise, if they are
+                      // different payees, you’ll continue to get the same behvaiour: the plugin
+                      // won’t be used.
+                      
+                      $payeesSame = true;
+                      $lineItemPayees = [];
+                      foreach ($order->lineItems as $key => $lineItem) {
+                        if ($key > 0) {
+                          $payeeCurrent = $this->payees->getGatewayAccountId($lineItemOnly)
+                          if ($payeeCurrent != $payeeStripeAccountId) {
+                            $payeesSame = false;
+                            return;
+                          }
+                        }
+                      }
+
+                      if ($payeesSame == false) {
+                        Craft::info(
+                            '[Marketplace] Stripe ' . $hardCodedApproach . ' line items have different User Payee Account IDs. Paying to parent account.',
+                            __METHOD__
+                        );
+
+
+                        return;
+                      }
                     }
         
                     Craft::info(
