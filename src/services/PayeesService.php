@@ -57,10 +57,10 @@ class PayeesService extends Component
               '[Marketplace] [PayeesService] No User Payee Account ID.',
               __METHOD__
           );
-
-          return;
+        
+          return null;
       }
-      
+
       $stripeConnectHandle = Marketplace::$plugin->handlesService->getButtonHandle($purchasablePayeeUser);
       $payeeStripeAccountId = $purchasablePayeeUser[$stripeConnectHandle];
       
