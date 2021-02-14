@@ -119,15 +119,15 @@ class ViewShopCest
         // Exit iframe
         $I->switchToIFrame();
     
-        $I->see('Pay $50.00');
-        $I->click('Pay $50.00');
+        $I->see('Pay $100.00');
+        $I->click('Pay $100.00');
     
         // Complete
         $I->wait(5);
     
         $I->see('Payee 1 Jane Example');
         $I->dontSee('Payee 2 Jane Example');
-        $I->see('Amount Paid: $50.00');
+        $I->see('Amount Paid: $100.00');
     
     }
     
