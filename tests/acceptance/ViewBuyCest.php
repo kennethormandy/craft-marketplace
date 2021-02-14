@@ -12,11 +12,11 @@ class ViewBuyCest
         $I->see('Buy your hand-crafted');
         $I->click('a.bg-blue-commerce');
         // $I->see('Adding');
-        
+
         // The form is auto-submitted via JS, which we don’t have
         // in the PHP browser, so we submit the form ourselves
         // $I->click('.add-to-cart-form input[type="submit"]');
-        
+
         // /buy?step=2
         $I->see('Your Address');
         $I->fillField('#firstName', 'Jane');
@@ -27,16 +27,16 @@ class ViewBuyCest
         $I->fillField('#zipCode', 'Example');
         $I->fillField('#stateValue', 'EX');
         $I->click('Next');
-        
+
         // /buy?step=1
         $I->see('Your Email');
         $I->fillField('#email', 'hi@example.com');
         $I->click('Next');
-        
+
         // /buy?step=2
         $I->see('Your Address');
         $I->click('Next');
-        
+
         // /buy?step=3
         $I->see('Your Payment Information');
 
@@ -57,10 +57,10 @@ class ViewBuyCest
 
         // Exit iframe
         $I->switchToIFrame();
-        
+
         $I->see('Buy $60');
         $I->click('Buy $60');
-        
+
         // Complete
         $I->wait(5);
         $I->seeElement('#payee');
@@ -68,8 +68,5 @@ class ViewBuyCest
         $I->seeElement('#payee-id');
         $I->see('15');
         $I->see('We have charged your');
-
-
-
     }
 }

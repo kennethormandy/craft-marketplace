@@ -10,12 +10,12 @@ class ViewShopCest
     {
         $I->amOnPage('/shop');
         $I->see('Example Templates');
-        
+    
         // Add first product
         $I->click('//button[@value=12]');
         $I->waitForElement('.flash');
         $I->see('Added The Last Knee-High to the cart.');
-
+    
         // Add second product
         $I->click('//button[@value=10]');
         $I->waitForElement('.flash');
