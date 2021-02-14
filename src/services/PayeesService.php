@@ -54,7 +54,7 @@ class PayeesService extends Component
           $purchasablePayeeUser = User::find()->id($payeeUserId)->one();
       } else {
           Craft::info(
-              '[Marketplace] Stripe ' . $hardCodedApproach . ' no User Payee configured, paying to parent account.',
+              '[Marketplace] [PayeesService] No User Payee Account ID.',
               __METHOD__
           );
 
