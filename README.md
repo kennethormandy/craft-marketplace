@@ -29,7 +29,8 @@ Make your Craft ecommerce site into a Marketplace: add payees to products, charg
     - [Add a Fee for your platform](#add-a-fee-for-your-platform)
     - [Customize the Buy Template](#customize-the-buy-template)
 5. [Advanced use](#advanced-use)
-    - [Events](#events)  
+    - [Events](#events)
+    - [Craft Commerce Pro](#craft-commerce-pro)
 
 <!-- Maybe move those two sections as Further Reading that we link to instead?
 
@@ -222,6 +223,16 @@ Event::on(
     }
 );
 ```
+
+### Craft Commerce Pro
+
+Marketplace Lite pairs with Craft Commerce Lite’s single line item orders. If you are using Craft Commerce Pro, and your user interface limits customers to single line item orders (ex. a “Buy now” button with no cart), it will work equally well for you.
+
+Marketplace Lite also includes support for Craft Commerce Pro and orders with multiple line items, when all line items have the same payee.
+
+<!-- TODO Twig demo of what this might look like -->
+
+If you’re interested in more comprehensive payment splitting for items in carts, Marketplace Pro will pair with Craft Commerce Pro, and is in early development. Feel free to [send me an email](mailto:hello+marketplace@kennethormandy.com) if you’re interested in previewing it for your project.
 
 <!-- TODO Not sure whether I’ll include this yet or not
 
