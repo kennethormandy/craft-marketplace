@@ -56,7 +56,7 @@ class PayeesService extends Component
       } else {
           LogToFile::info(
               '[Marketplace] [PayeesService] No User Payee Account ID.',
-              __METHOD__
+              'marketplace'
           );
         
           return null;
