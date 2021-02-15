@@ -74,9 +74,9 @@ class ViewShopCest
         $I->see('Example Templates');
     
         // Add first product
-        $I->click('//button[@value=117]');
+        $I->click('//button[@value=165]');
         $I->waitForElement('.flash');
-        $I->see('Added Product With No Payee to the cart.');
+        $I->see('Added Product With No Payee 2 to the cart.');
     
         // Add second product
         $I->click('//button[@value=10]');
@@ -137,9 +137,9 @@ class ViewShopCest
         $I->see('Example Templates');
         
         // Add first product, with no payee
-        $I->click('//button[@value=117]');
+        $I->click('//button[@value=165]');
         $I->waitForElement('.flash');
-        $I->see('Added Product With No Payee to the cart.');
+        $I->see('Added Product With No Payee 2 to the cart.');
         
         $I->click('Checkout → Index');
         
