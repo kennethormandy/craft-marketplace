@@ -26,7 +26,8 @@
     "craftcms/cms": "^3.4.20",
     "craftcms/commerce": "^3.1",
     "stripe/stripe-php": ">=6.1",
-    "venveo/craft-oauthclient": "^2.1.7"
+    "venveo/craft-oauthclient": "^2.1.7",
+    "putyourlightson/craft-log-to-file": "^1.2"
   },
   "autoload": {
     "psr-4": {
