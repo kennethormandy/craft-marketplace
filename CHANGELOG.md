@@ -1,6 +1,6 @@
 # Release Notes for Marketplace
 
-## Unreleased
+## v1.2.0 - 2021-02-15
 
 - Adds initial support for Craft Commerce Pro and multiple line items, when all line items have the same payee
 
