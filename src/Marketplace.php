@@ -351,7 +351,7 @@ class Marketplace extends BasePlugin
 
                     if (!$payeeStripeAccountId) {
                         Craft::info(
-                            '[Marketplace] Stripe ' . $hardCodedApproach . ' no User Payee Account ID. Paying to parent account.',
+                            '[Marketplace] [Order #' . $order->id . '] Stripe ' . $hardCodedApproach . ' no User Payee Account ID. Paying to parent account.',
                             __METHOD__
                         );
         
