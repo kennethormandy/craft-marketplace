@@ -31,9 +31,9 @@ use venveo\oauthclient\services\Apps as AppsService;
 use venveo\oauthclient\events\AuthorizationUrlEvent;
 use venveo\oauthclient\events\AuthorizationEvent;
 use venveo\oauthclient\controllers\AuthorizeController;
-
 use venveo\oauthclient\base\Provider;
 use venveo\oauthclient\events\TokenEvent;
+use putyourlightson\logtofile\LogToFile;
 
 use kennethormandy\marketplace\provider\StripeConnectProvider;
 use kennethormandy\marketplace\provider\StripeConnectExpressProvider;
@@ -94,10 +94,7 @@ class Marketplace extends BasePlugin
             'payees' => PayeesService::class,
         ]);
         
-        Craft::info(
-            'Marketplace plugin loaded',
-            __METHOD__
-        );
+        Craft::info('Marketplace plugin loaded', __METHOD__);
         
         $this->_reviseOrderTemplate();
         
@@ -130,18 +127,18 @@ class Marketplace extends BasePlugin
             function (TokenEvent $event) {
                 $stripeResponse = $event->responseToken;
 
-                Craft::info('EVENT_CREATE_TOKEN_MODEL_FROM_RESPONSE', __METHOD__);
-                Craft::info(json_encode($stripeResponse), __METHOD__);
+                LogToFile::info('EVENT_CREATE_TOKEN_MODEL_FROM_RESPONSE', 'marketplace');
+                LogToFile::info(json_encode($stripeResponse), 'marketplace');
 
                 if (isset($stripeResponse)) {
-                    Craft::info('Stripe response', __METHOD__);
-                    Craft::info(json_encode($stripeResponse), __METHOD__);
+                    LogToFile::info('Stripe response', 'marketplace');
+                    LogToFile::info(json_encode($stripeResponse), 'marketplace');
                 
                     if (
                   isset($stripeResponse) &&
                   isset($stripeResponse->stripe_user_id)
                 ) {
-                        Craft::info('Stripe Account Id stripe_user_id', __METHOD__);
+                        LogToFile::info('Stripe Account Id stripe_user_id', 'marketplace');
                         $stripeAccountId = $stripeResponse->stripe_user_id;
 
                         // TODO Might be possible to pass along original user ID to Stripe,
@@ -157,9 +154,9 @@ class Marketplace extends BasePlugin
                         $stripeConnectHandle = $this->handlesService->getButtonHandle($userObject);
 
                         // …this is returning nothing, not actually getting the $stripeConnectHandle
-                        Craft::info(
+                        LogToFile::info(
                             'Got Marketplace handle ' . $stripeConnectHandle,
-                            __METHOD__
+                            'marketplace'
                         );
 
                         // TODO THis is
@@ -176,11 +173,11 @@ class Marketplace extends BasePlugin
             AppsService::class,
             AppsService::EVENT_GET_URL_OPTIONS,
             function (AuthorizationUrlEvent $e) {
-                Craft::info('EVENT_GET_URL_OPTIONS', __METHOD__);
-                Craft::info(json_encode($e), __METHOD__);
+                LogToFile::info('EVENT_GET_URL_OPTIONS', 'marketplace');
+                LogToFile::info(json_encode($e), 'marketplace');
                 $appHandle = Marketplace::$plugin->getSettings()->getAppHandle();
 
-                Craft::info('Get App handle '. $appHandle . ' '. $e->app->handle, __METHOD__);
+                LogToFile::info('Get App handle '. $appHandle . ' '. $e->app->handle, 'marketplace');
 
                 // TODO We want to check the handle matches, and the type
                 // of provider is our Stripe provider, as you could in theory
@@ -232,7 +229,7 @@ class Marketplace extends BasePlugin
           AuthorizeController::EVENT_BEFORE_AUTHENTICATE,
           function (AuthorizationEvent $event)
           {
-              // Craft::info('EVENT_BEFORE_AUTHENTICATE', __METHOD__);
+              // LogToFile::info('EVENT_BEFORE_AUTHENTICATE', 'marketplace');
               if (
                 $event->context &&
                 isset($event->context['location']) &&
@@ -245,31 +242,12 @@ class Marketplace extends BasePlugin
                   }
 
                   $returnUrl = UrlHelper::cpUrl($pathname, null, null);
-                  Craft::info('Return URL', __METHOD__);
-                  Craft::info($returnUrl, __METHOD__);
+                  LogToFile::info('Return URL', 'marketplace');
+                  LogToFile::info($returnUrl, 'marketplace');
                   $event->returnUrl = $returnUrl;
               }
           }
       );
-
-        /**
-        * Logging in Craft involves using one of the following methods:
-        *
-        * Craft::trace(): record a message to trace how a piece of code runs. This is mainly for development use.
-        * Craft::info(): record a message that conveys some useful information.
-        * Craft::warning(): record a warning message that indicates something unexpected has happened.
-        * Craft::error(): record a fatal error that should be investigated as soon as possible.
-        *
-        * Unless `devMode` is on, only Craft::warning() & Craft::error() will log to `craft/storage/logs/web.log`
-        *
-        * It's recommended that you pass in the magic constant `__METHOD__` as the second parameter, which sets
-        * the category to the method (prefixed with the fully qualified class name) where the constant appears.
-        *
-        * To enable the Yii debug toolbar, go to your user account in the AdminCP and check the
-        * [] Show the debug toolbar on the front end & [] Show the debug toolbar on the Control Panel
-        *
-        * http://www.yiiframework.com/doc-2.0/guide-runtime-logging.html
-        */
         
         // Full and Parial refunds are supported here.
         // TODO Could provide more options around this, ex: Who is responsible
@@ -281,7 +259,7 @@ class Marketplace extends BasePlugin
             Payments::class,
             Payments::EVENT_BEFORE_REFUND_TRANSACTION,
             function (RefundTransactionEvent $e) {
-                Craft::info('EVENT_BEFORE_REFUND_TRANSACTION', __METHOD__);
+                LogToFile::info('EVENT_BEFORE_REFUND_TRANSACTION', 'marketplace');
 
                 // We are assuming all of these are destination charges,
                 // might need to find some way to look at the charge and
@@ -296,10 +274,7 @@ class Marketplace extends BasePlugin
                     $res = json_decode($e->transaction->response);
 
                     // In progress:
-                    Craft::info(
-                        '[Stripe refund] ' . $e->transaction->response,
-                        __METHOD__
-                    );
+                    LogToFile::info('[Stripe refund] ' . $e->transaction->response, 'marketplace');
 
                     if (isset($res->charges) && isset($res->charges->data) && count($res->charges->data) >= 1) {
                         $originalCharge = $res->charges->data[0];
@@ -350,9 +325,9 @@ class Marketplace extends BasePlugin
                     $payeeStripeAccountId = $this->payees->getGatewayAccountId($lineItemOnly);
 
                     if (!$payeeStripeAccountId) {
-                        Craft::info(
-                            '[Marketplace] [Order #' . $order->id . '] Stripe ' . $hardCodedApproach . ' no User Payee Account ID. Paying to parent account.',
-                            __METHOD__
+                        LogToFile::info(
+                            '[Order #' . $order->id . '] Stripe ' . $hardCodedApproach . ' no User Payee Account ID. Paying to parent account.',
+                            'marketplace'
                         );
         
                         return;
@@ -383,9 +358,9 @@ class Marketplace extends BasePlugin
                       }
 
                       if ($payeesSame == false) {
-                        Craft::info(
-                            '[Marketplace] Stripe ' . $hardCodedApproach . ' line items have different User Payee Account IDs. Paying to parent account.',
-                            __METHOD__
+                        LogToFile::info(
+                            'Stripe ' . $hardCodedApproach . ' line items have different User Payee Account IDs. Paying to parent account.',
+                            'marketplace'
                         );
 
 
@@ -393,20 +368,20 @@ class Marketplace extends BasePlugin
                       }
                     }
         
-                    Craft::info(
+                    LogToFile::info(
                         'Stripe ' . $hardCodedApproach . ' to Stripe Account ID: ' . $payeeStripeAccountId,
-                        __METHOD__
+                        'marketplace'
                     );
         
                     if ($hardCodedApproach === 'destination-charge') {
-                        Craft::info(
+                        LogToFile::info(
                             '[Marketplace request] [' . $hardCodedApproach . '] ' . json_encode($e->request),
-                            __METHOD__
+                            'marketplace'
                         );
         
-                        Craft::info(
+                        LogToFile::info(
                             '[Marketplace request] [' . $hardCodedApproach . '] destination ' . $payeeStripeAccountId,
-                            __METHOD__
+                            'marketplace'
                         );
         
                         // Apply application fee, if it’s a positive int
@@ -454,9 +429,9 @@ class Marketplace extends BasePlugin
                   "destination" => $payeeStripeAccountId
                 ];
         
-                        Craft::info(
+                        LogToFile::info(
                             '[Marketplace request modified] [' . $hardCodedApproach . '] ' . json_encode($e->request),
-                            __METHOD__
+                            'marketplace'
                         );
                     } elseif ($hardCodedApproach === 'direct-charge') {
         

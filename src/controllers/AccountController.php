@@ -7,6 +7,7 @@ use Craft;
 use craft\web\Controller;
 
 use Stripe\Account as StripeAccount;
+use putyourlightson\logtofile\LogToFile;
 
 /*
  * This isn’t in use, ended up getting the Stripe
@@ -26,23 +27,23 @@ class AccountController extends Controller
     {
         $request = Craft::$app->getRequest();
 
-        Craft::info(
+        LogToFile::info(
             '[AccountController]',
-            __METHOD__
+            'marketplace'
         );
 
         // $request->getIsCpRequest()
         if ($request->isPost) {
-            Craft::info(
+            LogToFile::info(
                 '[AccountController] POST requst',
-                __METHOD__
+                'marketplace'
             );
 
             $test_stripe_id = Craft::$app->getRequest()->getValidatedBodyParam('stripe_user_id');
 
-            Craft::info(
+            LogToFile::info(
                 '[AccountController] test_stripe_id' . $test_stripe_id,
-                __METHOD__
+                'marketplace'
             );
         }
 
@@ -52,14 +53,14 @@ class AccountController extends Controller
         $fields = $request->getParam('fields');
         $stripeUserId = $request->getParam('stripe_user_id');
 
-        Craft::info(
+        LogToFile::info(
             '[AccountController] Stripe User ID' . $fields,
-            __METHOD__
+            'marketplace'
         );
 
-        Craft::info(
+        LogToFile::info(
             '[AccountController] Stripe User ID' . json_encode($request->getParam('action')),
-            __METHOD__
+            'marketplace'
         );
         
         
@@ -80,7 +81,7 @@ class AccountController extends Controller
                     Craft::$app->session->setError('Failed');
                 }
             } catch (Exception $e) {
-                Craft::error($e->getTraceAsString(), __METHOD__);
+                LogToFile::error($e->getTraceAsString(), 'marketplace');
                 Craft::$app->session->setError('Something went wrong: ' . $e->getMessage());
                 return 'Err';
             }

@@ -7,6 +7,7 @@ use craft\db\Query;
 use Exception;
 use kennethormandy\marketplace\models\Fee as FeeModel;
 use kennethormandy\marketplace\records\FeeRecord;
+use putyourlightson\logtofile\LogToFile;
 
 /* This FeesService is based upon
  * the venveo/craft-oauthclient App and Token Services
@@ -144,7 +145,7 @@ class FeesService extends Component
       }
             
       if ($runValidation && !$fee->validate()) {
-        Craft::info('Fee was not saved as it did not pass validation.', __METHOD__);
+        LogToFile::info('Fee was not saved as it did not pass validation.', 'marketplace');
         return false;
       }
       

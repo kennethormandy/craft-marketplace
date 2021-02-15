@@ -5,6 +5,7 @@ use Craft;
 use craft\base\Component;
 use craft\elements\User;
 use craft\commerce\models\LineItem;
+use putyourlightson\logtofile\LogToFile;
 
 use kennethormandy\marketplace\Marketplace;
 use kennethormandy\marketplace\events\PayeeEvent;
@@ -53,7 +54,7 @@ class PayeesService extends Component
           $payeeUserId = $purchasable->product[$payeeHandle];
           $purchasablePayeeUser = User::find()->id($payeeUserId)->one();
       } else {
-          Craft::info(
+          LogToFile::info(
               '[Marketplace] [PayeesService] No User Payee Account ID.',
               __METHOD__
           );
