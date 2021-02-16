@@ -1,5 +1,9 @@
 # Release Notes for Marketplace
 
+## Unreleased
+
+- Adds plugin log file, instead of using `web.log`
+
 ## v1.2.0 - 2021-02-15
 
 - Adds initial support for Craft Commerce Pro and multiple line items, when all line items have the same payee
