@@ -235,7 +235,7 @@ class Marketplace extends BasePlugin
                 $event->context['contextName'] === 'MarketplaceConnectButton') {
                   $loc = $event->context['location'];
                   $pathname = $loc['pathname'];
-                  if ($loc['hash']) {
+                  if (isset($loc['hash'])) {
                     $pathname = $pathname . $loc['hash'];
                   }
 
