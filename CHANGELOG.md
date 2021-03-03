@@ -2,7 +2,12 @@
 
 ## Unreleased
 
-- Adds plugin log file, instead of using `web.log`
+### Added
+- Added dedicated plugin log file
+
+### Fixed
+- Fixed possible issue when re-saving product that already had a saved Payee field
+- Fixed hash being required as part of redirect link, for redirect after auth
 
 ## v1.2.0 - 2021-02-15
 
