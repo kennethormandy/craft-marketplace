@@ -148,18 +148,16 @@ class Marketplace extends BasePlugin
                         $userId = Craft::$app->user->getId();
                         $userObject = Craft::$app->users->getUserById($userId);
 
-                        // Need to get the field handle for this, in the same
-                        // way that we do for the payee
-                        // TODO This is only working because we fall back to 'stripeConnect'
                         $stripeConnectHandle = $this->handlesService->getButtonHandle($userObject);
 
-                        // …this is returning nothing, not actually getting the $stripeConnectHandle
                         LogToFile::info(
                             'Got Marketplace handle ' . $stripeConnectHandle,
                             'marketplace'
                         );
 
-                        // TODO THis is
+                        // TODO Instead of using a fallback, we should probably
+                        //      show a warning that we don’t have a the correct
+                        //      handle, or that there is no button.
                         $stripeConnectHandle = $stripeConnectHandle ? $stripeConnectHandle : 'stripeConnect';
                         $userObject->setFieldValue($stripeConnectHandle, $stripeAccountId);
 
