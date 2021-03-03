@@ -83,7 +83,7 @@ class MarketplacePayee extends Field
             // to save as a string of an array `"["8"]"` rather than
             // what it should probably be, `[8]` or `["8"]`.
             if (is_string($value)) {
-                return intval(json_decode($value)[0]);
+                return json_decode($value)[0];
             }
         
             // If the saved value isn’t a string, we should have the proper
