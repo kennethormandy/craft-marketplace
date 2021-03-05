@@ -12,11 +12,15 @@
 
 ## v1.2.0 - 2021-02-15
 
-- Adds initial support for Craft Commerce Pro and multiple line items, when all line items have the same payee
+### Added
+- Added initial support for Craft Commerce Pro and multiple line items, when all line items have the same payee
 
 ## v1.1.0 - 2021-01-16
 
-- Adds `PayeesServices` [and initial developer events](https://github.com/kennethormandy/craft-marketplace/tree/ko-payees-service#events), with `EVENT_BEFORE_DETERMINE_PAYEE` and `EVENT_AFTER_DETERMINE_PAYEE`, [#12](https://github.com/kennethormandy/craft-marketplace/issues/12)
+### Added
+- Added `PayeesServices` [and initial developer events](https://github.com/kennethormandy/craft-marketplace/tree/ko-payees-service#events), with `EVENT_BEFORE_DETERMINE_PAYEE` and `EVENT_AFTER_DETERMINE_PAYEE`, [#12](https://github.com/kennethormandy/craft-marketplace/issues/12)
+
+### Removed
 - Removed unused imports
 
 ## v1.0.2 - 2020-11-13
