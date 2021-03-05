@@ -541,7 +541,12 @@ class Marketplace extends BasePlugin
                 'marketplace/account/create-login-link' => 'marketplace/account/create-login-link',
                 'marketplace/fees/new' => 'marketplace/fees/edit',
                 'marketplace/fees/<handle:{handle}>' => 'marketplace/fees/edit',
-
+                
+                // Invalid handle – It should be possible to edit them, but not
+                // to save them, as they should get validated after that.
+                // https://github.com/kennethormandy/craft-marketplace/issues/11
+                // TODO Depricate in v2.x
+                'marketplace/fees/<handle:[^(?!\s*$)].+>' => 'marketplace/fees/edit',
             ]);
         });
     }

@@ -19,7 +19,8 @@
         instructions: '',
         type: 'text',
         value: fee.handle ? fee.handle : '',
-        required: true
+        required: true,
+        errors: fee.getErrors('handle')
       }) }}
     </div>
     <div style="padding-right: 1rem">

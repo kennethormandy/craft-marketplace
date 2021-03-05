@@ -3,9 +3,12 @@
 namespace kennethormandy\marketplace\models;
 
 use kennethormandy\marketplace\Marketplace;
+use kennethormandy\marketplace\records\FeeRecord;
 
 use Craft;
 use craft\base\Model;
+use craft\validators\UniqueValidator;
+use craft\validators\HandleValidator;
 
 /**
  * Fee Model
@@ -34,7 +37,9 @@ class Fee extends Model
    */
   public function rules() {
     return [
-      [['siteId', 'handle', 'name', 'value', 'type'], 'required']
+      [['siteId', 'handle', 'name', 'value', 'type'], 'required'],
+      [['name', 'handle'], UniqueValidator::class, 'targetClass' => FeeRecord::class],
+      [['handle'], HandleValidator::class],
     ];
   }
 }
