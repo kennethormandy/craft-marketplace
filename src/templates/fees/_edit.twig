@@ -13,6 +13,17 @@
   <div style="display: flex;">
     <div style="padding-right: 1rem">
       {{ forms.textField({
+        label: 'Name',
+        name: 'name',
+        id: 'name',
+        instructions: '',
+        type: 'text',
+        value: fee.name ? fee.name : '',
+        required: true
+      }) }}
+    </div>
+    <div style="padding-right: 1rem">
+      {{ forms.textField({
         label: 'Handle',
         name: 'handle',
         id: 'handle',
@@ -21,17 +32,6 @@
         value: fee.handle ? fee.handle : '',
         required: true,
         errors: fee.getErrors('handle')
-      }) }}
-    </div>
-    <div style="padding-right: 1rem">
-      {{ forms.textField({
-        label: 'Name',
-        name: 'name',
-        id: 'name',
-        instructions: '',
-        type: 'text',
-        value: fee.name ? fee.name : '',
-        required: true
       }) }}
     </div>
     <div style="padding-right: 1rem">
