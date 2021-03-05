@@ -176,6 +176,8 @@ Let’s imagine this new user makes one of the Clothing Product we have on our s
 
 ![](./docs/images/marketplace-listing-5.png)
 
+Marketplace Lite allows you to configure a single flat-rate or percentage fee, inclusive of the customer’s total.
+
 ### Customize the Buy Template
 
 Everything is configured! If you have filled in some content and have:
