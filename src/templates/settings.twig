@@ -75,8 +75,15 @@
       <p>No fees set.</p>
     {% endif %}
    
-   <p>
-     <a href="/admin/marketplace/fees/new">Add a fee</a>
-   </p>
+    <div class="field">
+    {% if fees|length %}
+      <div class="instructions">
+        <p>Marketplace Lite supports 1 global fee setting.<br/>If you’d like to enable layered fees, or are interested in other fee controls, <a href="mailto:hello+marketplace@kennethormandy.com">feel free to get in touch</a>.</p>
+      </div>
+    {% endif %}
+      <p>
+        <a href="/admin/marketplace/fees/new">Add a fee</a>
+      </p>
+    </div>
 
 {% endif %}
