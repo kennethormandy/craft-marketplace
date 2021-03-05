@@ -6,6 +6,7 @@
 - Added dedicated plugin log file
 
 ### Fixed
+- Fixed handle validation for fees, which also avoids a possible 404 error while editing the fee [#11](https://github.com/kennethormandy/craft-marketplace/issues/11)
 - Fixed possible issue when re-saving product that already had a saved Payee field
 - Fixed hash being required as part of redirect link, for redirect after auth
 
