@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## v1.3.0 - 2021-03-05
+
 ### Added
 - Added dedicated plugin log file
 
