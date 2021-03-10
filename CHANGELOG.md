@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+### Fixed
+- Fixed Fee Type select field not having a default when editing
+
 ## v1.3.0 - 2021-03-05
 
 ### Added
@@ -32,8 +35,10 @@
 
 ## v1.0.0 - 2020-11-13
 
+- Initial public release
+
 ### Added
-- Adds new README, images, and plugin icon
+- Added new README, images, and plugin icon
 - Added testing framework
 - Added latest changes from Craft Commerce to example template
 - Added Stripe PHP v7 to allowed version range, for latest Stripe Payment Gateway plugin
@@ -93,4 +98,4 @@
 
 ## 0.1.0 - 2019-12-06
 
-- Initial release
+- Initial private release
