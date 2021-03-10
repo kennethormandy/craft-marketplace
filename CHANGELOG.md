@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## v1.3.1 - 2021-03-10
+
 ### Fixed
 - Fixed Fee Type select field not having a default when editing
 
