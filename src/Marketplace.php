@@ -18,6 +18,7 @@ use craft\events\RegisterUrlRulesEvent;
 use craft\web\UrlManager;
 use craft\elements\User;
 use craft\helpers\UrlHelper;
+use craft\helpers\App;
 
 use craft\commerce\stripe\events\BuildGatewayRequestEvent;
 use craft\commerce\stripe\base\Gateway as StripeGateway;
@@ -388,7 +389,7 @@ class Marketplace extends BasePlugin
                             $feeCounter = 0;
                             foreach ($applicationFees as $feeId => $fee) {
                               // TODO Only supporting 1 fee for Lite edition
-                              if ($feeCounter === 0) {
+                              if ($feeCounter === 0 || App::env('MARKETPLACE_PRO_BETA')) {
                                   $liteApplicationFee = $fee;
                               }
 
