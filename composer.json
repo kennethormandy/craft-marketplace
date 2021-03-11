@@ -51,9 +51,12 @@
     "vlucas/phpdotenv": "^4.0",
     "codeception/module-phpbrowser": "^1.0",
     "hoa/console": "^3.17",
-    "codeception/module-webdriver": "^1.1"
+    "codeception/module-webdriver": "^1.1",
+    "friendsofphp/php-cs-fixer": "^2.18",
+    "yiisoft/yii2-dev": "2.0.38"
   },
   "scripts": {
-    "test": "vendor/bin/codecept run --debug"
+    "test": "vendor/bin/codecept run --debug",
+    "format": "./vendor/bin/php-cs-fixer fix"
   }
 }
