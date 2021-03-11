@@ -2,17 +2,15 @@
 
 namespace kennethormandy\marketplace\models;
 
-use kennethormandy\marketplace\Marketplace;
-
 use Craft;
 use craft\base\Model;
+use kennethormandy\marketplace\Marketplace;
 
 /**
  * Settings Model
- * https://craftcms.com/docs/plugins/models
- * 
+ * https://craftcms.com/docs/plugins/models.
+ *
  * @author    Kenneth Ormandy
- * @package   Marketplace
  * @link      https://github.com/kennethormandy/craft-marketplace
  * @since     0.1.0
  */
@@ -26,7 +24,7 @@ class Settings extends Model
      */
     public $secretApiKey;
     public $appHandle = 'stripe';
-    
+
     // Public Methods
     // =========================================================================
 
@@ -35,21 +33,21 @@ class Settings extends Model
      */
     public function getSecretApiKey(): string
     {
-      if (!isset($this->secretApiKey) || !$this->secretApiKey) {
-        // Message is based on underlying Stripe error, if you return
-        // an empty string.
-        // TODO Dynamically use plugin name here
-        throw new \yii\base\Exception('No Stripe API key provided to the Craft Marketplace plugin. You can generate API keys from the Stripe web interface. See https://stripe.com/api for details.');
-      }
-      
-      return Craft::parseEnv($this->secretApiKey);
+        if (!isset($this->secretApiKey) || !$this->secretApiKey) {
+            // Message is based on underlying Stripe error, if you return
+            // an empty string.
+            // TODO Dynamically use plugin name here
+            throw new \yii\base\Exception('No Stripe API key provided to the Craft Marketplace plugin. You can generate API keys from the Stripe web interface. See https://stripe.com/api for details.');
+        }
+
+        return Craft::parseEnv($this->secretApiKey);
     }
-    
+
     public function getAppHandle(): string
     {
         return $this->appHandle;
     }
-    
+
     // Public Methods
     // =========================================================================
 

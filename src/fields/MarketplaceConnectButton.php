@@ -1,6 +1,6 @@
 <?php
 /**
- * Marketplace plugin for Craft CMS 3.x
+ * Marketplace plugin for Craft CMS 3.x.
  *
  * Marketplace
  *
@@ -10,20 +10,17 @@
 
 namespace kennethormandy\marketplace\fields;
 
-use kennethormandy\marketplace\Marketplace;
-
 use Craft;
 use craft\base\ElementInterface;
 use craft\base\Field;
-use craft\helpers\Db;
-use yii\db\Schema;
 use craft\helpers\Json;
-
-use Stripe\Stripe;
+use kennethormandy\marketplace\Marketplace;
 use Stripe\Account;
+use Stripe\Stripe;
+use yii\db\Schema;
 
 /**
- * MarketplaceConnectButton Field
+ * MarketplaceConnectButton Field.
  *
  * Whenever someone creates a new field in Craft, they must specify what
  * type of field it is. The system comes with a handful of field types baked in,
@@ -32,7 +29,6 @@ use Stripe\Account;
  * https://craftcms.com/docs/plugins/field-types
  *
  * @author    Kenneth Ormandy
- * @package   Marketplace
  * @since     0.1.0
  */
 class MarketplaceConnectButton extends Field
@@ -41,7 +37,7 @@ class MarketplaceConnectButton extends Field
     // =========================================================================
 
     /**
-     * Some attribute
+     * Some attribute.
      *
      * @var string
      */
@@ -56,7 +52,6 @@ class MarketplaceConnectButton extends Field
      * @return string The display name of this class.
      */
     public static function displayName(): string
-
     {
         return Craft::t('marketplace', 'Marketplace Connect Button');
     }
@@ -96,7 +91,6 @@ class MarketplaceConnectButton extends Field
      * @see \yii\db\QueryBuilder::getColumnType()
      */
     public function getContentColumnType(): string
-
     {
         return Schema::TYPE_STRING;
     }
@@ -338,7 +332,6 @@ class MarketplaceConnectButton extends Field
      * @return string The input HTML.
      */
     public function getInputHtml($value, ElementInterface $element = null): string
-
     {
         // Register our asset bundle
         // Craft::$app->getView()->registerAssetBundle(MarketplaceConnectButtonFieldAsset::class);
@@ -362,9 +355,9 @@ class MarketplaceConnectButton extends Field
           // TODO Change this to a remote documentation page or
           // local plugin page, or give an error that something went wrong
           // if URL and value aren’t set.
-          'url' => 'https://example.com'
+          'url' => 'https://example.com',
         ];
-        
+
         if (isset($value)) {
             $secretApiKey = Marketplace::$plugin->getSettings()->getSecretApiKey();
             Stripe::setApiKey($secretApiKey);
@@ -374,10 +367,10 @@ class MarketplaceConnectButton extends Field
             // on every request, but in the meantime, this works fine.
             $stripeResp = Account::createLoginLink($value);
         }
-        
+
         $appHandle = Marketplace::$plugin->handlesService->getAppHandle();
         $payeeHandle = Marketplace::$plugin->handlesService->getPayeeHandle();
-        
+
         // Render the input template
         return Craft::$app->getView()->renderTemplate(
             'marketplace/_components/fields/MarketplaceConnectButton_input',
@@ -392,11 +385,11 @@ class MarketplaceConnectButton extends Field
                 // field was attached to a user versus some other kind
                 // of element right now
                 'element' => $element,
-                
+
                 'appHandle' => $appHandle ? $appHandle : '',
                 'payeeHandle' => $payeeHandle,
-                
-                'stripeLogin' => $stripeResp
+
+                'stripeLogin' => $stripeResp,
             ]
         );
     }

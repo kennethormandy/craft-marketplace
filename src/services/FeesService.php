@@ -1,4 +1,5 @@
 <?php
+
 namespace kennethormandy\marketplace\services;
 
 use Craft;
@@ -27,9 +28,9 @@ class FeesService extends Component
     {
         parent::init();
     }
-    
+
     /**
-     * Build a Fee model from some settings
+     * Build a Fee model from some settings.
      *
      * @param $config
      * @return FeeModel
@@ -40,17 +41,17 @@ class FeesService extends Component
         $fee->siteId = $fee->siteId ?? Craft::$app->getSites()->getCurrentSite()->id;
         return $fee;
     }
-    
+
     public function getAllFees(): array
     {
         if ($this->_ALL_FEES_FETCHED) {
-          return $this->_FEES_BY_ID;
+            return $this->_FEES_BY_ID;
         }
-        
+
         $rows = $this->_createFeeQuery()
             ->orderBy(['dateCreated' => SORT_ASC])
             ->all();
-            
+
         foreach ($rows as $row) {
             $fee = $this->createFee($row);
             $this->_FEES_BY_ID[$fee->id] = $fee;
@@ -61,7 +62,7 @@ class FeesService extends Component
         $this->_ALL_FEES_FETCHED = true;
         return $this->_FEES_BY_ID;
     }
-    
+
     /**
      * Returns a Query object prepped for retrieving gateways.
      *
@@ -83,7 +84,7 @@ class FeesService extends Component
             ->from(['{{%marketplace_fees}}'])
             ->where(['dateDeleted' => null]);
     }
-    
+
     /**
      * @param $id
      * @return FeeModel|null
@@ -106,7 +107,7 @@ class FeesService extends Component
         }
         return null;
     }
-    
+
     /**
      * @param $handle
      * @return FeeModel|null
@@ -129,73 +130,71 @@ class FeesService extends Component
         }
         return null;
     }
-    
+
     public function saveFee(FeeModel $fee, bool $runValidation = true): bool
     {
-      
-      $isNew = empty($fee->id);
-      if ($fee->id) {
-          $record = FeeRecord::findOne($fee->id);
+        $isNew = empty($fee->id);
+        if ($fee->id) {
+            $record = FeeRecord::findOne($fee->id);
 
-          if (!$record) {
-              throw new Exception(Craft::t('marketplace', 'No fee exists with the ID “{id}”', ['id' => $fee->id]));
-          }
-      } else {
-          $record = new FeeRecord();
-      }
-            
-      if ($runValidation && !$fee->validate()) {
-        LogToFile::info('Fee was not saved as it did not pass validation.', 'marketplace');
+            if (!$record) {
+                throw new Exception(Craft::t('marketplace', 'No fee exists with the ID “{id}”', ['id' => $fee->id]));
+            }
+        } else {
+            $record = new FeeRecord();
+        }
+
+        if ($runValidation && !$fee->validate()) {
+            LogToFile::info('Fee was not saved as it did not pass validation.', 'marketplace');
+            return false;
+        }
+
+        $record->siteId = $fee->siteId;
+        $record->handle = $fee->handle;
+        $record->name = $fee->name;
+
+        // Ex. recieve 10 from the form for a 10 flat fee
+        // Store in the DB as 1000, because we store it in “cents”
+        // for when we pass it to Stripe and to avoid floats
+        $record->value = (int) $fee->value * 100;
+
+        $record->type = $fee->type;
+
+        $record->validate();
+        $record->addErrors($record->getErrors());
+
+        if (!$record->hasErrors()) {
+            // Save
+            $record->save(false);
+
+            $fee->id = $record->id;
+
+            return true;
+        }
+
         return false;
-      }
-      
-      $record->siteId = $fee->siteId;
-      $record->handle = $fee->handle;
-      $record->name = $fee->name;
-
-      // Ex. recieve 10 from the form for a 10 flat fee
-      // Store in the DB as 1000, because we store it in “cents”
-      // for when we pass it to Stripe and to avoid floats
-      $record->value = (int)$fee->value * 100;
-
-      $record->type = $fee->type;
-      
-      $record->validate();
-      $record->addErrors($record->getErrors());
-
-      if (!$record->hasErrors()) {
-        // Save
-        $record->save(false);
-
-        $fee->id = $record->id;
-        
-        return true;
-      }
-      
-      return false;
     }
-    
+
     /**
-     * Deletes a fee (soft delete)
+     * Deletes a fee (soft delete).
      *
      * @param FeeModel $app
+     * @param mixed $feeId
      */
     public function deleteFee($feeId)
     {
-      if ($feeId) {
-        $record = FeeRecord::findOne($feeId);
-      
-        if (!$record) {
-            throw new Exception(Craft::t('marketplace', 'No fee exists with the ID “{id}”', ['id' => $feeId]));
-        }
-        
-        $record->softDelete();
+        if ($feeId) {
+            $record = FeeRecord::findOne($feeId);
 
-        return true;
-      } else {
+            if (!$record) {
+                throw new Exception(Craft::t('marketplace', 'No fee exists with the ID “{id}”', ['id' => $feeId]));
+            }
+
+            $record->softDelete();
+
+            return true;
+        }
         throw new Exception(Craft::t('marketplace', 'No fee ID provided.', []));
-      }
-      
-      return false;
+        return false;
     }
 }

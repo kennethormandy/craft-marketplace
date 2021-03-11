@@ -1,6 +1,6 @@
 <?php
 /**
- * Marketplace plugin for Craft CMS 3.x
+ * Marketplace plugin for Craft CMS 3.x.
  *
  * Marketplace
  *
@@ -12,43 +12,37 @@ namespace kennethormandy\marketplace;
 
 use Craft;
 use craft\base\Plugin as BasePlugin;
-use craft\services\Fields;
-use craft\events\RegisterComponentTypesEvent;
-use craft\events\RegisterUrlRulesEvent;
-use craft\web\UrlManager;
-use craft\elements\User;
-use craft\helpers\UrlHelper;
-use craft\helpers\App;
-
-use craft\commerce\stripe\events\BuildGatewayRequestEvent;
-use craft\commerce\stripe\base\Gateway as StripeGateway;
 use craft\commerce\events\RefundTransactionEvent;
 use craft\commerce\services\Payments;
-use yii\base\Event;
-
-use venveo\oauthclient\Plugin as OAuthPlugin;
-use venveo\oauthclient\services\Providers;
-use venveo\oauthclient\services\Apps as AppsService;
-use venveo\oauthclient\events\AuthorizationUrlEvent;
-use venveo\oauthclient\events\AuthorizationEvent;
-use venveo\oauthclient\controllers\AuthorizeController;
-use venveo\oauthclient\base\Provider;
-use venveo\oauthclient\events\TokenEvent;
-use putyourlightson\logtofile\LogToFile;
-
-use kennethormandy\marketplace\provider\StripeConnectProvider;
-use kennethormandy\marketplace\provider\StripeConnectExpressProvider;
+use craft\commerce\stripe\base\Gateway as StripeGateway;
+use craft\commerce\stripe\events\BuildGatewayRequestEvent;
+use craft\elements\User;
+use craft\events\RegisterComponentTypesEvent;
+use craft\events\RegisterUrlRulesEvent;
+use craft\helpers\App;
+use craft\helpers\UrlHelper;
+use craft\services\Fields;
+use craft\web\UrlManager;
 use kennethormandy\marketplace\fields\MarketplaceConnectButton as MarketplaceConnectButtonField;
 use kennethormandy\marketplace\fields\MarketplacePayee as MarketplacePayeeField;
-use kennethormandy\marketplace\controllers\AccountController;
-use kennethormandy\marketplace\controllers\FeesController;
-use kennethormandy\marketplace\services\HandlesService;
-use kennethormandy\marketplace\services\FeesService;
-use kennethormandy\marketplace\services\PayeesService;
 use kennethormandy\marketplace\models\Settings;
-
+use kennethormandy\marketplace\provider\StripeConnectExpressProvider;
+use kennethormandy\marketplace\provider\StripeConnectProvider;
+use kennethormandy\marketplace\services\FeesService;
+use kennethormandy\marketplace\services\HandlesService;
+use kennethormandy\marketplace\services\PayeesService;
+use putyourlightson\logtofile\LogToFile;
 use Stripe\Stripe;
 use Stripe\Transfer;
+use venveo\oauthclient\base\Provider;
+use venveo\oauthclient\controllers\AuthorizeController;
+use venveo\oauthclient\events\AuthorizationEvent;
+use venveo\oauthclient\events\AuthorizationUrlEvent;
+use venveo\oauthclient\events\TokenEvent;
+use venveo\oauthclient\Plugin as OAuthPlugin;
+use venveo\oauthclient\services\Apps as AppsService;
+use venveo\oauthclient\services\Providers;
+use yii\base\Event;
 
 class Marketplace extends BasePlugin
 {
@@ -84,9 +78,9 @@ class Marketplace extends BasePlugin
     {
         parent::init();
         self::$plugin = $this;
-        
+
         $this->_registerCpRoutes();
-        
+
         // Register services
         $this->setComponents([
             // TODO Rename to just “handles” for nicer API
@@ -94,11 +88,11 @@ class Marketplace extends BasePlugin
             'fees' => FeesService::class,
             'payees' => PayeesService::class,
         ]);
-        
+
         Craft::info('Marketplace plugin loaded', __METHOD__);
-        
+
         $this->_reviseOrderTemplate();
-        
+
         // Register provider
         Event::on(
             Providers::class,
@@ -108,7 +102,7 @@ class Marketplace extends BasePlugin
                 $event->types[] = StripeConnectExpressProvider::class;
             }
         );
-        
+
         // Register our fields
         Event::on(
             Fields::class,
@@ -118,7 +112,7 @@ class Marketplace extends BasePlugin
                 $event->types[] = MarketplacePayeeField::class;
             }
         );
-        
+
         // Before saving the token, use the response to get the
         // Stirpe Account ID provided by Stripe, and save that to
         // the plugin’s custom field
@@ -134,7 +128,7 @@ class Marketplace extends BasePlugin
                 if (isset($stripeResponse)) {
                     LogToFile::info('Stripe response', 'marketplace');
                     LogToFile::info(json_encode($stripeResponse), 'marketplace');
-                
+
                     if (
                   isset($stripeResponse) &&
                   isset($stripeResponse->stripe_user_id)
@@ -174,9 +168,9 @@ class Marketplace extends BasePlugin
             function (AuthorizationUrlEvent $e) {
                 LogToFile::info('EVENT_GET_URL_OPTIONS', 'marketplace');
                 LogToFile::info(json_encode($e), 'marketplace');
-                $appHandle = Marketplace::$plugin->getSettings()->getAppHandle();
+                $appHandle = self::$plugin->getSettings()->getAppHandle();
 
-                LogToFile::info('Get App handle '. $appHandle . ' '. $e->app->handle, 'marketplace');
+                LogToFile::info('Get App handle ' . $appHandle . ' ' . $e->app->handle, 'marketplace');
 
                 // TODO We want to check the handle matches, and the type
                 // of provider is our Stripe provider, as you could in theory
@@ -202,7 +196,7 @@ class Marketplace extends BasePlugin
                         if (isset($user['email'])) {
                             $e->options['stripe_user[email]'] = $user['email'];
                         }
-                
+
                         if (isset($user['url'])) {
                             $e->options['stripe_user[url]'] = $user['url'];
                         }
@@ -214,20 +208,19 @@ class Marketplace extends BasePlugin
                         if (isset($user['lastName'])) {
                             $e->options['stripe_user[last_name]'] = $user['lastName'];
                         }
-                        
+
                         // TODO Handle Stripe redirect back to Craft
                     }
                 }
-            
+
                 return $e;
             }
         );
-        
+
         Event::on(
-          AuthorizeController::class,
-          AuthorizeController::EVENT_BEFORE_AUTHENTICATE,
-          function (AuthorizationEvent $event)
-          {
+            AuthorizeController::class,
+            AuthorizeController::EVENT_BEFORE_AUTHENTICATE,
+            function (AuthorizationEvent $event) {
               // LogToFile::info('EVENT_BEFORE_AUTHENTICATE', 'marketplace');
               if (
                 $event->context &&
@@ -237,7 +230,7 @@ class Marketplace extends BasePlugin
                   $loc = $event->context['location'];
                   $pathname = $loc['pathname'];
                   if (isset($loc['hash'])) {
-                    $pathname = $pathname . $loc['hash'];
+                      $pathname = $pathname . $loc['hash'];
                   }
 
                   $returnUrl = UrlHelper::cpUrl($pathname, null, null);
@@ -246,14 +239,14 @@ class Marketplace extends BasePlugin
                   $event->returnUrl = $returnUrl;
               }
           }
-      );
-        
+        );
+
         // Full and Parial refunds are supported here.
         // TODO Could provide more options around this, ex: Who is responsible
         // for the refund, the platform or connected account? Should the
         // platform application fee be refunded? (Currently, it is not, so the
         // connected account ends up paying the platform for the refund—which
-        // might be appropriate in some situations, but not others. 
+        // might be appropriate in some situations, but not others.
         Event::on(
             Payments::class,
             Payments::EVENT_BEFORE_REFUND_TRANSACTION,
@@ -265,8 +258,8 @@ class Marketplace extends BasePlugin
                 // see if we can tell which one it was (no good checking the
                 // settings, because it could have changed since the order
                 // was made).
-            
-                $secretApiKey = Marketplace::$plugin->getSettings()->getSecretApiKey();
+
+                $secretApiKey = self::$plugin->getSettings()->getSecretApiKey();
                 Stripe::setApiKey($secretApiKey);
 
                 if (isset($e->transaction->response)) {
@@ -282,7 +275,7 @@ class Marketplace extends BasePlugin
                             $transferId = $originalCharge->transfer;
 
                             // TODO This should be the filled in refund amount, otherwise this
-                            $refundAmount = (int)$originalCharge->amount;
+                            $refundAmount = (int) $originalCharge->amount;
 
                             if ($refundAmount > 0) {
                                 Transfer::createReversal(
@@ -305,20 +298,20 @@ class Marketplace extends BasePlugin
                 // would require a change to Craft Commerce Stripe gateway
                 // $hardCodedApproach = 'direct-charge';
                 $hardCodedApproach = 'destination-charge';
-        
-                $applicationFees = Marketplace::$plugin->fees->getAllFees();
-        
+
+                $applicationFees = self::$plugin->fees->getAllFees();
+
                 // Make Destination Charges behave more like Direct Charges
                 // https://stripe.com/docs/payments/connected-accounts#charge-on-behalf-of-a-connected-account
                 $hardCodedOnBehalfOf = false;
-        
+
                 if ($e->transaction->type === 'purchase') {
                     $order = $e->transaction->order;
 
-                    if (!$order || !$order->lineItems || sizeof($order->lineItems) == 0) {
-                      return;
+                    if (!$order || !$order->lineItems || count($order->lineItems) == 0) {
+                        return;
                     }
-                    
+
                     // By default only supports one line item, to match Commerce Lite
                     $lineItemOnly = $order->lineItems[0];
                     $payeeStripeAccountId = $this->payees->getGatewayAccountId($lineItemOnly);
@@ -328,75 +321,74 @@ class Marketplace extends BasePlugin
                             '[Order #' . $order->id . '] Stripe ' . $hardCodedApproach . ' no User Payee Account ID. Paying to parent account.',
                             'marketplace'
                         );
-        
+
                         return;
                     }
 
                     // If there’s more than one line item, we check they all have the
                     // same payees, and allow the payment splitting as long as
                     // they all match.
-                    if (sizeof($order->lineItems) > 1) {
-                      // Iterate over line items, and get payees
-                      // If one payee is different from all others, return
-                      // Maybe we don’t actually need a setting then: you are just gaining
-                      // a new feature if try and run through multiple line items with
-                      // Commerce Pro AND they are all the same payee. Otherwise, if they are
-                      // different payees, you’ll continue to get the same behvaiour: the plugin
-                      // won’t be used.
-                      
-                      $payeesSame = true;
-                      $lineItemPayees = [];
-                      foreach ($order->lineItems as $key => $lineItem) {
-                        if ($key > 0) {
-                          $payeeCurrent = $this->payees->getGatewayAccountId($lineItem);
-                          if ($payeeCurrent != $payeeStripeAccountId) {
-                            $payeesSame = false;
-                            return;
-                          }
+                    if (count($order->lineItems) > 1) {
+                        // Iterate over line items, and get payees
+                        // If one payee is different from all others, return
+                        // Maybe we don’t actually need a setting then: you are just gaining
+                        // a new feature if try and run through multiple line items with
+                        // Commerce Pro AND they are all the same payee. Otherwise, if they are
+                        // different payees, you’ll continue to get the same behvaiour: the plugin
+                        // won’t be used.
+
+                        $payeesSame = true;
+                        $lineItemPayees = [];
+                        foreach ($order->lineItems as $key => $lineItem) {
+                            if ($key > 0) {
+                                $payeeCurrent = $this->payees->getGatewayAccountId($lineItem);
+                                if ($payeeCurrent != $payeeStripeAccountId) {
+                                    $payeesSame = false;
+                                    return;
+                                }
+                            }
                         }
-                      }
 
-                      if ($payeesSame == false) {
-                        LogToFile::info(
-                            'Stripe ' . $hardCodedApproach . ' line items have different User Payee Account IDs. Paying to parent account.',
-                            'marketplace'
-                        );
+                        if ($payeesSame == false) {
+                            LogToFile::info(
+                                'Stripe ' . $hardCodedApproach . ' line items have different User Payee Account IDs. Paying to parent account.',
+                                'marketplace'
+                            );
 
 
-                        return;
-                      }
+                            return;
+                        }
                     }
-        
+
                     LogToFile::info(
                         'Stripe ' . $hardCodedApproach . ' to Stripe Account ID: ' . $payeeStripeAccountId,
                         'marketplace'
                     );
-        
+
                     if ($hardCodedApproach === 'destination-charge') {
                         LogToFile::info(
                             '[Marketplace request] [' . $hardCodedApproach . '] ' . json_encode($e->request),
                             'marketplace'
                         );
-        
+
                         LogToFile::info(
                             '[Marketplace request] [' . $hardCodedApproach . '] destination ' . $payeeStripeAccountId,
                             'marketplace'
                         );
-        
-                        // Apply application fee, if it’s a positive int
-                        if ($applicationFees && sizeof($applicationFees) >= 1) {
 
+                        // Apply application fee, if it’s a positive int
+                        if ($applicationFees && count($applicationFees) >= 1) {
                             $feeCounter = 0;
                             foreach ($applicationFees as $feeId => $fee) {
-                              // TODO Only supporting 1 fee for Lite edition
-                              if ($feeCounter === 0 || App::env('MARKETPLACE_PRO_BETA')) {
-                                  $liteApplicationFee = $fee;
-                              }
+                                // TODO Only supporting 1 fee for Lite edition
+                                if ($feeCounter === 0 || App::env('MARKETPLACE_PRO_BETA')) {
+                                    $liteApplicationFee = $fee;
+                                }
 
-                              $feeCounter++;
+                                $feeCounter++;
                             }
-                            
-                            if ($liteApplicationFee && (int)$liteApplicationFee->value > 0) {
+
+                            if ($liteApplicationFee && (int) $liteApplicationFee->value > 0) {
                                 $liteApplicationFeeAmount = 0;
 
                                 if ($liteApplicationFee->type === 'price-percentage') {
@@ -404,57 +396,57 @@ class Marketplace extends BasePlugin
                                     $percent = ($liteApplicationFee->value / 100);
 
                                     // $10 subtotal * 12.5 = 125 cent application fee
-                                    $liteApplicationFeeAmount = (int)$order->itemSubtotal * $percent;
-                                } else if ($liteApplicationFee->type === 'flat-fee') {
+                                    $liteApplicationFeeAmount = (int) $order->itemSubtotal * $percent;
+                                } elseif ($liteApplicationFee->type === 'flat-fee') {
 
                                     // Ex. $10 fee stored in DB as 1000 = 1000 cent fee
-                                    $liteApplicationFeeAmount = (int)$liteApplicationFee->value;
+                                    $liteApplicationFeeAmount = (int) $liteApplicationFee->value;
                                 }
-                                                                
+
                                 // Must be a positive integer (in cents)
                                 if ($liteApplicationFeeAmount > 0 && is_int($liteApplicationFeeAmount)) {
                                     $e->request['application_fee_amount'] = $liteApplicationFeeAmount;
                                 }
                             }
                         }
-        
+
                         if ($hardCodedOnBehalfOf) {
                             $e->request['on_behalf_of'] = $payeeStripeAccountId;
                         }
-        
+
                         // https://stripe.com/docs/connect/quickstart#process-payment
                         // https://stripe.com/docs/connect/destination-charges
                         $e->request['transfer_data'] = [
-                  "destination" => $payeeStripeAccountId
+                  'destination' => $payeeStripeAccountId,
                 ];
-        
+
                         LogToFile::info(
                             '[Marketplace request modified] [' . $hardCodedApproach . '] ' . json_encode($e->request),
                             'marketplace'
                         );
                     } elseif ($hardCodedApproach === 'direct-charge') {
-        
+
                 // This doesn’t work by default
                 // Modifying the plugin to support this
                 // $e->request['stripe_account'] = $hardCodedConnectedAccountId;
-        
+
                 // in commerce-stripe/src/gateways/PaymentIntents.php I added:
-        
+
                 // $secondArgs = ['idempotency_key' => $transaction->hash];
                 // if ($requestData['stripe_account']) {
                 //   $secondArgs['stripe_account'] = $requestData['stripe_account'];
                 //   unset($requestData['stripe_account']);
                 // }
-        
+
                 // …and then added $secondArgs as the second arg to the change.
-        
+
                 // That worked, but then hit another error. You have
                 // to fully auth using publishableKey and secretKey
                 // for the connected account to use direct charges,
                 // so you probably need the full OAuth flow to get those
                 //   Although also confused because the example does
                 // show them using the platform key.
-        
+
                 // Can use this to behave more like direct-charge,
                 // changed to do this via $hardCodedOnBehalfOf because it
                 // it still seems to be to do with desitnation charges rather than
@@ -470,70 +462,70 @@ class Marketplace extends BasePlugin
             }
         );
     }
-    
+
     // This logic is also very similar to Button input
     private function _getPayeeFromOrder($order)
     {
-      $payeeHandle = Marketplace::$plugin->handlesService->getPayeeHandle();
-      if ($order && $order['lineItems'] && sizeof($order['lineItems']) >= 1) {
-        $firstLineItem = $order['lineItems'][0];
-        $product = $firstLineItem['purchasable']['product'];
-        if ($product) {
-          $payeeId = $product[$payeeHandle];
-          if ($payeeId) {
-            $payee = User::find()
+        $payeeHandle = self::$plugin->handlesService->getPayeeHandle();
+        if ($order && $order['lineItems'] && count($order['lineItems']) >= 1) {
+            $firstLineItem = $order['lineItems'][0];
+            $product = $firstLineItem['purchasable']['product'];
+            if ($product) {
+                $payeeId = $product[$payeeHandle];
+                if ($payeeId) {
+                    $payee = User::find()
               ->id($payeeId)
               ->one();
-              
-            if ($payee) {
-              return $payee;
+
+                    if ($payee) {
+                        return $payee;
+                    }
+                }
             }
-          }
         }
-      }
-      
-      return null;
+
+        return null;
     }
-    
+
     /* Adds a quick demo of using template hooks to add the
      * payee to the order editing page. Could use this to try
      * and modify permissions (ex. redirect you away if you aren’t
      * supposed to be able to view this order), but might also might
      * still work better to add a whole new Marketplace tab that shows you
-     * the same default order views as Commerce, but filtered down to only 
+     * the same default order views as Commerce, but filtered down to only
      * show your orders.
      * https://docs.craftcms.com/v3/extend/template-hooks.html */
     private function _reviseOrderTemplate()
     {
-      Craft::$app->getView()->hook('cp.commerce.order.edit.main-pane', function(array &$context) {
-        $payee = $this->_getPayeeFromOrder($context['order']);
-        if ($payee) {
-          return Craft::$app->view->renderTemplate(
-              'marketplace/order-edit',
-              [
+        Craft::$app->getView()->hook('cp.commerce.order.edit.main-pane', function (array &$context) {
+            $payee = $this->_getPayeeFromOrder($context['order']);
+            if ($payee) {
+                return Craft::$app->view->renderTemplate(
+                    'marketplace/order-edit',
+                    [
                   'order' => $context['order'],
-                  'payee' => $payee
+                  'payee' => $payee,
               ]
-          );          
-        }
-      });
-      
-      Craft::$app->getView()->hook('cp.commerce.order.edit.main-pane', function(array &$context) {
-        $payee = $this->_getPayeeFromOrder($context['order']);
-        if ($payee) {
-          return Craft::$app->view->renderTemplate(
-              'marketplace/order-edit-main-pane',
-              [
+                );
+            }
+        });
+
+        Craft::$app->getView()->hook('cp.commerce.order.edit.main-pane', function (array &$context) {
+            $payee = $this->_getPayeeFromOrder($context['order']);
+            if ($payee) {
+                return Craft::$app->view->renderTemplate(
+                    'marketplace/order-edit-main-pane',
+                    [
                   'order' => $context['order'],
-                  'payee' => $payee
+                  'payee' => $payee,
               ]
-          );
-        }
-      });
+                );
+            }
+        });
     }
-    
+
     /**
-     * Adds the event handler for registering CP routes
+     * Adds the event handler for registering CP routes.
      */
     private function _registerCpRoutes()
     {
@@ -542,7 +534,7 @@ class Marketplace extends BasePlugin
                 'marketplace/account/create-login-link' => 'marketplace/account/create-login-link',
                 'marketplace/fees/new' => 'marketplace/fees/edit',
                 'marketplace/fees/<handle:{handle}>' => 'marketplace/fees/edit',
-                
+
                 // Invalid handle – It should be possible to edit them, but not
                 // to save them, as they should get validated after that.
                 // https://github.com/kennethormandy/craft-marketplace/issues/11
@@ -551,7 +543,7 @@ class Marketplace extends BasePlugin
             ]);
         });
     }
-    
+
     // Protected Methods
     // =========================================================================
 
@@ -564,7 +556,7 @@ class Marketplace extends BasePlugin
     {
         return new Settings();
     }
-    
+
     /**
      * Returns the rendered settings HTML, which will be inserted into the content
      * block on the settings page.
@@ -579,20 +571,19 @@ class Marketplace extends BasePlugin
         $apps = $oauthPlugin->apps->getAllApps();
         $app = $oauthPlugin->apps->createApp([]);
         $supportedApps = [];
-        $fees = Marketplace::$plugin->fees->getAllFees();
+        $fees = self::$plugin->fees->getAllFees();
 
         foreach ($apps as $key => $app) {
-          if (
+            if (
             $app &&
             $app->provider &&
 
             // TODO This would check against the list of supported providers
             //      …but right now we are really only supporting this one.
             $app->provider == 'kennethormandy\marketplace\provider\StripeConnectExpressProvider'
-
           ) {
-            $supportedApps[] = $app;
-          }
+                $supportedApps[] = $app;
+            }
         }
 
         return Craft::$app->view->renderTemplate(
@@ -601,9 +592,8 @@ class Marketplace extends BasePlugin
                 'settings' => $this->getSettings(),
                 'supportedApps' => $supportedApps,
                 'app' => $app,
-                'fees' => $fees
+                'fees' => $fees,
             ]
         );
     }
-
 }

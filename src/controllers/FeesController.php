@@ -1,11 +1,11 @@
 <?php
+
 namespace kennethormandy\marketplace\controllers;
 
-use kennethormandy\marketplace\Marketplace;
-
 use Craft;
-use craft\web\Controller;
 use craft\helpers\UrlHelper;
+use craft\web\Controller;
+use kennethormandy\marketplace\Marketplace;
 
 /* This FeesController is partially based upon
  * the venveo/craft-oauthclient App Controller
@@ -26,7 +26,7 @@ class FeesController extends Controller
             'fees' => $fees,
         ]);
     }
-    
+
     public function actionEdit($handle = null, $fee = null)
     {
         $this->requireAdmin();
@@ -35,30 +35,30 @@ class FeesController extends Controller
           'handle' => $handle,
           'fee' => $fee,
         ];
-        
+
         $feesService = Marketplace::$plugin->fees;
-        
+
         if (!$variables['fee'] && $variables['handle']) {
             $variables['fee'] = $feesService->getFeeByHandle($variables['handle']);
         }
         if (!$variables['fee']) {
             $variables['fee'] = $feesService->createFee([]);
         }
-        
+
         if ($variables['fee']->id) {
-          $variables['title'] = $variables['fee']->name;
+            $variables['title'] = $variables['fee']->name;
         } else {
-          $variables['title'] = Craft::t('marketplace', 'Create a new Fee');
+            $variables['title'] = Craft::t('marketplace', 'Create a new Fee');
         }
 
         return $this->renderTemplate('marketplace/fees/_edit.twig', $variables);
     }
-    
+
     public function actionSave($handle = null, $fee = null)
     {
         $this->requireAdmin();
         $this->requirePostRequest();
-        
+
         $request = Craft::$app->getRequest();
         $feesService = Marketplace::$plugin->fees;
 
@@ -69,48 +69,48 @@ class FeesController extends Controller
             'value' => $request->getRequiredBodyParam('value'),
             'type' => $request->getRequiredBodyParam('type'),
         ];
-        
+
         /** @var FeeModel $fee */
         $fee = $feesService->createFee($config);
-        
-        $session = Craft::$app->session;
-        
-        if (!Marketplace::$plugin->fees->saveFee($fee)) {
-          $session->setError(Craft::t('marketplace', 'Failed to save fee'));
 
-          Craft::$app->getUrlManager()->setRouteParams([
-            'fee' => $fee
+        $session = Craft::$app->session;
+
+        if (!Marketplace::$plugin->fees->saveFee($fee)) {
+            $session->setError(Craft::t('marketplace', 'Failed to save fee'));
+
+            Craft::$app->getUrlManager()->setRouteParams([
+            'fee' => $fee,
           ]);
-          
-          return null;
+
+            return null;
         }
-        
+
         $session->setNotice(Craft::t('marketplace', 'Fee saved'));
         return $this->redirect(UrlHelper::cpUrl('settings/plugins/marketplace'));
     }
-    
+
     public function actionDelete($handle = null, $fee = null)
     {
-      $this->requireAdmin();
-      $this->requirePostRequest();
+        $this->requireAdmin();
+        $this->requirePostRequest();
 
-      $request = Craft::$app->getRequest();
-      $feeId = $request->getBodyParam('id');
-      $fee = Marketplace::$plugin->fees->getFeeById($feeId);
-      
-      $session = Craft::$app->session;
+        $request = Craft::$app->getRequest();
+        $feeId = $request->getBodyParam('id');
+        $fee = Marketplace::$plugin->fees->getFeeById($feeId);
 
-      if (!Marketplace::$plugin->fees->deleteFee($fee->id)) {
-        $session->setError(Craft::t('marketplace', 'Failed to delete fee'));
+        $session = Craft::$app->session;
 
-        Craft::$app->getUrlManager()->setRouteParams([
-          'fee' => $fee
+        if (!Marketplace::$plugin->fees->deleteFee($fee->id)) {
+            $session->setError(Craft::t('marketplace', 'Failed to delete fee'));
+
+            Craft::$app->getUrlManager()->setRouteParams([
+          'fee' => $fee,
         ]);
-        
-        return null;
-      }
-      
-      $session->setNotice(Craft::t('marketplace', 'Fee deleted'));
-      return $this->redirect(UrlHelper::cpUrl('settings/plugins/marketplace'));
+
+            return null;
+        }
+
+        $session->setNotice(Craft::t('marketplace', 'Fee deleted'));
+        return $this->redirect(UrlHelper::cpUrl('settings/plugins/marketplace'));
     }
 }

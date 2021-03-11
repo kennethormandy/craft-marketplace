@@ -1,6 +1,5 @@
 <?php
 /**
- *
  * @since 1.1.0
  */
 
@@ -11,13 +10,13 @@ use craft\events\ModelEvent;
 
 class PayeeEvent extends ModelEvent
 {
-  /**
-   * @var LineItem
-   */
-  public $lineItem;
+    /**
+     * @var LineItem
+     */
+    public $lineItem;
 
-  /**
-   * @var string
-   */
-  public $gatewayAccountId = null;
+    /**
+     * @var string
+     */
+    public $gatewayAccountId = null;
 }

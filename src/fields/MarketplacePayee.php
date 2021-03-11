@@ -2,21 +2,16 @@
 
 namespace kennethormandy\marketplace\fields;
 
-use kennethormandy\marketplace\Marketplace;
-
 use Craft;
 use craft\base\ElementInterface;
 use craft\base\Field;
 use craft\elements\User;
-use craft\helpers\Db;
-use yii\db\Schema;
-use craft\helpers\Json;
-
-use Stripe\Stripe;
+use kennethormandy\marketplace\Marketplace;
 use Stripe\Account;
+use Stripe\Stripe;
 
 /**
- * MarketplacePayee Field
+ * MarketplacePayee Field.
  *
  * Whenever someone creates a new field in Craft, they must specify what
  * type of field it is. The system comes with a handful of field types baked in,
@@ -25,7 +20,6 @@ use Stripe\Account;
  * https://craftcms.com/docs/plugins/field-types
  *
  * @author    Kenneth Ormandy
- * @package   Marketplace
  * @since     0.1.0
  */
 class MarketplacePayee extends Field
@@ -34,7 +28,7 @@ class MarketplacePayee extends Field
     // =========================================================================
 
     /**
-     * Some attribute
+     * Some attribute.
      *
      * @var string
      */
@@ -75,7 +69,7 @@ class MarketplacePayee extends Field
         // ]);
         return $rules;
     }
-    
+
     public function normalizeValue($value, ElementInterface $element = null)
     {
         if ($value) {
@@ -85,13 +79,13 @@ class MarketplacePayee extends Field
             if (is_string($value)) {
                 return json_decode($value)[0];
             }
-        
+
             // If the saved value isn’t a string, we should have the proper
             // array of ids.
             return $value;
         }
     }
-    
+
     /**
      * Returns the field’s input HTML.
      *
@@ -200,9 +194,9 @@ class MarketplacePayee extends Field
 
         if (isset($element[$payeeHandle]) && $element[$payeeHandle]) {
             $payeeId = $element[$payeeHandle];
-            $payee = User::find()->id($payeeId)->one();              
+            $payee = User::find()->id($payeeId)->one();
         }
-        
+
         // Render the input template
         return Craft::$app->getView()->renderTemplate(
             'marketplace/_components/fields/MarketplacePayee_input',
@@ -220,7 +214,7 @@ class MarketplacePayee extends Field
                 // TODO Filter out users without a Stripe account ID set
                 'userOptionCriteria' => [
                   'can' => 'accessCp',
-                ]
+                ],
             ]
         );
     }

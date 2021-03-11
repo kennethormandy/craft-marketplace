@@ -1,13 +1,12 @@
 <?php
-namespace kennethormandy\marketplace\controllers;
 
-use kennethormandy\marketplace\Marketplace;
+namespace kennethormandy\marketplace\controllers;
 
 use Craft;
 use craft\web\Controller;
-
-use Stripe\Account as StripeAccount;
+use kennethormandy\marketplace\Marketplace;
 use putyourlightson\logtofile\LogToFile;
+use Stripe\Account as StripeAccount;
 
 /*
  * This isn’t in use, ended up getting the Stripe
@@ -19,10 +18,10 @@ use putyourlightson\logtofile\LogToFile;
 class AccountController extends Controller
 {
     protected $allowAnonymous = true;
-    
+
     // Seemed to need this from admin?
     // public $enableCsrfValidation = false;
-    
+
     public function actionCreateLoginLink()
     {
         $request = Craft::$app->getRequest();
@@ -62,10 +61,10 @@ class AccountController extends Controller
             '[AccountController] Stripe User ID' . json_encode($request->getParam('action')),
             'marketplace'
         );
-        
-        
+
+
         var_dump($stripeUserId);
-      
+
         if (isset($stripeUserId)) {
             // craft()->userSession->setNotice(Craft::t('Ingredient saved.'));
             // $this->redirectToPostedUrl($variables = array());
@@ -77,9 +76,8 @@ class AccountController extends Controller
 
                 if ($resp) {
                     return $this->redirect($resp->url, 302);
-                } else {
-                    Craft::$app->session->setError('Failed');
                 }
+                Craft::$app->session->setError('Failed');
             } catch (Exception $e) {
                 LogToFile::error($e->getTraceAsString(), 'marketplace');
                 Craft::$app->session->setError('Something went wrong: ' . $e->getMessage());

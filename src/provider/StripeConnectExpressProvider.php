@@ -10,7 +10,8 @@ use venveo\oauthclient\base\Provider;
 // TODO $express from Plugin Settings or Auth Settings
 
 // TODO Probably possible to remove kennethormandy/oauth2-stripe with this
-class LeagueProviderCustomized extends LeagueProvider {
+class LeagueProviderCustomized extends LeagueProvider
+{
     public function getBaseAuthorizationUrl(): string
     {
         return 'https://connect.stripe.com/express/oauth/authorize';

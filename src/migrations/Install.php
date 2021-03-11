@@ -12,7 +12,6 @@ use craft\db\Migration;
  */
 class Install extends Migration
 {
-
     // Public Properties
     // =========================================================================
 
@@ -25,8 +24,8 @@ class Install extends Migration
     // =========================================================================
 
     /**
-    * @inheritdoc
-    */
+     * @inheritdoc
+     */
     public function safeUp()
     {
         $this->driver = Craft::$app->getConfig()->getDb()->driver;
@@ -57,7 +56,7 @@ class Install extends Migration
     // =========================================================================
 
     /**
-     * Creates the tables needed for the Records used by the plugin
+     * Creates the tables needed for the Records used by the plugin.
      */
     protected function createTables()
     {
@@ -72,7 +71,7 @@ class Install extends Migration
                     'dateUpdated' => $this->dateTime()->notNull(),
                     'dateDeleted' => $this->dateTime()->null(),
                     'uid' => $this->uid(),
-                    
+
                     // Custom columns in the table
                     'siteId' => $this->integer()->notNull(),
                     'handle' => $this->string(255)->notNull()->defaultValue(''),
@@ -86,16 +85,14 @@ class Install extends Migration
                     // a $1.00 fee and a 10% fee on a $50 order, the fee is $6:
                     // ($1) + ($50 * 0.1) = $6.00
                     // It would NOT be $5.10, which would rquire an order:
-                    // ($50 + $1) * 0.1 = $5.10 
+                    // ($50 + $1) * 0.1 = $5.10
                 ]
             );
         }
     }
 
     /**
-     * Creates the indexes needed for the Records used by the plugin
-     *
-     * @return void
+     * Creates the indexes needed for the Records used by the plugin.
      */
     protected function createIndexes()
     {
@@ -109,9 +106,7 @@ class Install extends Migration
     }
 
     /**
-     * Creates the foreign keys needed for the Records used by the plugin
-     *
-     * @return void
+     * Creates the foreign keys needed for the Records used by the plugin.
      */
     protected function addForeignKeys()
     {
@@ -129,17 +124,13 @@ class Install extends Migration
 
     /**
      * Populates the DB with the default data.
-     *
-     * @return void
      */
     protected function insertDefaultData()
     {
     }
 
     /**
-     * Removes the tables needed for the Records used by the plugin
-     *
-     * @return void
+     * Removes the tables needed for the Records used by the plugin.
      */
     protected function removeTables()
     {

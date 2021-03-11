@@ -1,12 +1,12 @@
 <?php
+
 namespace kennethormandy\marketplace\services;
 
 use Craft;
-use craft\services\Fields;
 use craft\base\Component;
-use kennethormandy\marketplace\Marketplace;
 use kennethormandy\marketplace\fields\MarketplaceConnectButton as MarketplaceConnectButtonField;
 use kennethormandy\marketplace\fields\MarketplacePayee as MarketplacePayeeField;
+use kennethormandy\marketplace\Marketplace;
 
 class HandlesService extends Component
 {
@@ -31,7 +31,7 @@ class HandlesService extends Component
                 }
             }
         }
-      
+
         return null;
     }
 
@@ -56,10 +56,10 @@ class HandlesService extends Component
                 }
             }
         }
-      
+
         return null;
     }
-    
+
     /**
      * The CMS admin can set the OAuth API field handle
      * to whatever they want. We have already determined
