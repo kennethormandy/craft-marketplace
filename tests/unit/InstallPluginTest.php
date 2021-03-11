@@ -1,9 +1,10 @@
-<?php 
+<?php
+
 namespace kennethormandy\marketplace\tests;
 
 use Codeception\Test\Unit;
-use UnitTester;
 use Craft;
+use UnitTester;
 
 class InstallPluginTest extends Unit
 {
@@ -11,7 +12,7 @@ class InstallPluginTest extends Unit
      * @var UnitTester
      */
     protected $tester;
-    
+
     protected function _before()
     {
     }
@@ -19,7 +20,7 @@ class InstallPluginTest extends Unit
     protected function _after()
     {
     }
-    
+
     public function testChangeEditionExample()
     {
         Craft::$app->setEdition(Craft::Pro);
@@ -28,7 +29,8 @@ class InstallPluginTest extends Unit
 
         $this->assertSame(
             Craft::Pro,
-            Craft::$app->getEdition());
+            Craft::$app->getEdition()
+        );
     }
 
     public function testCraftDatabaseIsActive()
