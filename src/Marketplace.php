@@ -221,24 +221,24 @@ class Marketplace extends BasePlugin
             AuthorizeController::class,
             AuthorizeController::EVENT_BEFORE_AUTHENTICATE,
             function (AuthorizationEvent $event) {
-              // LogToFile::info('EVENT_BEFORE_AUTHENTICATE', 'marketplace');
-              if (
+                // LogToFile::info('EVENT_BEFORE_AUTHENTICATE', 'marketplace');
+                if (
                 $event->context &&
                 isset($event->context['location']) &&
                 isset($event->context['location']['pathname']) &&
                 $event->context['contextName'] === 'MarketplaceConnectButton') {
-                  $loc = $event->context['location'];
-                  $pathname = $loc['pathname'];
-                  if (isset($loc['hash'])) {
-                      $pathname = $pathname . $loc['hash'];
-                  }
+                    $loc = $event->context['location'];
+                    $pathname = $loc['pathname'];
+                    if (isset($loc['hash'])) {
+                        $pathname = $pathname . $loc['hash'];
+                    }
 
-                  $returnUrl = UrlHelper::cpUrl($pathname, null, null);
-                  LogToFile::info('Return URL', 'marketplace');
-                  LogToFile::info($returnUrl, 'marketplace');
-                  $event->returnUrl = $returnUrl;
-              }
-          }
+                    $returnUrl = UrlHelper::cpUrl($pathname, null, null);
+                    LogToFile::info('Return URL', 'marketplace');
+                    LogToFile::info($returnUrl, 'marketplace');
+                    $event->returnUrl = $returnUrl;
+                }
+            }
         );
 
         // Full and Parial refunds are supported here.
@@ -309,131 +309,131 @@ class Marketplace extends BasePlugin
                     LogToFile::info(
                         'Unsupported transaction type: ' . $e->transaction->type,
                         'marketplace'
-                    );                    
+                    );
 
                     return;
                 }
 
 
-                    $order = $e->transaction->order;
+                $order = $e->transaction->order;
 
-                    if (!$order || !$order->lineItems || count($order->lineItems) == 0) {
-                        return;
-                    }
+                if (!$order || !$order->lineItems || count($order->lineItems) == 0) {
+                    return;
+                }
 
-                    // By default only supports one line item, to match Commerce Lite
-                    $lineItemOnly = $order->lineItems[0];
-                    $payeeStripeAccountId = $this->payees->getGatewayAccountId($lineItemOnly);
+                // By default only supports one line item, to match Commerce Lite
+                $lineItemOnly = $order->lineItems[0];
+                $payeeStripeAccountId = $this->payees->getGatewayAccountId($lineItemOnly);
 
-                    if (!$payeeStripeAccountId) {
-                        LogToFile::info(
-                            '[Order #' . $order->id . '] Stripe ' . $hardCodedApproach . ' no User Payee Account ID. Paying to parent account.',
-                            'marketplace'
-                        );
-
-                        return;
-                    }
-
-                    // If there’s more than one line item, we check they all have the
-                    // same payees, and allow the payment splitting as long as
-                    // they all match.
-                    if (count($order->lineItems) > 1) {
-                        // Iterate over line items, and get payees
-                        // If one payee is different from all others, return
-                        // Maybe we don’t actually need a setting then: you are just gaining
-                        // a new feature if try and run through multiple line items with
-                        // Commerce Pro AND they are all the same payee. Otherwise, if they are
-                        // different payees, you’ll continue to get the same behvaiour: the plugin
-                        // won’t be used.
-
-                        $payeesSame = true;
-                        $lineItemPayees = [];
-                        foreach ($order->lineItems as $key => $lineItem) {
-                            if ($key > 0) {
-                                $payeeCurrent = $this->payees->getGatewayAccountId($lineItem);
-                                if ($payeeCurrent != $payeeStripeAccountId) {
-                                    $payeesSame = false;
-                                    return;
-                                }
-                            }
-                        }
-
-                        if ($payeesSame == false) {
-                            LogToFile::info(
-                                'Stripe ' . $hardCodedApproach . ' line items have different User Payee Account IDs. Paying to parent account.',
-                                'marketplace'
-                            );
-
-
-                            return;
-                        }
-                    }
-
+                if (!$payeeStripeAccountId) {
                     LogToFile::info(
-                        'Stripe ' . $hardCodedApproach . ' to Stripe Account ID: ' . $payeeStripeAccountId,
+                        '[Order #' . $order->id . '] Stripe ' . $hardCodedApproach . ' no User Payee Account ID. Paying to parent account.',
                         'marketplace'
                     );
 
-                    if ($hardCodedApproach === 'destination-charge') {
+                    return;
+                }
+
+                // If there’s more than one line item, we check they all have the
+                // same payees, and allow the payment splitting as long as
+                // they all match.
+                if (count($order->lineItems) > 1) {
+                    // Iterate over line items, and get payees
+                    // If one payee is different from all others, return
+                    // Maybe we don’t actually need a setting then: you are just gaining
+                    // a new feature if try and run through multiple line items with
+                    // Commerce Pro AND they are all the same payee. Otherwise, if they are
+                    // different payees, you’ll continue to get the same behvaiour: the plugin
+                    // won’t be used.
+
+                    $payeesSame = true;
+                    $lineItemPayees = [];
+                    foreach ($order->lineItems as $key => $lineItem) {
+                        if ($key > 0) {
+                            $payeeCurrent = $this->payees->getGatewayAccountId($lineItem);
+                            if ($payeeCurrent != $payeeStripeAccountId) {
+                                $payeesSame = false;
+                                return;
+                            }
+                        }
+                    }
+
+                    if ($payeesSame == false) {
                         LogToFile::info(
-                            '[Marketplace request] [' . $hardCodedApproach . '] ' . json_encode($e->request),
+                            'Stripe ' . $hardCodedApproach . ' line items have different User Payee Account IDs. Paying to parent account.',
                             'marketplace'
                         );
 
-                        LogToFile::info(
-                            '[Marketplace request] [' . $hardCodedApproach . '] destination ' . $payeeStripeAccountId,
-                            'marketplace'
-                        );
 
-                        // Apply application fee, if it’s a positive int
-                        if ($applicationFees && count($applicationFees) >= 1) {
-                            $feeCounter = 0;
-                            foreach ($applicationFees as $feeId => $fee) {
-                                // TODO Only supporting 1 fee for Lite edition
-                                if ($feeCounter === 0 || App::env('MARKETPLACE_PRO_BETA')) {
-                                    $liteApplicationFee = $fee;
-                                }
+                        return;
+                    }
+                }
 
-                                $feeCounter++;
+                LogToFile::info(
+                    'Stripe ' . $hardCodedApproach . ' to Stripe Account ID: ' . $payeeStripeAccountId,
+                    'marketplace'
+                );
+
+                if ($hardCodedApproach === 'destination-charge') {
+                    LogToFile::info(
+                        '[Marketplace request] [' . $hardCodedApproach . '] ' . json_encode($e->request),
+                        'marketplace'
+                    );
+
+                    LogToFile::info(
+                        '[Marketplace request] [' . $hardCodedApproach . '] destination ' . $payeeStripeAccountId,
+                        'marketplace'
+                    );
+
+                    // Apply application fee, if it’s a positive int
+                    if ($applicationFees && count($applicationFees) >= 1) {
+                        $feeCounter = 0;
+                        foreach ($applicationFees as $feeId => $fee) {
+                            // TODO Only supporting 1 fee for Lite edition
+                            if ($feeCounter === 0 || App::env('MARKETPLACE_PRO_BETA')) {
+                                $liteApplicationFee = $fee;
                             }
 
-                            if ($liteApplicationFee && (int) $liteApplicationFee->value > 0) {
-                                $liteApplicationFeeAmount = 0;
+                            $feeCounter++;
+                        }
 
-                                if ($liteApplicationFee->type === 'price-percentage') {
-                                    // Ex. 12.50% fee stored in DB as 1250
-                                    $percent = ($liteApplicationFee->value / 100);
+                        if ($liteApplicationFee && (int) $liteApplicationFee->value > 0) {
+                            $liteApplicationFeeAmount = 0;
 
-                                    // $10 subtotal * 12.5 = 125 cent application fee
-                                    $liteApplicationFeeAmount = (int) $order->itemSubtotal * $percent;
-                                } elseif ($liteApplicationFee->type === 'flat-fee') {
+                            if ($liteApplicationFee->type === 'price-percentage') {
+                                // Ex. 12.50% fee stored in DB as 1250
+                                $percent = ($liteApplicationFee->value / 100);
+
+                                // $10 subtotal * 12.5 = 125 cent application fee
+                                $liteApplicationFeeAmount = (int) $order->itemSubtotal * $percent;
+                            } elseif ($liteApplicationFee->type === 'flat-fee') {
 
                                     // Ex. $10 fee stored in DB as 1000 = 1000 cent fee
-                                    $liteApplicationFeeAmount = (int) $liteApplicationFee->value;
-                                }
+                                $liteApplicationFeeAmount = (int) $liteApplicationFee->value;
+                            }
 
-                                // Must be a positive integer (in cents)
-                                if ($liteApplicationFeeAmount > 0 && is_int($liteApplicationFeeAmount)) {
-                                    $e->request['application_fee_amount'] = $liteApplicationFeeAmount;
-                                }
+                            // Must be a positive integer (in cents)
+                            if ($liteApplicationFeeAmount > 0 && is_int($liteApplicationFeeAmount)) {
+                                $e->request['application_fee_amount'] = $liteApplicationFeeAmount;
                             }
                         }
+                    }
 
-                        if ($hardCodedOnBehalfOf) {
-                            $e->request['on_behalf_of'] = $payeeStripeAccountId;
-                        }
+                    if ($hardCodedOnBehalfOf) {
+                        $e->request['on_behalf_of'] = $payeeStripeAccountId;
+                    }
 
-                        // https://stripe.com/docs/connect/quickstart#process-payment
-                        // https://stripe.com/docs/connect/destination-charges
-                        $e->request['transfer_data'] = [
+                    // https://stripe.com/docs/connect/quickstart#process-payment
+                    // https://stripe.com/docs/connect/destination-charges
+                    $e->request['transfer_data'] = [
                   'destination' => $payeeStripeAccountId,
                 ];
 
-                        LogToFile::info(
-                            '[Marketplace request modified] [' . $hardCodedApproach . '] ' . json_encode($e->request),
-                            'marketplace'
-                        );
-                    } elseif ($hardCodedApproach === 'direct-charge') {
+                    LogToFile::info(
+                        '[Marketplace request modified] [' . $hardCodedApproach . '] ' . json_encode($e->request),
+                        'marketplace'
+                    );
+                } elseif ($hardCodedApproach === 'direct-charge') {
 
                 // This doesn’t work by default
                 // Modifying the plugin to support this
@@ -466,7 +466,6 @@ class Marketplace extends BasePlugin
                 // $e->request['transfer_data'] = [
                 //   "destination" => $payeeStripeAccountId
                 // ];
-                    }
                 }
             }
         );
