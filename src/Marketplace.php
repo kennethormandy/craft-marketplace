@@ -305,7 +305,16 @@ class Marketplace extends BasePlugin
                 // https://stripe.com/docs/payments/connected-accounts#charge-on-behalf-of-a-connected-account
                 $hardCodedOnBehalfOf = false;
 
-                if ($e->transaction->type === 'purchase') {
+                if ($e->transaction->type !== 'purchase' && $e->transaction->type !== 'authorize') {
+                    LogToFile::info(
+                        'Unsupported transaction type: ' . $e->transaction->type,
+                        'marketplace'
+                    );                    
+
+                    return;
+                }
+
+
                     $order = $e->transaction->order;
 
                     if (!$order || !$order->lineItems || count($order->lineItems) == 0) {
