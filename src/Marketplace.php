@@ -389,8 +389,8 @@ class Marketplace extends BasePlugin
                     if ($applicationFees && count($applicationFees) >= 1) {
                         $feeCounter = 0;
                         foreach ($applicationFees as $feeId => $fee) {
-                            // TODO Only supporting 1 fee for Lite edition
-                            if ($feeCounter === 0 || App::env('MARKETPLACE_PRO_BETA')) {
+                            // The Lite Edition only supports 1 fee
+                            if ($feeCounter === 0 || $this->isPro()) {
                                 $liteApplicationFee = $fee;
                             }
 
