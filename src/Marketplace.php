@@ -495,6 +495,27 @@ class Marketplace extends BasePlugin
         return null;
     }
 
+    /**
+     * Is Pro
+     * 
+     * Whether or not this the Pro edition of the plugin is being used.
+     *
+     * @since 1.4.0
+     * @return boolean
+    */
+    private function isPro()
+    {
+        if (isset($this->EDITION_PRO) && $this->is($this->EDITION_PRO)) {
+            return true;
+        }
+
+        if (App::env('MARKETPLACE_PRO_BETA')) {
+            return true;
+        }
+
+        return false;
+    }
+
     /* Adds a quick demo of using template hooks to add the
      * payee to the order editing page. Could use this to try
      * and modify permissions (ex. redirect you away if you aren’t
@@ -601,6 +622,7 @@ class Marketplace extends BasePlugin
                 'supportedApps' => $supportedApps,
                 'app' => $app,
                 'fees' => $fees,
+                'isPro' => $this->isPro(),
             ]
         );
     }
