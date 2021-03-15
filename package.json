@@ -1,0 +1,14 @@
+{
+  "name": "@kennethormandy/craft-marketplace",
+  "private": true,
+  "author": "Kenneth Ormandy (https://kennethormandy.com)",
+  "repository": "https://github.com/kennethormandy/craft-marketplace",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "homepage": "https://plugins.craftcms.com/marketplace",
+  "devDependencies": {
+    "cypress": "^6.6.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
