@@ -1,21 +1,21 @@
 actor_suffix: Tester
 paths:
-  tests: tests
-  output: tests/_output
-  log: tests/_output
-  data: tests/_data
-  support: tests/_support
-  envs: tests/_envs
+  tests: tests/codeception
+  output: tests/codeception/_output
+  log: tests/codeception/_output
+  data: tests/codeception/_data
+  support: tests/codeception/_support
+  envs: tests/codeception/_envs
 bootstrap: _bootstrap.php
 params:
-  - tests/.env
+  - tests/codeception/.env
 extensions:
   enabled:
     - Codeception\Extension\RunFailed
 modules:
   config:
     \craft\test\Craft:
-      configFile: "tests/_craft/config/test.php"
+      configFile: "tests/codeception/_craft/config/test.php"
       entryUrl: "http://craft-marketplace.ddev.site/index.php"
       projectConfig: {}
       migrations: []

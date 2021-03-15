@@ -3,5 +3,5 @@ vendor
 node_modules
 *.log*
 composer.lock
-tests/.env
+tests/**/.env
 .php_cs.cache
