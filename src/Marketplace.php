@@ -600,6 +600,13 @@ class Marketplace extends BasePlugin
         $apps = $oauthPlugin->apps->getAllApps();
         $app = $oauthPlugin->apps->createApp([]);
         $supportedApps = [];
+
+        // TODO Utility function, where we can send all fees
+        // and get back only supported fees? ie. one place
+        // where the 1st fee gets removed / split into two
+        // different arrays. That can be used by the plugin
+        // itself, and then also passed the same way to the
+        // settings template to render the two different lists
         $fees = self::$plugin->fees->getAllFees();
 
         foreach ($apps as $key => $app) {
