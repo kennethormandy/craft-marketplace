@@ -496,13 +496,13 @@ class Marketplace extends BasePlugin
     }
 
     /**
-     * Is Pro
-     * 
+     * Is Pro.
+     *
      * Whether or not this the Pro edition of the plugin is being used.
      *
      * @since 1.4.0
-     * @return boolean
-    */
+     * @return bool
+     */
     private function isPro()
     {
         if (isset($this->EDITION_PRO) && $this->is($this->EDITION_PRO)) {
