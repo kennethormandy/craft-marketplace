@@ -5,3 +5,8 @@ node_modules
 composer.lock
 tests/**/.env
 .php_cs.cache
+
+# Cypress
+tests/cypress/screenshots
+tests/cypress/videos
+tests/cypress/downloads
