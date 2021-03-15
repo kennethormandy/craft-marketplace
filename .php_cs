@@ -16,7 +16,7 @@ return YiisoftConfig::create()
     ->setFinder(
         PhpCsFixer\Finder::create()
             ->in('src')
-            ->in('tests/acceptance')
-            ->in('tests/functional')
-            ->in('tests/unit')
+            ->in('tests/codeception/acceptance')
+            ->in('tests/codeception/functional')
+            ->in('tests/codeception/unit')
     );
