@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+### Added
+- Added support for Capture & Authorize transactions
+
 ## v1.3.1 - 2021-03-10
 
 ### Fixed
