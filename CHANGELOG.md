@@ -2,8 +2,11 @@
 
 ## Unreleased
 
+## v1.4.0 - 2021-03-15
+
 ### Added
-- Added support for Capture & Authorize transactions
+- Added support for Craft Commerce’s “Authorize Only (Manual Capture)” [`capture`](https://craftcms.com/docs/commerce/3.x/transactions.html#capture) transactions
+- Added more helpful error for soft-deleted fee or name conflicts [#16](https://github.com/kennethormandy/craft-marketplace/issues/16)
 
 ## v1.3.1 - 2021-03-10
 
