@@ -136,11 +136,31 @@ class FeesService extends Component
         $isNew = empty($fee->id);
         if ($fee->id) {
             $record = FeeRecord::findOne($fee->id);
-
+            
             if (!$record) {
                 throw new Exception(Craft::t('marketplace', 'No fee exists with the ID “{id}”', ['id' => $fee->id]));
             }
         } else {
+            // Check soft deleted, based on unique fields in Fee model
+            if ($fee->handle || $fee->name) {
+                $trahsedRecord = FeeRecord::findTrashed()
+                    ->where(['handle' => $fee->handle])
+                    ->orWhere(['name' => $fee->name])
+                    ->one();
+
+                // TODO Handle this gracefully instead of throwing
+                // https://github.com/kennethormandy/craft-marketplace/issues/16
+                if ($trahsedRecord) {
+                    throw new Exception(Craft::t(
+                        'marketplace', 'Soft-deleted fee already exists “{name} ({handle})”',
+                        [
+                            'name' => $trahsedRecord->name,
+                            'handle' => $trahsedRecord->handle
+                        ]
+                    ));
+                }
+            }
+
             $record = new FeeRecord();
         }
 
