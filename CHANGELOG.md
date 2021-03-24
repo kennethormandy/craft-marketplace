@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+### Fixed
+- Fixed `EVENT_AFTER_DETERMINE_PAYEE` not firing, when no default Payee was set on Product in Craft CMS admin
+
 ## v1.4.0 - 2021-03-15
 
 ### Added
