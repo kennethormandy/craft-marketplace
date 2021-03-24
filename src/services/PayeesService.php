@@ -34,10 +34,10 @@ class PayeesService extends Component
         $payeeHandle = Marketplace::$plugin->handlesService->getPayeeHandle();
 
         if (
-          isset($purchasable[$payeeHandle]) &&
-          $purchasable[$payeeHandle] !== null &&
-          $purchasable[$payeeHandle]
-      ) {
+            isset($purchasable[$payeeHandle]) &&
+            $purchasable[$payeeHandle] !== null &&
+            $purchasable[$payeeHandle]
+        ) {
             if (is_numeric($purchasable[$payeeHandle])) {
                 // Craft Commerce v3 Digital Products
                 $payeeUserId = $purchasable[$payeeHandle];
@@ -47,10 +47,10 @@ class PayeesService extends Component
                 $purchasablePayeeUser = $purchasable[$payeeHandle]->one();
             }
         } elseif (
-          isset($purchasable->product[$payeeHandle]) &&
-          $purchasable->product[$payeeHandle] !== null &&
-          $purchasable->product[$payeeHandle]
-      ) {
+            isset($purchasable->product[$payeeHandle]) &&
+            $purchasable->product[$payeeHandle] !== null &&
+            $purchasable->product[$payeeHandle]
+        ) {
             // Typcial products
             $payeeUserId = $purchasable->product[$payeeHandle];
             $purchasablePayeeUser = User::find()->id($payeeUserId)->one();
