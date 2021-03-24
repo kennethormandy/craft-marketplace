@@ -26,6 +26,7 @@ class PayeesService extends Component
         $event = new PayeeEvent();
         $event->lineItem = $lineItem;
         $event->gatewayAccountId = null;
+        $purchasablePayeeUser = null;
 
         if ($this->hasEventHandlers(self::EVENT_BEFORE_DETERMINE_PAYEE)) {
             $this->trigger(self::EVENT_BEFORE_DETERMINE_PAYEE, $event);
@@ -56,15 +57,20 @@ class PayeesService extends Component
             $purchasablePayeeUser = User::find()->id($payeeUserId)->one();
         } else {
             LogToFile::info(
-                '[Marketplace] [PayeesService] No User Payee Account ID.',
+                '[Marketplace] [PayeesService] No User Payee Account ID set in Craft CMS.',
                 'marketplace'
             );
 
-            return null;
+            // We don’t return here, because people can still use
+            // EVENT_AFTER_DETERMINE_PAYEE to set the a User Payee Account ID
         }
 
-        $stripeConnectHandle = Marketplace::$plugin->handlesService->getButtonHandle($purchasablePayeeUser);
-        $payeeStripeAccountId = $purchasablePayeeUser[$stripeConnectHandle];
+        $payeeStripeAccountId = null;
+
+        if (isset($purchasablePayeeUser)) {
+            $stripeConnectHandle = Marketplace::$plugin->handlesService->getButtonHandle($purchasablePayeeUser);
+            $payeeStripeAccountId = $purchasablePayeeUser[$stripeConnectHandle];    
+        }
 
         $event->gatewayAccountId = $payeeStripeAccountId;
 
