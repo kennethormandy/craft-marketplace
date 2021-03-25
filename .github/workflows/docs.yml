@@ -27,6 +27,7 @@ jobs:
           CI: true
       - name: "npm build and deploy"
         run: |
+          cd docs
           npm run build --if-present
           npm run deploy --if-present
         env:
