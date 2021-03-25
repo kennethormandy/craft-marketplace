@@ -11,6 +11,9 @@ module.exports = {
   organizationName: "kennethormandy", // Usually your GitHub org/user name.
   projectName: "craft-marketplace", // Usually your repo name.
   themeConfig: {
+    prism: {
+      additionalLanguages: ["php", "twig"]
+    },
     image: 'images/og-image.png',
     colorMode: {
       defaultMode: "dark",
