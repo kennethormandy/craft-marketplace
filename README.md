@@ -46,7 +46,7 @@ To getting started, you should already have a Stripe account, and Craft Commerce
 
 First, you’ll install the Marketplace for Craft Commerce, and the OAuth 2.0 Client that it uses:
 
-![](./docs/images/marketplace-docs-1.png)
+![](./docs/static/images/marketplace-docs-1.png)
 
 This can be done through the Craft CMS dashboard, or using the command line:
 
@@ -84,7 +84,7 @@ Now, you can configure the OAuth Client plugin to use with your new Stripe Conne
 
 Register a new OAuth App:
 
-![](./docs/images/marketplace-docs-3.png)
+![](./docs/static/images/marketplace-docs-3.png)
 
 <table>
 <thead>
@@ -105,7 +105,7 @@ You’ll probably want to make your Stripe Connect Client ID and your Stripe Sec
 
 After saving your OAuth App, copy the Redirect URI from the “Setup Info.” You’ll want to add this to your Stripe Connect settings in the Stripe Dashboard. At the time of writing, this is stored in the Stripe Dashboard under: Settings → Connect settings → Integration.
 
-![](./docs/images/marketplace-docs-4.png)
+![](./docs/static/images/marketplace-docs-4.png)
 
 Now, Stripe will be able to redirect sellers on your platform back to Craft CMS after saving their Stripe details.
 
@@ -113,7 +113,7 @@ Now, Stripe will be able to redirect sellers on your platform back to Craft CMS 
 
 Now that your OAuth App has been created, you can select it as the app to use, in the Marketplace for Craft Commerce settings. You’ll also need to fill in your Stripe Secret Key here too.
 
-![](./docs/images/marketplace-docs-7.png)
+![](./docs/static/images/marketplace-docs-7.png)
 
 You can also set up a Fee now, or leave it blank. This is described later in [Add a Fee](#add-a-fee)
 
@@ -127,17 +127,17 @@ Marketplace contains two new fields for you to use:
 
 You’ll want to create a new Marketplace Payee field, and add it as a new field on the relevant Product Types.
 
-![](./docs/images/marketplace-docs-6.png)
+![](./docs/static/images/marketplace-docs-6.png)
 
 For example, using the Clothing products that come with a fresh Craft Commerce install, you’d add the field to Commerce → System Settings → Product Types → Clothing → Product Fields:
 
-![](./docs/images/marketplace-docs-10.png)
+![](./docs/static/images/marketplace-docs-10.png)
 
 <!-- TODO Had  a better screenshot for this, of modifying the Commerce Product fields. -->
 
 You’ll also want to create a new Marketplace Connect Button field, and add it as a new field for Users. For example:
 
-![](./docs/images/marketplace-docs-5.png)
+![](./docs/static/images/marketplace-docs-5.png)
 
 
 ## General use
@@ -161,7 +161,7 @@ Minimum necessary permissions:
 
 Login as that user (When you connect accounts, right now the associated token is always based on the logged in user account, rather than the profile of the person you are looking at. ie. you have to “Login as user” to test connecting their account, and you shouldn’t be able to see this field (or it should be disabled) unless you are looking at your own profile).
 
-![](./docs/images/marketplace-docs-9.png)
+![](./docs/static/images/marketplace-docs-9.png)
 
 - Connect a new account, using Stripe Connect Express
 - You should be redirected back to your own Craft CMS application, per [Redirect from Stripe to Craft CMS](#redirect-from-stripe-to-craft-cms).
@@ -170,11 +170,11 @@ Login as that user (When you connect accounts, right now the associated token is
 
 Let’s imagine this new user makes one of the Clothing Product we have on our store, and we want them to be paid for it. Now, we can go to that Product, and set them as the Payee:
 
-![](./docs/images/marketplace-docs-10.png)
+![](./docs/static/images/marketplace-docs-10.png)
 
 ### Add a Fee for your platform
 
-![](./docs/images/marketplace-listing-5.png)
+![](./docs/static/images/marketplace-listing-5.png)
 
 Marketplace Lite allows you to configure a single flat-rate or percentage fee, inclusive of the customer’s total.
 
@@ -190,7 +190,7 @@ Everything is configured! If you have filled in some content and have:
 
 Your Craft Commerce templates don’t _require_ any modifications to handle this, but depending on the kind of store or marketplace your are running, you might decide to make some. For example, you might show the Payee to the end cusomter. Imagine “Jane Example” designed “The Last Knee-High” product that comes pre-filled on Craft Commerce, and you want to show them in the default Craft Commerce buy templates:
 
-![](./docs/images/marketplace-docs-11.png)
+![](./docs/static/images/marketplace-docs-11.png)
 
 The templates stored in `example-templates` in this repository are the minimum changes to use Marketplace with a default Craft Commerce install. The template changes are only to switch from using the Dummy Payment Gateway, from the default install, to Stripe, and to show the customer who the Payee is, which is optional.
 
