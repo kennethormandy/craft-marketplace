@@ -2,20 +2,32 @@
 module.exports = {
   title: "Marketplace for Craft Commerce",
   tagline:
-    "Make your Craft CMS and Craft Commerce site into a Marketplace, using Stripe Connect. Add payees to products, charge a fee for your platform, and handle payouts automatically via Stripe.",
+    "Make your Craft Commerce site into a Marketplace, using Stripe Connect.",
   url: "https://marketplace.kennethormandy.com/marketplace",
   baseUrl: "/",
   onBrokenLinks: "throw",
   onBrokenMarkdownLinks: "warn",
-  favicon: "img/favicon.ico",
+  favicon: "images/favicon.ico",
   organizationName: "kennethormandy", // Usually your GitHub org/user name.
   projectName: "craft-marketplace", // Usually your repo name.
   themeConfig: {
+    image: 'images/og-image.png',
+    colorMode: {
+      defaultMode: "dark",
+      disableSwitch: false,
+      respectPrefersColorScheme: true,
+      switchConfig: {
+        darkIcon: ' ',
+        darkIconStyle: { dispaly: 'none', visiblity: 'hidden '},
+        lightIcon: ' ',
+        lightIconStyle: { dispaly: 'none', visiblity: 'hidden '} 
+      },
+    },
     navbar: {
       title: "Marketplace",
       logo: {
         alt: "Marketplace Logo",
-        src: "img/logo.svg",
+        src: "images/logo.svg",
       },
       items: [
         {
@@ -45,12 +57,8 @@ module.exports = {
           ],
         },
         {
-          title: "Community",
+          title: "Support",
           items: [
-            {
-              label: "Craft CMS Plugin Store",
-              href: "https://plugins.craftcms.com/marketplace",
-            },
             {
               label: "Craft CMS Stack Exchange",
               href:
@@ -67,12 +75,16 @@ module.exports = {
           title: "More",
           items: [
             {
-              label: "Blog",
-              to: "blog",
+              label: "Plugin Store",
+              href: "https://plugins.craftcms.com/marketplace",
             },
             {
               label: "GitHub",
               href: "https://github.com/kennethormandy/craft-marketplace",
+            },
+            {
+              label: "Blog",
+              to: "blog",
             },
           ],
         },
