@@ -54,8 +54,8 @@ export default function Home() {
   const {siteConfig = {}} = context;
   return (
     <Layout
-      title={siteConfig.title}
-      description="Make your Craft CMS and Craft Commerce site into a Marketplace, using Stripe Connect. Add payees to products, charge a fee for your platform, and handle payouts automatically via Stripe.">
+      title="Marketplace for Craft Commerce"
+      description="Make your Craft CMS and Commerce site into a Marketplace, using Stripe Connect. Add payees to products, charge a platform fee, and handle payouts automatically.">
       <header className={clsx('hero', styles.heroBanner)}>
         <div className="container">
           <h1 className="hero__title">{siteConfig.title}</h1>

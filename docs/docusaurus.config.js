@@ -1,9 +1,9 @@
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 module.exports = {
-  title: "Marketplace for Craft Commerce",
+  title: "Marketplace",
   tagline:
     "Make your Craft Commerce site into a Marketplace, using Stripe Connect.",
-  url: "https://marketplace.kennethormandy.com/marketplace",
+  url: "https://craft-marketplace.kennethormandy.com",
   baseUrl: "/",
   onBrokenLinks: "throw",
   onBrokenMarkdownLinks: "warn",
