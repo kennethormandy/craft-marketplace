@@ -16,7 +16,10 @@ class AccountsService extends Component
         parent::init();
     }
 
-    public function createLoginLink($accountId = null, $params = [])
+    public function createLoginLink($accountId = null, $params = [
+        'redirect' => null,
+        'referrer' => null,
+    ])
     {
         if (empty($accountId) || !$accountId) {
             return null;
@@ -27,7 +30,7 @@ class AccountsService extends Component
         // NOTE Stripe specific
         $stripeParams = [];
         if (isset($params->redirect)) {
-            $redirectUrl = $this->_getStripeRedirectUrl($params->redirect);
+            $redirectUrl = $this->_getStripeRedirectUrl($params->redirect, $params->referrer);
             if ($redirectUrl) {
                 $stripeParams['redirect_url'] = $redirectUrl;
             }
