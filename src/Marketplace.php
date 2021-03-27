@@ -31,6 +31,7 @@ use kennethormandy\marketplace\provider\StripeConnectProvider;
 use kennethormandy\marketplace\services\FeesService;
 use kennethormandy\marketplace\services\HandlesService;
 use kennethormandy\marketplace\services\PayeesService;
+use kennethormandy\marketplace\services\AccountsService;
 use putyourlightson\logtofile\LogToFile;
 use Stripe\Stripe;
 use Stripe\Transfer;
@@ -87,7 +88,11 @@ class Marketplace extends BasePlugin
             'handlesService' => HandlesService::class,
             'fees' => FeesService::class,
             'payees' => PayeesService::class,
-        ]);
+
+            'settings' => Settings::class,
+            'accounts' => AccountsService::class,
+
+            ]);
 
         Craft::info('Marketplace plugin loaded', __METHOD__);
 
