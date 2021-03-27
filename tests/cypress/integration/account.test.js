@@ -14,7 +14,9 @@ context('Account', () => {
   it('Logs into Stripe dashboard, and handles custom redirect', () => {
     cy.get('button[data-test=connect]').click();
 
-    cy.contains('craft-marketplace.ddev.site').click();
+    cy.contains('Your balance is').then(() => {
+      cy.contains('craft-marketplace.ddev.site').click();
+    })
 
     // Redirected us to our custom account/done page
     cy.contains('Handled redirect');
@@ -25,10 +27,10 @@ context('Account', () => {
     // We should still get re-drected back to the referrer
     cy.get('[name="redirect"]').type('b');
 
-
     cy.get('button[data-test=connect]').click();
-
-    cy.contains('craft-marketplace.ddev.site').click();
+    cy.contains('Your balance is').then(() => {
+      cy.contains('craft-marketplace.ddev.site').click();
+    })
 
     // Would have been redirected to account/dashboard
     // Cypress doesn’t persist cookies, so we need to login again, but that’s fine: it worked
@@ -45,7 +47,9 @@ context('Account', () => {
     cy.get('body').click();
     cy.get('button[data-test=connect]').click();
 
-    cy.contains('craft-marketplace.ddev.site').click();
+    cy.contains('Your balance is').then(() => {
+      cy.contains('craft-marketplace.ddev.site').click();
+    })
 
     // Would have been redirected to account/dashboard
     // Cypress doesn’t persist cookies, so we need to login again, but that’s fine: it worked
