@@ -60,20 +60,11 @@
 
     {% if active and currentUserViewing %}
       {# Working but messy approach of getting Stripe Express Dashboard login URL #}
+      {# Not possible to use a form here, because you’re in a form. #}
       <div class="field">
         <a class="btn" target="_blank" href="{{ stripeLogin.url }}">Login to {{ app.name }} Dashboard</a>
       </div>
 
-      {# Was never able to get this action URL to work properly
-      <form method="POST" action="marketplace/account/create-login-link" accept-charset="UTF-8">
-        {{ csrfInput() }}
-        <!-- <input type="hidden" name="redirect" value="/admin/myaccount"> -->
-        <!-- <input type="hidden" name="action" value="admin/marketplace/account/create-login-link"> -->
-        <!-- actionInput('marketplace/account/create-login-link') -->
-        <input type="hidden" name="stripe_user_id" value="{{ value }}" />
-        <input class="btn" type="submit" value="Submit to action" />
-      </form>
-       #}
     {% else %}
       {# Show the connect button #}
       <div class="field">
