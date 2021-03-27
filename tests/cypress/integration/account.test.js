@@ -34,9 +34,14 @@ context('Account', () => {
 
     // Would have been redirected to account/dashboard
     // Cypress doesn’t persist cookies, so we need to login again, but that’s fine: it worked
-    cy.get('[name="loginName"]').type(Cypress.env('CRAFT_PAYEE_USERNAME'))
-    cy.get('[name="password"]').type(Cypress.env('CRAFT_PAYEE_PASSWORD'))
-    cy.get('#login button').click()
+    // …except it isn’t fine, because this works differently with `cypress run` vs `open`
+    // cy.get('[name="loginName"]').type(Cypress.env('CRAFT_PAYEE_USERNAME'))
+    // cy.get('[name="password"]').type(Cypress.env('CRAFT_PAYEE_PASSWORD'))
+    // cy.get('#login button').click()
+
+    cy.location().should((loc) => {
+      expect(loc.hostname).to.eq('craft-marketplace.ddev.site')
+    })
   })
 
   it('Logs into dashboard, and handles empty redirect', () => {
@@ -51,11 +56,9 @@ context('Account', () => {
       cy.contains('craft-marketplace.ddev.site').click();
     })
 
-    // Would have been redirected to account/dashboard
-    // Cypress doesn’t persist cookies, so we need to login again, but that’s fine: it worked
-    cy.get('[name="loginName"]').type(Cypress.env('CRAFT_PAYEE_USERNAME'))
-    cy.get('[name="password"]').type(Cypress.env('CRAFT_PAYEE_PASSWORD'))
-    cy.get('#login button').click()
+    cy.location().should((loc) => {
+      expect(loc.hostname).to.eq('craft-marketplace.ddev.site')
+    })
   })
 
 
