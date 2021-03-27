@@ -69,7 +69,7 @@ class PayeesService extends Component
 
         if (isset($purchasablePayeeUser)) {
             $stripeConnectHandle = Marketplace::$plugin->handlesService->getButtonHandle($purchasablePayeeUser);
-            $payeeStripeAccountId = $purchasablePayeeUser[$stripeConnectHandle];    
+            $payeeStripeAccountId = $purchasablePayeeUser[$stripeConnectHandle];
         }
 
         $event->gatewayAccountId = $payeeStripeAccountId;

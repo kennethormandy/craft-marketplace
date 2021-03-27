@@ -28,10 +28,10 @@ use kennethormandy\marketplace\fields\MarketplacePayee as MarketplacePayeeField;
 use kennethormandy\marketplace\models\Settings;
 use kennethormandy\marketplace\provider\StripeConnectExpressProvider;
 use kennethormandy\marketplace\provider\StripeConnectProvider;
+use kennethormandy\marketplace\services\AccountsService;
 use kennethormandy\marketplace\services\FeesService;
 use kennethormandy\marketplace\services\HandlesService;
 use kennethormandy\marketplace\services\PayeesService;
-use kennethormandy\marketplace\services\AccountsService;
 use putyourlightson\logtofile\LogToFile;
 use Stripe\Stripe;
 use Stripe\Transfer;
@@ -91,7 +91,6 @@ class Marketplace extends BasePlugin
 
             'settings' => Settings::class,
             'accounts' => AccountsService::class,
-
             ]);
 
         Craft::info('Marketplace plugin loaded', __METHOD__);
