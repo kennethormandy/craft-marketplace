@@ -25,7 +25,7 @@ class AccountsServiceTest extends Unit
             $this->plugin,
             'settings',
             [
-                'getSecretApiKey' => getenv('STRIPE_SECRET_KEY'),
+                'secretApiKey' => getenv('STRIPE_SECRET_KEY'),
             ],
             []
         );

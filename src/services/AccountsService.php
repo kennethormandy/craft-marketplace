@@ -33,8 +33,7 @@ class AccountsService extends Component
             }
         }
 
-        // $plugin->getSettings didn’t allow me to test?
-        $secretApiKey = Marketplace::$plugin->settings->getSecretApiKey();
+        $secretApiKey = Marketplace::$plugin->getSettings()->getSecretApiKey();
 
         if (!isset($secretApiKey) || !$secretApiKey) {
             return 'Missing API key';
