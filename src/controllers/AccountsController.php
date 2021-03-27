@@ -36,9 +36,6 @@ class AccountsController extends Controller
 
         $params = self::_getLinkParams($request);
 
-        // return $this->redirectToPostedUrl($request);
-        // return Craft::$app->getResponse()->redirect($request->referrer);
-
         if (!isset($connectedAccountId) || !$connectedAccountId) {
             return 'Missing account id';
         }
@@ -88,71 +85,71 @@ class AccountsController extends Controller
     // TODO Rename this
     private function _getLinkParams($request)
     {
-        $redirectInput = $request->getParam('redirect');
+        $redirectUrlWithHash = $request->getParam('redirect');
         $params = [];
-        $redirect = self::_getRedirectInputDetails($redirectInput);
-        $redirectInputBlank = isset($redirect->token) && empty($redirect->url);
 
-        // Blank: has token, no url
-        // Set: has token, has url
-        // Missing: no token, no url
-        if ($redirectInputBlank) {
+        if ($redirectUrlWithHash === null) {
+            // redirectInput wasn’t set
+            $redirectUrl = $request->referrer;
+        } else {
+            // redirectInput was set, but but also be blank or invalid
+            $redirectUrl = self::_getRedirectInputUrl($redirectUrlWithHash);
+        }
+
+        if ($redirectUrl === '') {
+            // redirectInput was blank, restore default Stripe behaviour with no params
             return $params;
         }
 
-        $redirectUrl = null;
-        if (!empty($redirect->url)) {
-            // $redirectUrl = $redirectInput;
-            $redirectUrl = $redirect->url;
-        } elseif (isset($request->referrer)) {
+        if ($redirectUrl === null) {
+            // Didn’t get a valid URL from _getRedirectInputUrl, so it might have been modified
+            // Replace it with the referrer as a fallback
             $redirectUrl = $request->referrer;
+
+            // The redirectInput value might have been modified, we couldn’t validate it
+            $redirectUrlWithHash = null;
+        }
+
+        if ($redirectUrlWithHash === null) {
+            // Hash the referrer so we can validate it when we redirect
+            // back from the Dashboard. The $redirectUrlWithHash result would have
+            // already been hashed, but the referrer isn’t yet.
+            $redirectUrlWithHash = Craft::$app->getSecurity()->hashData(UrlHelper::url($redirectUrl));
         }
 
         if (isset($redirectUrl)) {
-            // $logoutLink = UrlHelper::actionUrl('marketplace/accounts/create-logout-link', [
-            //     'redirect' => $redirectUrl,
-            // ]);
-            $logoutLink = UrlHelper::url($redirectUrl);
+            $logoutLink = UrlHelper::actionUrl('marketplace/accounts/create-logout-link', [
+                'redirect' => $redirectUrlWithHash,
+            ]);
+            $logoutLink = UrlHelper::url($logoutLink);
             $params['redirect_url'] = $logoutLink;
         }
 
         return $params;
     }
 
-    private function _getRedirectInputDetails($redirectInputUrl)
+    private function _getRedirectInputUrl($redirectInputUrl)
     {
-        $urlSplit = explode('/', $redirectInputUrl);
-        $tokenFromRedirectInput = array_shift($urlSplit);
-        $url = implode('/', $urlSplit);
+        $validUrl = Craft::$app->security->validateData($redirectInputUrl);
 
-        // If no token is set, there was no redirectInput in
-        // the form. We don’t do this for the URL, because
-        // you can define the redirectInput and explicitly
-        // set it to be blank.
-        if (!$tokenFromRedirectInput) {
-            $tokenFromRedirectInput = null;
+        if ($validUrl === false) {
+            // If the URL from the redirectInput isn’t valid,
+            // this is the same result as if the input hadn’t been set,
+            // ie. will return the referrer.
+            return null;
         }
 
-        return (object) [
-            'token' => $tokenFromRedirectInput,
-            'url' => $url,
-        ];
+        return $validUrl;
     }
 
-    // public function actionCreateLogoutLink()
-    // {
-    //     $request = Craft::$app->getRequest();
-    //     $redirectFromDashboard = $request->getParam('redirect');
+    public function actionCreateLogoutLink()
+    {
+        $request = Craft::$app->getRequest();
+        $redirectParam = $request->getParam('redirect');
+        $validatedUrl = Craft::$app->security->validateData($redirectParam);
 
-    //     // $client = new \GuzzleHttp\Client();
-    //     // $constructedRequest = $client->request('POST', $request->absoluteUrl, [
-    //     //     'form_params' => [
-    //     //         'redirect' => $redirectFromDashboard,
-    //     //     ],
-    //     // ]);
-    //     // return $this->redirectToPostedUrl($constructedRequest);
-    //     return $this->redirectToPostedUrl($redirectFromDashboard);
-    // }
+        return $this->redirect($validatedUrl);
+    }
 
     // Old:
 
