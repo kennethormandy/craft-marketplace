@@ -15,7 +15,7 @@ class AccountsController extends Controller
     // Seemed to need this from admin?
     // public $enableCsrfValidation = false;
 
-    protected $allowAnonymous = false;
+    public $allowAnonymous = ['create-logout-link'];
 
     // Create login link
     // Link link
