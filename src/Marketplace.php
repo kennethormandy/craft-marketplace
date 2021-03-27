@@ -88,8 +88,6 @@ class Marketplace extends BasePlugin
             'handlesService' => HandlesService::class,
             'fees' => FeesService::class,
             'payees' => PayeesService::class,
-
-            'settings' => Settings::class,
             'accounts' => AccountsService::class,
             ]);
 
