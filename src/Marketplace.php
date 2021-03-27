@@ -562,7 +562,6 @@ class Marketplace extends BasePlugin
     {
         Event::on(UrlManager::class, UrlManager::EVENT_REGISTER_CP_URL_RULES, function (RegisterUrlRulesEvent $event) {
             $event->rules = array_merge($event->rules, [
-                'marketplace/account/create-login-link' => 'marketplace/account/create-login-link',
                 'marketplace/fees/new' => 'marketplace/fees/edit',
                 'marketplace/fees/<handle:{handle}>' => 'marketplace/fees/edit',
 
