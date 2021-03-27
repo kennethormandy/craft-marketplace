@@ -21,14 +21,9 @@ class AccountsServiceTest extends Unit
         parent::_before();
 
         $this->plugin = Marketplace::getInstance();
-        $this->tester->mockMethods(
-            $this->plugin,
-            'settings',
-            [
-                'secretApiKey' => getenv('STRIPE_SECRET_KEY'),
-            ],
-            []
-        );
+        $this->plugin->setSettings([
+            'secretApiKey' => getenv('STRIPE_SECRET_KEY')
+        ]);
     }
 
     protected function _after()
