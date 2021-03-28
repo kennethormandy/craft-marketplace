@@ -15,8 +15,6 @@ use craft\base\ElementInterface;
 use craft\base\Field;
 use craft\helpers\Json;
 use kennethormandy\marketplace\Marketplace;
-use Stripe\Account;
-use Stripe\Stripe;
 use yii\db\Schema;
 
 /**
@@ -351,21 +349,16 @@ class MarketplaceConnectButton extends Field
         // $jsonVars = Json::encode($jsonVars);
         // Craft::$app->getView()->registerJs("$('#{$namespacedId}-field').MarketplaceConnectButton(" . $jsonVars . ");");
 
-        $stripeResp = [
-          // TODO Change this to a remote documentation page or
-          // local plugin page, or give an error that something went wrong
-          // if URL and value aren’t set.
-          'url' => 'https://example.com',
-        ];
+        // TODO Change this to a remote documentation page or
+        // local plugin page, or give an error that something went wrong
+        // if URL and value aren’t set.
+        $accountLoginUrl = 'https://example.com';
 
         if (isset($value)) {
-            $secretApiKey = Marketplace::$plugin->getSettings()->getSecretApiKey();
-            Stripe::setApiKey($secretApiKey);
-
             // TODO Ideally would only do this when the user hits a button
             // to request it, so we aren’t generating a profile link
             // on every request, but in the meantime, this works fine.
-            $stripeResp = Account::createLoginLink($value);
+            $accountLoginUrl = Marketplace::$plugin->accounts->createLoginLink($value);
         }
 
         $appHandle = Marketplace::$plugin->handlesService->getAppHandle();
@@ -389,7 +382,7 @@ class MarketplaceConnectButton extends Field
                 'appHandle' => $appHandle ? $appHandle : '',
                 'payeeHandle' => $payeeHandle,
 
-                'stripeLogin' => $stripeResp,
+                'accountLoginUrl' => $accountLoginUrl,
             ]
         );
     }
