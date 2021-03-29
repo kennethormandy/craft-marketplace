@@ -68,7 +68,7 @@ class AccountsServiceTest extends Unit
         // we can’t test the result of it via createLoginLink. The redirect
         // is passed along to Stripe, and is only seen within the Stripe Connect
         // Express UI itself.
-        $result = $this->invokeMethod($this->plugin->accounts, '_getStripeRedirectUrl', [$exampleUrlFromRedirectInput]);
+        $result = $this->invokeMethod($this->plugin->accounts, '_getRedirectUrl', [$exampleUrlFromRedirectInput]);
         $this->assertIsString($result);
         $this->assertStringContainsString('actions', $result);
         $this->assertStringEndsWith('https%3A//example.com', $result);
@@ -81,7 +81,7 @@ class AccountsServiceTest extends Unit
         // behaviour (no redirect link).
         $exampleUrl = '';
         $exampleUrlFromRedirectInput = Craft::$app->getSecurity()->hashData($exampleUrl);
-        $result = $this->invokeMethod($this->plugin->accounts, '_getStripeRedirectUrl', [$exampleUrlFromRedirectInput]);
+        $result = $this->invokeMethod($this->plugin->accounts, '_getRedirectUrl', [$exampleUrlFromRedirectInput]);
         $this->assertIsNotString($result);
         $this->assertEquals($result, null);
     }
@@ -92,7 +92,7 @@ class AccountsServiceTest extends Unit
         // pass $request->referrer as a fallback URL if the redirect
         // was not provided, or was missing
         $fallbackUrl = 'https://kennethormandy.com';
-        $result = $this->invokeMethod($this->plugin->accounts, '_getStripeRedirectUrl', [
+        $result = $this->invokeMethod($this->plugin->accounts, '_getRedirectUrl', [
             null,
             $fallbackUrl,
         ]);
