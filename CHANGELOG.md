@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## v1.5.0 - 2021-03-29
+
 ### Added
 - Added support for creating login links from the front-end, via `marketplace/accounts/create-login-link` action
 - Added support for a custom redirect upon leaving or logging out from the external Stripe Connect Express dashboard
