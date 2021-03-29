@@ -62,7 +62,7 @@
       {# Working but messy approach of getting Stripe Express Dashboard login URL #}
       {# Not possible to use a form here, because you’re in a form. #}
       <div class="field">
-        <a class="btn" target="_blank" href="{{ stripeLogin.url }}">Login to {{ app.name }} Dashboard</a>
+        <a class="btn" target="_blank" href="{{ accountLoginUrl }}">Login to {{ app.name }} Dashboard</a>
       </div>
 
     {% else %}
