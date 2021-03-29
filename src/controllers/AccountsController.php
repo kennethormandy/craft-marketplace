@@ -11,35 +11,40 @@ use Stripe\Stripe;
 
 class AccountsController extends Controller
 {
-    // Seemed to need this from admin?
-    // public $enableCsrfValidation = false;
-
     public $allowAnonymous = ['create-logout-link'];
 
-    // Create login link
-    // Link link
-    // Login
-    // Redirect to Login Link
-    // Open Dashboard
-
-    // Create login link, and there is an option to
-    // NOT redirect to it, even though this is the default?
-    // This would make it possible to keep the API that
-    // matches Stripe (create-login-link), but you could opt-
-    // out of the redirect for AJAX-y usage. Right now you couldn’t
-    // do that, if we force the redirect.
-
-    // TODO Should also probably check that the user is an admin, or
-    //      this is the accountId for the currentUser
     public function actionCreateLoginLink()
     {
-        // $this->requirePostRequest();
+        $this->requirePostRequest();
+        $this->requireLogin();
 
         $request = Craft::$app->getRequest();
         $accountId = $request->getParam('accountId');
 
+        $currentUser = Craft::$app->getUser();
+        $currentUserIdentity = $currentUser->getIdentity();
+        $accountIdHandle = Marketplace::$plugin->handlesService->getButtonHandle();
+
+        if ((!$currentUserIdentity[$accountIdHandle] || $currentUserIdentity[$accountIdHandle] !== $accountId) || $currentUser->getIsAdmin()) {
+            LogToFile::error('[AccountsController] User ' . $currentUserIdentity . ' attempting to create link for account that isn’t their own, without admin access.', 'marketplace');
+
+            // TODO Handle translations
+            $errorMessage = 'You do not have permission to access that account';
+
+            Craft::$app->getUrlManager()->setRouteParams([
+                'variables' => ['errorMessage' => $errorMessage]
+            ]);
+
+            return null;
+        }
+
+        // NOTE Decided not to use Account model yet.
+        // $account = new Account();
+        // $account->accountId = $accountId;
+
         if (!isset($accountId) || !$accountId) {
-            return 'Missing account id';
+            LogToFile::info('[AccountsController] Could not create login link. Missing account ID', 'marketplace');
+            return null;
         }
 
         $params = (object) [
@@ -54,7 +59,19 @@ class AccountsController extends Controller
         $link = Marketplace::getInstance()->accounts->createLoginLink($accountId, $params);
 
         if (!$link) {
-            // Missing link, return error?
+            LogToFile::error('[AccountsController] Could not create login link.', 'marketplace');
+
+            // TODO Handle translations
+            $errorMessage = 'Could not create a login link for “' . $accountId . '”';
+
+            // If there was an Account model, and we wanted to
+            // add errors to specific properties
+            // $account->addError('accountId', $errorMessage);
+
+            Craft::$app->getUrlManager()->setRouteParams([
+                'variables' => ['errorMessage' => $errorMessage]
+            ]);
+
             return null;
         }
 
@@ -69,25 +86,4 @@ class AccountsController extends Controller
 
         return $this->redirect($validatedUrl);
     }
-
-    // Old:
-
-    //     if (isset($stripeUserId)) {
-    //         // craft()->userSession->setNotice(Craft::t('Ingredient saved.'));
-    //         // $this->redirectToPostedUrl($variables = array());
-    //         try {
-    //             $secretApiKey = Marketplace::$plugin->getSettings()->getSecretApiKey();
-    //             Stripe::setApiKey($secretApiKey);
-
-    //             $resp = StripeAccount::createLoginLink('{{CONNECTED_STRIPE_ACCOUNT_ID}}');
-
-    //             if ($resp) {
-    //                 return $this->redirect($resp->url, 302);
-    //             }
-    //             Craft::$app->session->setError('Failed');
-    //         } catch (Exception $e) {
-    //             LogToFile::error($e->getTraceAsString(), 'marketplace');
-    //             Craft::$app->session->setError('Something went wrong: ' . $e->getMessage());
-    //             return 'Err';
-    //         }
 }

@@ -6,8 +6,10 @@ use Craft;
 use craft\base\Component;
 use craft\helpers\UrlHelper;
 use kennethormandy\marketplace\Marketplace;
+use putyourlightson\logtofile\LogToFile;
 use Stripe\Account as StripeAccount;
 use Stripe\Stripe;
+use Stripe\Exception\PermissionException;
 
 class AccountsService extends Component
 {
@@ -30,7 +32,7 @@ class AccountsService extends Component
         // NOTE Stripe specific
         $stripeParams = [];
         if (isset($params->redirect)) {
-            $redirectUrl = $this->_getStripeRedirectUrl($params->redirect, $params->referrer);
+            $redirectUrl = $this->_getRedirectUrl($params->redirect, $params->referrer);
             if ($redirectUrl) {
                 $stripeParams['redirect_url'] = $redirectUrl;
             }
@@ -38,32 +40,33 @@ class AccountsService extends Component
 
         $secretApiKey = Marketplace::$plugin->getSettings()->getSecretApiKey();
 
-        if (!isset($secretApiKey) || !$secretApiKey) {
-            return 'Missing API key';
-        }
-
         // TODO Should this be done once at the plugin level?
         try {
             Stripe::setApiKey($secretApiKey);
         } catch (Exception $e) {
-            // TODO
-            return json_encode($e);
+            LogToFile::error($e->getTraceAsString(), 'marketplace');
+            return null;
         }
 
         try {
             $resp = StripeAccount::createLoginLink($accountId, $stripeParams);
-            if ($resp->url) {
+            if (isset($resp->url) && $resp->url) {
                 $link = $resp->url;
             }
-        } catch (Exception $e) {
-            // TODO
-            return json_encode($e);
+        } catch (PermissionException $e) {
+            LogToFile::error($e->getTraceAsString(), 'marketplace');
+
+            // TODO Handle translations
+            // TODO Handle altering of flash message, same as default Contact Form plugin?
+            Craft::$app->session->setError('Could not create login link.');
+
+            return null;
         }
 
         return $link;
     }
 
-    private function _getStripeRedirectUrl($redirectUrlWithHash = null, $fallback = null)
+    private function _getRedirectUrl($redirectUrlWithHash = null, $fallback = null)
     {
         $logoutLink = null;
 
