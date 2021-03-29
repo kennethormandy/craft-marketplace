@@ -61,5 +61,19 @@ context('Account', () => {
     })
   })
 
+  it('Recieves error when trying to login to a different (valid) account ID', () => {
+    // This is typically a hidden input, but it’s text here so we can break the hash
+    // We should still get re-drected back to the referrer
+    cy.get('[name="redirect"]').click();
+    cy.get('[name="accountId"]').type(`{meta+a}{backspace}${Cypress.env('CRAFT_PAYEE_NOT_OWN_BUT_VALID_ACCOUNT_ID')}`);
+    cy.get('body').click();
+    cy.get('button[data-test=connect]').click();
+
+    cy.get('[data-test="errors"]').then($el => {
+      expect($el[0].children.length).to.eq(1)
+    })
+    cy.contains('You do not have permission')
+  })
+
 
 })
