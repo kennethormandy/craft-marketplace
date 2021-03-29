@@ -18,6 +18,14 @@ module.exports = {
       items: [
         'patterns/dynamically-set-the-payee',
       ]
-    }
+    },
+    {
+      type: 'category',
+      label: 'Front-end User Accounts',
+      items: [
+        'front-end-user-accounts/accounts',
+      ]
+    },
+
   ],
 };
