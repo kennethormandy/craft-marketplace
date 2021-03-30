@@ -4,6 +4,8 @@ title: "Accounts"
 
 ## Create Login Link
 
+Once a Payee has their account connected, you can display a button that will give them access to a simplified Stripe dashboard.
+
 ```twig
 {# Whatever you called your Marketplace Connect Button handle,
  # ex. `currentUser.platformConnectButton` #}
@@ -25,6 +27,8 @@ title: "Accounts"
 </form>
 ```
 
+This makes it possible for your Payees to see their payout timing, and a few other Stripe-specific details.
+
 ### Redirect
 
 The Stripe Connect Express Dashboard allows for a redirect link. This is used to point back to your platform, and will also be used as a redirect if the user explicitly logs out.
@@ -37,17 +41,23 @@ If you’d like to customise this link, you can add a [Craft CMS `redirectInput`
 {{ redirectInput('/see-you-later') }}
 ```
 
-<!--
+### Error Message
 
-### Errors
+If there’s an error when creating the login link, a Flash message will be shown, if these are set up in your templates. An error message can also be provided to the form by using:
 
-- Can’t create a link
-- Doesn’t have permission to open the dashboard for that account, and isn’t an Admins
-
-```
+```twig
 {% if errorMessage is defined %}
   <p>{{ errorMessage }}</p>
 {% endif %}
 ```
 
--->
+An error could occur if:
+
+- The account ID doesn’t actually exist on your Stripe account—ex. you are using [Live Stripe keys](https://stripe.com/docs/keys#test-live-modes), but now you are trying to access an account connected in Test mode
+- There’s an issue reaching the Stripe API
+- A user is trying to access an account you’ve revoked from Stripe, but still exists in Craft
+- A user is trying to access an account that doesn’t match their own account ID
+
+In any of thse cases, a more detailed error message is logged to the `marketplace.log` file.
+
+<!-- This is the same convention used by [Craft CMS’ front-end login form](https://craftcms.com/knowledge-base/front-end-user-accounts#login-form). -->
