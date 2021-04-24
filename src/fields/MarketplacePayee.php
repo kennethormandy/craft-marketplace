@@ -72,18 +72,33 @@ class MarketplacePayee extends Field
 
     public function normalizeValue($value, ElementInterface $element = null)
     {
-        if ($value) {
-            // For some reason, this user element select field seemed
-            // to save as a string of an array `"["8"]"` rather than
-            // what it should probably be, `[8]` or `["8"]`.
-            if (is_string($value)) {
-                return json_decode($value)[0];
+        // ~~For some reason,~~
+        // For this reason: https://github.com/craftcms/cms/blob/develop/src/fields/BaseRelationField.php#L398
+        // this user element select field seemed
+        // to save as a string of an array `"["8"]"` rather than
+        // what it should probably be, `[8]` or `["8"]`.
+        // TODO Test Cases
+        // - $value = '"["227"]"'; // Handle possible issue in early version
+        // - $value = '["227"]'; // Typical
+        // - $value = '[227]'; // Where arr value is int instead of string
+
+        if (is_string($value)) {
+            if (str_contains($value, '"[') && $value[0] === '"' && $value[strlen($value) - 1] === '"') {
+                $value = trim($value, '"');
+                $value = rtrim($value, '"');
             }
 
-            // If the saved value isn’t a string, we should have the proper
-            // array of ids.
-            return $value;
+            $value = json_decode($value);
+            if (is_array($value)) {
+                return $value[0];
+            }
         }
+
+        if (is_integer($value)) {
+            return strval($value);
+        }
+
+        return $value;
     }
 
     /**
