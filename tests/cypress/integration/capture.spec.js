@@ -1,6 +1,6 @@
 context('Capture', () => {
     it('Purchase using Manual Payment gateway', () => {
-      cy.visit('https://craft-marketplace.ddev.site/shop')
+      cy.visit(`${Cypress.env('CRAFT_DEFAULT_SITE_URL')}shop`)
 
       cy.get('[name="purchasableId"][value="12"]').click();
       cy.get('.fa-shopping-cart').click();
@@ -40,10 +40,9 @@ context('Capture', () => {
         // Manually capture the transactions,
         // similar to what you’d do in the CMS dashboard
 
-        cy.visit('https://craft-marketplace.ddev.site/capture')
+        cy.visit(`${Cypress.env('CRAFT_DEFAULT_SITE_URL')}capture`)
         cy.get('[name="loginName"]').type(Cypress.env('CRAFT_ADMIN_USERNAME'))
   
-        // TODO Convert to env
         cy.get('[name="password"]').type(Cypress.env('CRAFT_ADMIN_PASSWORD'))
         cy.get('#login button').click()
   
