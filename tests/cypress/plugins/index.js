@@ -1,3 +1,6 @@
+require('dotenv').config({ path: 'tests/cypress/.env' })
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
+
 /// <reference types="cypress" />
 // ***********************************************************
 // This example plugins/index.js can be used to load plugins
@@ -16,6 +19,27 @@
  * @type {Cypress.PluginConfig}
  */
 module.exports = (on, config) => {
-  // `on` is used to hook into various events Cypress emits
-  // `config` is the resolved Cypress config
+  // TODO npmCopy `.env` environment variables into Cypress config.env
+  // config.env.WHATEVER = process.env.WHATEVER
+
+  on('task', {
+    checkPaymentIntent(ref) {
+      console.log('check payment intent')
+      const res = stripe.paymentIntents
+        .retrieve(ref)
+        .then((paymentIntent) => {
+          console.log(paymentIntent)
+          return paymentIntent
+        })
+        .catch((error) => console.error(error))
+
+      if (res) {
+        return res
+      }
+
+      return null
+    },
+  })
+
+  return config
 }
