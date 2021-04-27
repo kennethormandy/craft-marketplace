@@ -1,6 +1,6 @@
 context('AutoPayee example module, alongside plugin', () => {
   it('should handle AutoPayee module', () => {
-    cy.visit('https://craft-marketplace.ddev.site/buy-auto-payee')
+    cy.visit(`${Cypress.env('CRAFT_DEFAULT_SITE_URL')}buy-auto-payee`)
 
     const userToPay = {
       name: 'Jane Example',
@@ -45,13 +45,32 @@ context('AutoPayee example module, alongside plugin', () => {
     // Pay
     cy.get('.bg-blue-commerce').click();
 
-    cy.contains('#payee', userToPay.name);
-    cy.contains('#payee-id', userToPay.id);
+    cy.contains('[data-test=payee]', userToPay.name);
+    cy.contains('[data-test=payee-id]', userToPay.id);
+
+    cy.get('[data-test=order-reference]').invoke('text').then((paymentIntentRef) => {
+      console.log('Stripe Payment Intent ID: ', paymentIntentRef)
+      cy.task('checkPaymentIntent', paymentIntentRef).then((result) => {
+        console.log(result)
+
+        // Check the info we have from Craft against the actual Stripe result
+        expect(result.amount).to.exist
+        expect(result.amount).to.equal(5000)
+        expect(result.status).to.equal('succeeded')
+        expect(result.application_fee_amount).to.exist
+        expect(result.application_fee_amount).to.equal(500)
+        expect(result.transfer_data).to.exist
+        expect(result.transfer_data.destination).to.exist
+
+        cy.get('[data-test=payee-platform-id]').invoke('text').then((platformAccountId) => {
+          expect(result.transfer_data.destination).to.equal(platformAccountId)
+        })
+      })
+    })
   })
 
-  // Thi
   it('should handle AutoPayee module, with capture', () => {
-    cy.visit('https://craft-marketplace.ddev.site/buy-auto-payee')
+    cy.visit(`${Cypress.env('CRAFT_DEFAULT_SITE_URL')}buy-auto-payee`)
 
     const userToPay = {
       name: 'Demo Person',
@@ -96,27 +115,24 @@ context('AutoPayee example module, alongside plugin', () => {
     // Pay
     cy.get('.bg-blue-commerce').click();
 
-    cy.contains('#payee', userToPay.name);
-    cy.contains('#payee-id', userToPay.id);
+    cy.contains('[data-test="payee"]', userToPay.name);
+    cy.contains('[data-test="payee-id"]', userToPay.id);
 
-    cy.get('#transactions-id').invoke('text').then((transactionId) => {
+    cy.get('[data-test="transactions-id"]').invoke('text').then((transactionId) => {
 
       // Manually capture the transactions,
       // similar to what you’d do in the CMS dashboard
 
-      cy.visit('https://craft-marketplace.ddev.site/capture')
+      cy.visit(`${Cypress.env('CRAFT_DEFAULT_SITE_URL')}capture`)
       cy.get('[name="loginName"]').type(Cypress.env('CRAFT_ADMIN_USERNAME'))
 
-      // TODO Convert to env
       cy.get('[name="password"]').type(Cypress.env('CRAFT_ADMIN_PASSWORD'))
       cy.get('#login button').click()
 
-      // Capture the relevant
+      // Capture the relevant transaction
       cy.get(`#${transactionId} button`).click();
 
       cy.contains(`#${transactionId}`, `Transaction ${transactionId} Paid`);
     })
   })
-
-  
 })
