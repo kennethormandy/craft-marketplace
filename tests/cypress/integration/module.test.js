@@ -115,8 +115,31 @@ context('AutoPayee example module, alongside plugin', () => {
     // Pay
     cy.get('.bg-blue-commerce').click();
 
-    cy.contains('[data-test="payee"]', userToPay.name);
-    cy.contains('[data-test="payee-id"]', userToPay.id);
+    cy.contains('[data-test=payee]', userToPay.name);
+    cy.contains('[data-test=payee-id]', userToPay.id);
+
+    cy.get('[data-test=order-reference]').invoke('text').then((paymentIntentRef) => {
+      console.log('Stripe Payment Intent ID: ', paymentIntentRef)
+      cy.task('checkPaymentIntent', paymentIntentRef).then((result) => {
+        console.log(result)
+
+        // Check the info we have from Craft against the actual Stripe result
+        expect(result.amount).to.exist
+        expect(result.amount).to.equal(5000)
+
+        // The transaction won’t come through as already completed in this case
+        expect(result.status).to.equal('requires_capture')
+
+        expect(result.application_fee_amount).to.exist
+        expect(result.application_fee_amount).to.equal(500)
+        expect(result.transfer_data).to.exist
+        expect(result.transfer_data.destination).to.exist
+
+        cy.get('[data-test=payee-platform-id]').invoke('text').then((platformAccountId) => {
+          expect(result.transfer_data.destination).to.equal(platformAccountId)
+        })
+      })
+    })
 
     cy.get('[data-test="transactions-id"]').invoke('text').then((transactionId) => {
 
