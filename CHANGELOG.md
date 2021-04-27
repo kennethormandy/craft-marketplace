@@ -2,7 +2,9 @@
 
 ## Unreleased
 
-## Fixed
+## v1.5.1 - 2021-04-26
+
+### Fixed
 - Fixed inconsistent saving of ID in Payee field, which also fixed the Payee field value not showing in admin templates after resaving all Products via console commands
 
 ## v1.5.0 - 2021-03-29
