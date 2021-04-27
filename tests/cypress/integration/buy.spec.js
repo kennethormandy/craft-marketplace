@@ -1,9 +1,14 @@
 context('Buy', () => {
     beforeEach(() => {
-      cy.visit('https://craft-marketplace.ddev.site/buy')
+      cy.visit(`${Cypress.env('CRAFT_DEFAULT_SITE_URL')}buy`)
     })
 
     it('Buy', () => {
+        const userToPay = {
+          name: 'Jane Example',
+          id: '15'
+        }
+
         cy.get('.bg-blue-commerce').click();
 
         cy.get('#firstName').type('Test');
@@ -40,7 +45,27 @@ context('Buy', () => {
         // Pay
         cy.get('.bg-blue-commerce').click();
 
-        cy.contains('#payee', 'Jane Example');
-        cy.contains('#payee-id', 15);
+        cy.contains('[data-test=payee]', userToPay.name);
+        cy.contains('[data-test=payee-id]', userToPay.id);
+
+        cy.get('[data-test=order-reference]').invoke('text').then((paymentIntentRef) => {
+            console.log('Stripe Payment Intent ID: ', paymentIntentRef)
+            cy.task('checkPaymentIntent', paymentIntentRef).then((result) => {
+              console.log(result)
+      
+              // Check the info we have from Craft against the actual Stripe result
+              expect(result.amount).to.exist
+              expect(result.amount).to.equal(6000)
+              expect(result.status).to.equal('succeeded')
+              expect(result.application_fee_amount).to.exist
+              expect(result.application_fee_amount).to.equal(600)
+              expect(result.transfer_data).to.exist
+              expect(result.transfer_data.destination).to.exist
+      
+              cy.get('[data-test=payee-platform-id]').invoke('text').then((platformAccountId) => {
+                expect(result.transfer_data.destination).to.equal(platformAccountId)
+              })
+            })
+          })
     })
 })
