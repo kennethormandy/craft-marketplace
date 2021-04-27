@@ -10,5 +10,9 @@
   },
   "scripts": {
     "test": "cypress run"
+  },
+  "prettier": {
+    "singleQuote": true,
+    "semi": false
   }
 }
