@@ -10,6 +10,15 @@ use kennethormandy\marketplace\Marketplace;
 use Stripe\Account;
 use Stripe\Stripe;
 
+// TODO Investigated extending these Users or
+//      BaseRelationField, but wasn’t clear
+//      if it is intended.
+// use craft\fields\Users;
+// use craft\fields\BaseRelationField;
+// use craft\elements\db\ElementQueryInterface;
+// use craft\db\Table as DbTable;
+
+
 /**
  * MarketplacePayee Field.
  *
@@ -23,7 +32,45 @@ use Stripe\Stripe;
  * @since     0.1.0
  */
 class MarketplacePayee extends Field
+
 {
+    // /**
+    //  * @inheritdoc
+    //  */
+    // protected static function elementType(): string
+    // {
+    //     return User::class;
+    // }
+
+    // /**
+    //  * @inheritdoc
+    //  */
+    // public static function valueType(): string
+    // {
+    //     return ElementQueryInterface::class;
+    // }
+
+    // public $sortable = false;
+    // public $allowMultipleSources = false;
+    // public $targetSiteId;
+    // public $source;
+    // public $allowLimit = true;
+    // public $limit = 1;
+
+    // public function init()
+    // {
+    //     parent::init();
+    //     // $this->handle = '';
+    //     // $this->handlesService->getButtonHandle($userObject)
+    // }
+
+    // public function modifyElementIndexQuery(ElementQueryInterface $query)
+    // {
+    //     // if ($this instanceof EagerLoadingFieldInterface && isset($this->handle) && !empty($this->handle)) {
+    //     //     $query->andWithout($this->handle);
+    //     // }
+    // }
+
     // Public Properties
     // =========================================================================
 
@@ -70,27 +117,26 @@ class MarketplacePayee extends Field
         return $rules;
     }
 
+    // Value might have been incorrectly stored as an array as a JSON string in
+    // the database. In serializeValue, we now provide a single item as a string.
+    //   Relevant, especially if changing to relation later:
+    // https://github.com/craftcms/cms/blob/develop/src/fields/BaseRelationField.php#L398
     public function normalizeValue($value, ElementInterface $element = null)
     {
-        // ~~For some reason,~~
-        // For this reason: https://github.com/craftcms/cms/blob/develop/src/fields/BaseRelationField.php#L398
-        // this user element select field seemed
-        // to save as a string of an array `"["8"]"` rather than
-        // what it should probably be, `[8]` or `["8"]`.
-        // TODO Test Cases
-        // - $value = '"["227"]"'; // Handle possible issue in early version
-        // - $value = '["227"]'; // Typical
-        // - $value = '[227]'; // Where arr value is int instead of string
-
         if (is_string($value)) {
+            // Handles an issue in very early versions of the plugin, it was possible for
+            // the value to be saved as a string of an array, ex. `"["8"]"` 
+            // This is covered by the FieldPayeeTest
             if (str_contains($value, '"[') && $value[0] === '"' && $value[strlen($value) - 1] === '"') {
                 $value = trim($value, '"');
                 $value = rtrim($value, '"');
             }
 
-            $value = json_decode($value);
-            if (is_array($value)) {
-                return $value[0];
+            if (str_contains($value, '[') && $value[0] === '[' && $value[strlen($value) - 1] === ']') {
+                $value = json_decode($value);
+                if (is_array($value)) {
+                    return $value[0];
+                }
             }
         }
 
@@ -99,6 +145,34 @@ class MarketplacePayee extends Field
         }
 
         return $value;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function serializeValue($value, ElementInterface $element = null)
+    {
+
+        if (is_array($value)) {
+            $value = $value[0];
+        }
+
+        if (is_string($value)) {
+            if (
+                (str_contains($value, '[') && $value[0] === '[' && $value[strlen($value) - 1] === ']')
+            ) {
+                $arr = json_decode($value);
+                return $arr[0];
+            }
+            
+            return $value;
+        }
+
+        if (is_integer($value)) {
+            return $value;
+        }
+
+        return null;
     }
 
     /**
