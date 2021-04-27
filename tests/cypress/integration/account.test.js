@@ -1,6 +1,6 @@
 context('Account', () => {
   beforeEach(() => {
-    cy.visit('https://craft-marketplace.ddev.site/account/login')
+    cy.visit(`${Cypress.env('CRAFT_DEFAULT_SITE_URL')}account/login`)
 
     cy.get('[name="loginName"]').type(Cypress.env('CRAFT_PAYEE_USERNAME'))
     cy.get('[name="password"]').type(Cypress.env('CRAFT_PAYEE_PASSWORD'))
