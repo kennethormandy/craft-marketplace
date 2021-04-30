@@ -5,6 +5,7 @@ namespace kennethormandy\marketplace\services;
 use Craft;
 use craft\base\Component;
 use craft\db\Query;
+use craft\commerce\elements\Order;
 use Exception;
 use kennethormandy\marketplace\models\Fee as FeeModel;
 use kennethormandy\marketplace\records\FeeRecord;
@@ -222,4 +223,72 @@ class FeesService extends Component
         throw new Exception(Craft::t('marketplace', 'No fee ID provided.', []));
         return false;
     }
+
+    /**
+     * @param $fee
+     * @return int
+     */
+    public function calculateFeeAmount(FeeModel $fee, int $baseAmount = 0): int
+    {
+        $feeAmount = 0;
+
+        if ($fee && (int) $fee->value > 0) {
+            if ($fee->type === 'price-percentage') {
+                if (!isset($baseAmount) || $baseAmount == 0) {
+                    LogToFile::log('Fee type is “price-percentage,” and provided base amount is 0', 'marketplace', 'warning');
+                }
+
+                // Ex. 12.50% fee stored in DB as 1250
+                $percent = ($fee->value / 100);
+
+                // $10 subtotal * 12.5 = 125 cent application fee
+                $feeAmount = (int) $baseAmount * $percent;
+            } elseif ($fee->type === 'flat-fee') {
+                // Ex. $10 fee stored in DB as 1000 = 1000 cent fee
+                $feeAmount = (int) $fee->value;
+            }
+
+            // Must be a positive integer (in cents)
+            // Redundant?
+            // if ($feeAmount > 0 && is_int($feeAmount)) {
+            //     return $feeAmount;
+            // }
+        }
+
+        return $feeAmount;
+    }
+
+    /**
+     * @param $order
+     * @return int
+     */
+    public function calculateFeesAmount(Order $order)
+    {
+        $globalFees = $this->getAllFees();
+
+        $applicationFee = 0;
+        $applicationFeeAmount = 0;
+        
+        if ($globalFees && count($globalFees) >= 1) {
+            $feeCounter = 0;
+
+            foreach ($globalFees as $feeId => $fee) {
+                // The Lite Edition only supports 1 fee
+                if ($feeCounter === 0 || $this->isPro()) {
+                    $applicationFee = $fee;
+                }
+
+                $feeCounter++;
+            }
+
+            $applicationFeeAmount = $this->calculateFeeAmount($applicationFee, $order->itemSubtotal);
+        }
+
+        return $applicationFeeAmount;
+
+        // foreach ($order->lineItems as $key => $lineItem) {
+        // }
+
+    }
+
 }
