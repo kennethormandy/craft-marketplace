@@ -55,11 +55,20 @@ context('Shop', () => {
     cy.contains('Payee 2')
     cy.contains('Jane Example')
 
-    cy.get('[data-test=order-reference]:first-child').invoke('text').then((paymentIntentRef) => {
-      console.log('Stripe Payment Intent ID: ', paymentIntentRef)
-      cy.task('checkPaymentIntent', paymentIntentRef).then((result) => {
-        console.log(result)
+    cy.get('[data-test=order-reference]:first-child')
+      .invoke('text')
+      .then((paymentIntentRef) => {
+        expect(paymentIntentRef).to.exist
+        cy.task('checkPaymentIntent', paymentIntentRef).then((result) => {
+          console.log(result)
+
+          // Check the info we have from Craft against the actual Stripe result
+          expect(result.amount).to.exist
+          expect(result.capture_method).to.equal('automatic')
+          expect(result.amount).to.equal(11000)
+          expect(result.status).to.equal('succeeded')
+
+        })
       })
-    })
   })
 })
