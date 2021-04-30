@@ -48,7 +48,7 @@ context('AutoPayee example module, alongside plugin', () => {
     cy.contains('[data-test=payee]', userToPay.name);
     cy.contains('[data-test=payee-id]', userToPay.id);
 
-    cy.get('[data-test=order-reference]').invoke('text').then((paymentIntentRef) => {
+    cy.get('[data-test=order-reference]:first-child').invoke('text').then((paymentIntentRef) => {
       console.log('Stripe Payment Intent ID: ', paymentIntentRef)
       cy.task('checkPaymentIntent', paymentIntentRef).then((result) => {
         console.log(result)
@@ -118,7 +118,7 @@ context('AutoPayee example module, alongside plugin', () => {
     cy.contains('[data-test=payee]', userToPay.name);
     cy.contains('[data-test=payee-id]', userToPay.id);
 
-    cy.get('[data-test=order-reference]').invoke('text').then((paymentIntentRef) => {
+    cy.get('[data-test=order-reference]:first-child').invoke('text').then((paymentIntentRef) => {
       console.log('Stripe Payment Intent ID: ', paymentIntentRef)
       cy.task('checkPaymentIntent', paymentIntentRef).then((result) => {
         console.log(result)

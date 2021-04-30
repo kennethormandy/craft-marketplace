@@ -55,7 +55,7 @@ context('Shop', () => {
     cy.contains('Payee 2')
     cy.contains('Jane Example')
 
-    cy.get('[data-test=order-reference]').invoke('text').then((paymentIntentRef) => {
+    cy.get('[data-test=order-reference]:first-child').invoke('text').then((paymentIntentRef) => {
       console.log('Stripe Payment Intent ID: ', paymentIntentRef)
       cy.task('checkPaymentIntent', paymentIntentRef).then((result) => {
         console.log(result)
