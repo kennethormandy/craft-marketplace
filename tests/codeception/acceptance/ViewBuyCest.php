@@ -64,9 +64,9 @@ class ViewBuyCest
 
         // Complete
         $I->wait(5);
-        $I->seeElement('#payee');
+        $I->seeElement('[data-test=payee]');
         $I->see('Jane Example');
-        $I->seeElement('#payee-id');
+        $I->seeElement('[data-test=payee-id]');
         $I->see('15');
         $I->see('We have charged your');
     }
