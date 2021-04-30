@@ -413,8 +413,8 @@ class Marketplace extends BasePlugin
                     // https://stripe.com/docs/connect/quickstart#process-payment
                     // https://stripe.com/docs/connect/destination-charges
                     $e->request['transfer_data'] = [
-                  'destination' => $payeeStripeAccountId,
-                ];
+                        'destination' => $payeeStripeAccountId,
+                    ];
 
                     LogToFile::info(
                         '[Marketplace request modified] [' . $hardCodedApproach . '] ' . json_encode($e->request),
