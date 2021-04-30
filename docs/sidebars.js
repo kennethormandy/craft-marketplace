@@ -14,9 +14,11 @@ module.exports = {
     },
     {
       type: 'category',
-      label: 'Patterns',
+      label: 'Events',
       items: [
-        'patterns/dynamically-set-the-payee',
+        'events',
+        'events/payees',
+        'events/fees',
       ]
     },
     {
@@ -26,6 +28,12 @@ module.exports = {
         'front-end-user-accounts/accounts',
       ]
     },
-
+    {
+      type: 'category',
+      label: 'Patterns',
+      items: [
+        'patterns/dynamically-set-the-payee',
+      ]
+    },
   ],
 };
