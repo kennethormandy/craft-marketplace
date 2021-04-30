@@ -15,7 +15,8 @@ context('Donation', () => {
     // Use the payment intents
     cy.get('#paymentMethod').select('gatewayId:2');
 
-    cy.wait(5);
+    // Wait for the change to take place, used instead of cy.wait
+    cy.contains('Updated the cart’s gatewayId')
 
     cy.get('.card-holder-first-name').type('Test');
     cy.get('.card-holder-last-name').type('Testing');
