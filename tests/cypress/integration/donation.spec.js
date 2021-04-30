@@ -1,6 +1,6 @@
 context('Donation', () => {
   it('should accept donation', () => {
-    cy.visit('https://craft-marketplace.ddev.site/shop/donations')
+    cy.visit(`${Cypress.env('CRAFT_DEFAULT_SITE_URL')}shop/donations`)
 
     cy.get('[type="text"]').type('25');
     cy.get('[type="submit"]').click();
@@ -33,7 +33,22 @@ context('Donation', () => {
     });
 
     cy.get('.button').click();
+
+    cy.contains('Order')
+    cy.contains('$25.00')
+
+    cy.get('[data-test=order-reference]:first-child').invoke('text').then((paymentIntentRef) => {
+      expect(paymentIntentRef).to.exist
+      cy.task('checkPaymentIntent', paymentIntentRef).then((result) => {
+
+        // Check the info we have from Craft against the actual Stripe result
+        expect(result.amount).to.exist
+        expect(result.capture_method).to.equal('automatic')
+        expect(result.amount).to.equal(2500)
+        expect(result.status).to.equal('succeeded')
+        expect(result.application_fee_amount).to.not.exist
+        expect(result.transfer_data).to.not.exist
+      })
+    })
   })
-
-
 })
