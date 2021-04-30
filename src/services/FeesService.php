@@ -8,6 +8,7 @@ use craft\db\Query;
 use Exception;
 use kennethormandy\marketplace\models\Fee as FeeModel;
 use kennethormandy\marketplace\records\FeeRecord;
+use kennethormandy\marketplace\events\FeeEvent;
 use putyourlightson\logtofile\LogToFile;
 
 /* This FeesService is based upon
@@ -19,6 +20,9 @@ use putyourlightson\logtofile\LogToFile;
 
 class FeesService extends Component
 {
+    public const EVENT_BEFORE_CALCULATE_FEE = 'EVENT_BEFORE_CALCULATE_FEE';
+    public const EVENT_AFTER_CALCULATE_FEE = 'EVENT_AFTER_CALCULATE_FEE';
+
     private $_FEES_BY_HANDLE = [];
     private $_FEES_BY_ID = [];
     private $_FEES_BY_UID = [];
