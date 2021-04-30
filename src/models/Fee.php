@@ -36,9 +36,19 @@ class Fee extends Model
     public function rules()
     {
         return [
-      [['siteId', 'handle', 'name', 'value', 'type'], 'required'],
-      [['name', 'handle'], UniqueValidator::class, 'targetClass' => FeeRecord::class],
-      [['handle'], HandleValidator::class],
-    ];
+			[['siteId', 'handle', 'name', 'value', 'type'], 'required'],
+			[['name', 'handle'], UniqueValidator::class, 'targetClass' => FeeRecord::class],
+			[['handle'], HandleValidator::class],
+			[['type'], 'validateFeeType']
+		];
     }
+
+	public function validateFeeType($attribute, $params, $validator)
+	{
+        if (!in_array($this->$attribute, ['flat-fee', 'price-percentage'])) {
+			// TODO Message is not shown in admin area, not using Craft translation
+			// https://www.yiiframework.com/doc/guide/2.0/en/input-validation#inline-validators
+			$validator->addError($this, $attribute, 'The value “{value}” is not acceptable for {attribute}.');
+		}
+	}
 }
