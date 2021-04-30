@@ -387,20 +387,7 @@ class Marketplace extends BasePlugin
                         'marketplace'
                     );
 
-                    // TODO Move some of this to FeesService? Should handle:
-                    //      - Typical case, which is a global fee
-                    //      - Pro event hook, which gives you the option to do something completely custom
-
-                    // getFeeByOrder?
-                    // 1. Get the global fee (move the above for loop into FeesService)
-                    // ?. Calculate the simple fee from the order total, and return if we are in Lite? Or is that actually
-                    //    more complicated, because we split the path earlier?
-                    // 2. Iterate over each line item, and determine the fee based on that, rather than the order subtotal
-                    //    Unless there was an event to modify one or more item, should be the same as the simple result?
-                    // 3. Provide before and after event hooks within that loop (pro)
-                    // 4. Should have a value with the fees all added
                     $liteApplicationFeeAmount = $this->fees->calculateFeesAmount($order);
-                    // $feeResult = $this->fees->getFeeByLineItem($lineItemOnly, $tempGlobalFeeVar);
 
                     if ($liteApplicationFeeAmount) {
                         $e->request['application_fee_amount'] = $liteApplicationFeeAmount;

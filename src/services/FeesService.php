@@ -265,11 +265,20 @@ class FeesService extends Component
      */
     public function calculateFeesAmount(Order $order)
     {
+
+        // 1. Get the global fee
+        // ?. Calculate the simple fee from the order total, and return if we are in Lite? Or is that actually
+        //    more complicated, because we split the path earlier?
+        // 2. Iterate over each line item, and determine the fee based on that, rather than the order subtotal
+        //    Unless there was an event to modify one or more item, should be the same as the simple result?
+        // 3. Provide before and after event hooks within that loop (pro)
+        // 4. Should have a value with the fees all added
+
         $globalFees = $this->getAllFees();
 
         $applicationFee = 0;
         $applicationFeeAmount = 0;
-        
+
         if ($globalFees && count($globalFees) >= 1) {
             $feeCounter = 0;
 
