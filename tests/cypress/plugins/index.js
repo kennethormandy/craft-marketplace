@@ -24,13 +24,9 @@ module.exports = (on, config) => {
 
   on('task', {
     checkPaymentIntent(ref) {
-      console.log('check payment intent')
       const res = stripe.paymentIntents
         .retrieve(ref)
-        .then((paymentIntent) => {
-          console.log(paymentIntent)
-          return paymentIntent
-        })
+        .then((paymentIntent) => paymentIntent)
         .catch((error) => console.error(error))
 
       if (res) {
