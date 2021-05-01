@@ -47,4 +47,18 @@ class InstallPluginTest extends Unit
         $this->assertNotNull($pluginMarketplace);
         $this->assertNull($pluginFake);
     }
+
+    /**
+     * @group commerce
+     */
+    public function testPluginDepsAreInstalled()
+    {
+        $pluginCommerce = Craft::$app->plugins->getPlugin('commerce');
+        $pluginCommerceStripe = Craft::$app->plugins->getPlugin('commerce-stripe');
+        $pluginOauth = Craft::$app->plugins->getPlugin('oauthclient');
+
+        $this->assertNotNull($pluginCommerce);
+        $this->assertNotNull($pluginCommerceStripe);
+        $this->assertNotNull($pluginOauth);
+    }
 }
