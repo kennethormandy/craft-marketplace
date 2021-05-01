@@ -6,10 +6,12 @@ use Craft;
 use craft\base\Component;
 use craft\db\Query;
 use craft\commerce\elements\Order;
+use craft\helpers\App;
 use Exception;
 use kennethormandy\marketplace\models\Fee as FeeModel;
 use kennethormandy\marketplace\records\FeeRecord;
 use kennethormandy\marketplace\events\FeeEvent;
+use kennethormandy\marketplace\Marketplace;
 use putyourlightson\logtofile\LogToFile;
 
 /* This FeesService is based upon
@@ -284,7 +286,7 @@ class FeesService extends Component
 
             foreach ($globalFees as $feeId => $fee) {
                 // The Lite Edition only supports 1 fee
-                if ($feeCounter === 0 || $this->isPro()) {
+                if ($feeCounter === 0 || $this->_isPro()) {
                     $applicationFee = $fee;
                 }
 
@@ -301,4 +303,24 @@ class FeesService extends Component
 
     }
 
+    /**
+     * Is Pro.
+     *
+     * Whether or not this the Pro edition of the plugin is being used.
+     *
+     * @since 1.6.0
+     * @return bool
+     */
+    private function _isPro()
+    {
+        if (defined('Marketplace::EDITION_PRO') && Marketplace::$plugin->is(Marketplace::EDITION_PRO)) {
+            return true;
+        }
+
+        if (App::env('MARKETPLACE_PRO_BETA')) {
+            return true;
+        }
+
+        return false;
+    }
 }
