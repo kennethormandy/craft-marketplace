@@ -21,6 +21,9 @@ modules:
       migrations: []
       # Empty array, or array of objects
       plugins:
+        - { class: '\craft\commerce\Plugin', handle: "commerce" }
+        - { class: '\craft\commerce\stripe\Plugin', handle: "commerce-stripe" }
+        - { class: '\venveo\oauthclient\Plugin', handle: "oauthclient" }
         - { class: Marketplace, handle: "marketplace" }
       cleanup: true
       transaction: true
