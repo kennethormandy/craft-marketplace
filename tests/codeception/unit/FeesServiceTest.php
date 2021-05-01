@@ -4,16 +4,20 @@ namespace kennethormandy\marketplace\tests;
 
 use Codeception\Test\Unit;
 use Craft;
+use craft\commerce\elements\Order;
+use craft\commerce\models\LineItem;
+// use craft\commerce\test\fixtures\elements\ProductFixture;
 use kennethormandy\marketplace\Marketplace;
 use kennethormandy\marketplace\models\Fee;
 use UnitTester;
 
 class FeesServiceTest extends Unit
 {
+    public $plugin;
+
     /**
      * @var UnitTester
      */
-    public $plugin;
     public $tester;
 
     protected function _before()
@@ -70,8 +74,46 @@ class FeesServiceTest extends Unit
         $newFee->value = 3456;
 
         $orderItemTotal = (float) 50.00;
+
+        // TODO Should this actually throw?
         $result = $this->plugin->fees->calculateFeeAmount($newFee, $orderItemTotal);
 
         $this->assertEquals($result, 0);
+    }
+
+    /**
+     * @group commerce
+     */
+    public function testCalcFeesFromEmptyOrder()
+    {
+        $order = new Order();
+        $result = $this->plugin->fees->calculateFeesAmount($order);
+        $this->assertEquals($result, 0);
+    }
+
+    /**
+     * @group commerce
+     */
+    public function testCalcFeesFromOrder()
+    {
+        $globalFee = $this->plugin->fees->createFee([
+            'handle' => 'globalFee4',
+            'name' => 'Global Fee 4',
+            'type' => 'price-percentage',
+            'value' => 20
+        ]);
+
+        $this->plugin->fees->saveFee($globalFee, false);
+
+        $order = new Order();
+
+        $lineItem1 = new LineItem();
+        $lineItem1->qty = 2;
+        $lineItem1->salePrice = 10;
+        $order->setLineItems([$lineItem1]);
+
+        $result = $this->plugin->fees->calculateFeesAmount($order);
+
+        $this->assertEquals($result, 400);
     }
 }
