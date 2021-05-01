@@ -4,6 +4,7 @@ namespace kennethormandy\marketplace\tests;
 
 use Codeception\Test\Unit;
 use Craft;
+use craft\commerce\Plugin as Commerce;
 use craft\commerce\elements\Order;
 use craft\commerce\models\LineItem;
 // use craft\commerce\test\fixtures\elements\ProductFixture;
@@ -14,6 +15,17 @@ use UnitTester;
 class FeesServiceTest extends Unit
 {
     public $plugin;
+    protected $commerce;
+
+    /**
+     * @var string
+     */
+    protected $pluginOriginalEdition;
+
+    /**
+     * @var string
+     */
+    protected $commerceOriginalEdition;
 
     /**
      * @var UnitTester
@@ -28,6 +40,10 @@ class FeesServiceTest extends Unit
         $this->plugin->setSettings([
             'secretApiKey' => getenv('STRIPE_SECRET_KEY')
         ]);
+        $this->pluginOriginalEdition = $this->plugin->edition;
+
+        $this->commerce = Commerce::getInstance();
+        $this->commerceOriginalEdition = $this->commerce->edition;
     }
 
     protected function _after()
@@ -37,6 +53,9 @@ class FeesServiceTest extends Unit
         foreach ($globalFees as $feeId => $fee) {
             $this->plugin->fees->deleteFee($feeId);
         }
+
+        $this->plugin->edition = $this->pluginOriginalEdition;
+        $this->commerce->edition = $this->commerceOriginalEdition;
     }
 
     /**
@@ -155,10 +174,11 @@ class FeesServiceTest extends Unit
     /**
      * @group now
      */
-    // TODO Need to check this in Lite, change edition, and check same order in Pro
-    //      and then set edition back to prev
     public function testCalcFeesFromOrderMultipleLineItems()
     {
+        // Multiple line items only supported in Commerce Pro
+        $this->commerce->edition = Commerce::EDITION_PRO;
+
         $config = [
             "handle" => "globalFee3",
             "name" => "Global Fee 3",
@@ -190,6 +210,9 @@ class FeesServiceTest extends Unit
      */
     public function testCalcFeesFromOrderMultipleLineItemsFlatFee()
     {
+        // Multiple line items only supported in Commerce Pro
+        $this->commerce->edition = Commerce::EDITION_PRO;
+
         $config1 = [
             "handle" => "globalFee4",
             "name" => "Global Fee 4",
@@ -221,6 +244,11 @@ class FeesServiceTest extends Unit
      */
     public function testCalcFeesFromOrderMultipleLineItemsMultipleFees()
     {
+        // Multiple line items only supported in Commerce Pro
+        $this->commerce->edition = Commerce::EDITION_PRO;
+
+        // TODO Marketplace also needs to be Pro here
+
         $config1 = [
             "handle" => "globalFee5",
             "name" => "Global Fee 5",
@@ -238,6 +266,9 @@ class FeesServiceTest extends Unit
         /** @var FeeModel $fee */
         $globalFee1 = $this->plugin->fees->createFee($config1);
         $created1 = $this->plugin->fees->saveFee($globalFee1);
+
+        // TODO Could test fee value here, but right now it doesn’t
+        //      get changed from 5 to 500 until save.
 
         /** @var FeeModel $fee */
         $globalFee2 = $this->plugin->fees->createFee($config2);
