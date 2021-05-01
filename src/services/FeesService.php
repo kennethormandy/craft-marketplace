@@ -228,7 +228,7 @@ class FeesService extends Component
 
     /**
      * @param $fee
-     * @param float $baseAmount Typically, the `$order->itemTotal` from Craft Commerce, which is stored as a float.
+     * @param float $baseAmount Typically, the `$order->itemSubtotal` from Craft Commerce, which is stored as a float.
      * @return int
      */
     public function calculateFeeAmount(FeeModel $fee, float $baseAmount = 0): int
