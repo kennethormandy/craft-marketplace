@@ -251,12 +251,13 @@ class FeesService extends Component
                 // Ex. $10 fee stored in DB as 1000 = 1000 cent fee
                 $feeAmount = (int) $fee->value;
             }
+        }
 
-            // Must be a positive integer (in cents)
-            // Redundant?
-            // if ($feeAmount > 0 && is_int($feeAmount)) {
-            //     return $feeAmount;
-            // }
+        // Must be a positive int, in “cents”
+        if (0 > $feeAmount || !is_int($feeAmount)) {
+            LogToFile::log('Invalid fee. Fee set to 0.', 'marketplace', 'warning');
+
+            return 0;
         }
 
         return $feeAmount;
