@@ -276,31 +276,47 @@ class FeesService extends Component
         // 3. Provide before and after event hooks within that loop (pro)
         // 4. Should have a value with the fees all added
 
-        $globalFees = $this->getAllFees();
+        $event = new FeeEvent();
+        $event->order = $order;
+        $event->fees = $this->getAllFees();
 
-        $applicationFee = 0;
-        $applicationFeeAmount = 0;
+        // Don’t like this API
+        $event->applicationFeeAmount = 0;
 
-        if ($globalFees && count($globalFees) >= 1) {
-            $feeCounter = 0;
-
-            foreach ($globalFees as $feeId => $fee) {
-                // The Lite Edition only supports 1 fee
-                if ($feeCounter === 0 || $this->_isPro()) {
-                    $applicationFee = $fee;
-                }
-
-                $feeCounter++;
-            }
-
-            $applicationFeeAmount = $this->calculateFeeAmount($applicationFee, $order->itemSubtotal);
+        if ($this->hasEventHandlers(self::EVENT_AFTER_CALCULATE_FEE)) {
+            $this->trigger(self::EVENT_AFTER_CALCULATE_FEE, $event);
         }
 
-        return $applicationFeeAmount;
+        if (!$event->fees || 1 > count($event->fees)) {
+            return $event->applicationFeeAmount;
+        }
 
+        // TODO Should actually calc the initial fee based on the order subtotal, 
+        //      because with price-percentage we want the entire order subtotal,
+        //      not the price of the first line item.
+        //        Then, if it’s pro, do the line item stuff.
+        if (!$this->_isPro() && $event->fees[0]) {
+            // The Lite Edition only supports 1 fee
+            $firstFee = $event->fees[0];
+            $liteApplicationFeeAmount = $this->calculateFeeAmount($firstFee, $order->itemSubtotal);
+            return $liteApplicationFeeAmount;
+        }
+
+        foreach ($event->fees as $feeId => $fee) {
+            $currentFeeAmount = $this->calculateFeeAmount($fee, $order->itemSubtotal);
+            $event->applicationFeeAmount += $currentFeeAmount;
+        }
+
+        // We actually have no reason to go through each line item,
+        // maybe leave that for someone else to do in after?
         // foreach ($order->lineItems as $key => $lineItem) {
         // }
 
+        if ($this->hasEventHandlers(self::EVENT_AFTER_CALCULATE_FEE)) {
+            $this->trigger(self::EVENT_AFTER_CALCULATE_FEE, $event);
+        }
+
+        return $event->applicationFeeAmount;
     }
 
     /**
