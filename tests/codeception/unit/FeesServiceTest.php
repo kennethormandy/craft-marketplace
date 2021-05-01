@@ -92,18 +92,19 @@ class FeesServiceTest extends Unit
     }
 
     /**
-     * @group commerce
+     * @group now
      */
-    public function testCalcFeesFromOrder()
+    public function testCalcFeesFromOrderPricePercentage()
     {
-        $globalFee = $this->plugin->fees->createFee([
-            'handle' => 'globalFee4',
-            'name' => 'Global Fee 4',
+        $config = [
+            'handle' => 'globalFee1',
+            'name' => 'Global Fee 1',
             'type' => 'price-percentage',
             'value' => 20
-        ]);
+        ];
+        $globalFee = $this->plugin->fees->createFee($config);
 
-        $this->plugin->fees->saveFee($globalFee, false);
+        $created = $this->plugin->fees->saveFee($globalFee);
 
         $order = new Order();
 
@@ -115,5 +116,46 @@ class FeesServiceTest extends Unit
         $result = $this->plugin->fees->calculateFeesAmount($order);
 
         $this->assertEquals($result, 400);
+
+        // Cleanup
+        if ($created) {
+            $currentFee = $this->plugin->fees->getFeeByHandle($config['handle']);
+            $this->plugin->fees->deleteFee($currentFee->id);
+        }
+    }
+
+    /**
+     * @group now
+     */
+    public function testCalcFeesFromOrderFlatFee()
+    {
+        $config = [
+            "handle" => "globalFee2",
+            "name" => "Global Fee 2",
+            "type" =>  "flat-fee",
+            "value" => 5
+        ];
+
+        /** @var FeeModel $fee */
+        $globalFee = $this->plugin->fees->createFee($config);
+
+        $created = $this->plugin->fees->saveFee($globalFee);
+
+        $order = new Order();
+
+        $lineItem1 = new LineItem();
+        $lineItem1->qty = 2;
+        $lineItem1->salePrice = 10;
+        $order->setLineItems([$lineItem1]);
+
+        $result = $this->plugin->fees->calculateFeesAmount($order);
+
+        $this->assertEquals($result, 500);
+
+        // Cleanup
+        if ($created) {
+            $currentFee = $this->plugin->fees->getFeeByHandle($config['handle']);
+            $this->plugin->fees->deleteFee($currentFee->id);
+        }
     }
 }
