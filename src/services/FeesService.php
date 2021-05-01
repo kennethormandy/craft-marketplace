@@ -245,7 +245,8 @@ class FeesService extends Component
                 $percent = ($fee->value / 100);
 
                 // $10 subtotal * 12.5 = 125 cent application fee
-                $feeAmount = (int) $baseAmount * $percent;
+                $feeAmount = (float) $baseAmount * $percent;
+                $feeAmount = (int) round($feeAmount);
             } elseif ($fee->type === 'flat-fee') {
                 // Ex. $10 fee stored in DB as 1000 = 1000 cent fee
                 $feeAmount = (int) $fee->value;
