@@ -32,6 +32,11 @@ class FeesServiceTest extends Unit
 
     protected function _after()
     {
+        $globalFees = $this->plugin->fees->getAllFees();
+
+        foreach ($globalFees as $feeId => $fee) {
+            $this->plugin->fees->deleteFee($feeId);
+        }
     }
 
     /**
@@ -116,12 +121,6 @@ class FeesServiceTest extends Unit
         $result = $this->plugin->fees->calculateFeesAmount($order);
 
         $this->assertEquals($result, 400);
-
-        // Cleanup
-        if ($created) {
-            $currentFee = $this->plugin->fees->getFeeByHandle($config['handle']);
-            $this->plugin->fees->deleteFee($currentFee->id);
-        }
     }
 
     /**
@@ -151,22 +150,49 @@ class FeesServiceTest extends Unit
         $result = $this->plugin->fees->calculateFeesAmount($order);
 
         $this->assertEquals($result, 500);
-
-        // Cleanup
-        if ($created) {
-            $currentFee = $this->plugin->fees->getFeeByHandle($config['handle']);
-            $this->plugin->fees->deleteFee($currentFee->id);
-        }
     }
 
     /**
      * @group now
      */
+    // TODO Need to check this in Lite, change edition, and check same order in Pro
+    //      and then set edition back to prev
     public function testCalcFeesFromOrderMultipleLineItems()
     {
-        $config1 = [
+        $config = [
             "handle" => "globalFee3",
             "name" => "Global Fee 3",
+            "type" =>  "price-percentage",
+            "value" => 5
+        ];
+
+        /** @var FeeModel $fee */
+        $globalFee = $this->plugin->fees->createFee($config);
+        $created = $this->plugin->fees->saveFee($globalFee);
+
+        $order = new Order();
+
+        $lineItem1 = new LineItem();
+        $lineItem1->qty = 1;
+        $lineItem1->salePrice = 45.00;
+        $lineItem2 = new LineItem();
+        $lineItem2->qty = 1;
+        $lineItem2->salePrice = 63.50;
+        $order->setLineItems([$lineItem1, $lineItem2]);
+
+        $result = $this->plugin->fees->calculateFeesAmount($order);
+
+        $this->assertEquals($result, 543);
+    }
+
+    /**
+     * @group now
+     */
+    public function testCalcFeesFromOrderMultipleLineItemsFlatFee()
+    {
+        $config1 = [
+            "handle" => "globalFee4",
+            "name" => "Global Fee 4",
             "type" =>  "flat-fee",
             "value" => 5
         ];
@@ -187,17 +213,7 @@ class FeesServiceTest extends Unit
 
         $result = $this->plugin->fees->calculateFeesAmount($order);
 
-        $this->assertEquals($result, 1043);
-
-        // Cleanup
-        if ($created1) {
-            $currentFee = $this->plugin->fees->getFeeByHandle($config1['handle']);
-            $this->plugin->fees->deleteFee($currentFee->id);
-        }
-        if ($created2) {
-            $currentFee = $this->plugin->fees->getFeeByHandle($config2['handle']);
-            $this->plugin->fees->deleteFee($currentFee->id);
-        }
+        $this->assertEquals($result, 500);
     }
 
     /**
@@ -206,15 +222,15 @@ class FeesServiceTest extends Unit
     public function testCalcFeesFromOrderMultipleLineItemsMultipleFees()
     {
         $config1 = [
-            "handle" => "globalFee4",
-            "name" => "Global Fee 4",
+            "handle" => "globalFee5",
+            "name" => "Global Fee 5",
             "type" =>  "flat-fee",
             "value" => 5
         ];
 
         $config2 = [
-            "handle" => "globalFee5",
-            "name" => "Global Fee 5",
+            "handle" => "globalFee6",
+            "name" => "Global Fee 6",
             "type" =>  "price-percentage",
             "value" => 5
         ];
@@ -240,15 +256,5 @@ class FeesServiceTest extends Unit
         $result = $this->plugin->fees->calculateFeesAmount($order);
 
         $this->assertEquals($result, 1043);
-
-        // Cleanup
-        if ($created1) {
-            $currentFee = $this->plugin->fees->getFeeByHandle($config1['handle']);
-            $this->plugin->fees->deleteFee($currentFee->id);
-        }
-        if ($created2) {
-            $currentFee = $this->plugin->fees->getFeeByHandle($config2['handle']);
-            $this->plugin->fees->deleteFee($currentFee->id);
-        }
     }
 }
