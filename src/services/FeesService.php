@@ -10,7 +10,7 @@ use craft\helpers\App;
 use Exception;
 use kennethormandy\marketplace\models\Fee as FeeModel;
 use kennethormandy\marketplace\records\FeeRecord;
-use kennethormandy\marketplace\events\FeeEvent;
+use kennethormandy\marketplace\events\FeesEvent;
 use kennethormandy\marketplace\Marketplace;
 use putyourlightson\logtofile\LogToFile;
 
@@ -278,7 +278,7 @@ class FeesService extends Component
         // 3. Provide before and after event hooks within that loop (pro)
         // 4. Should have a value with the fees all added
 
-        $event = new FeeEvent();
+        $event = new FeesEvent();
         $event->order = $order;
         $event->fees = $this->getAllFees();
 
