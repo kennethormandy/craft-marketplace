@@ -248,7 +248,7 @@ class Marketplace extends BasePlugin
 
                 if (
                     is_array($event->context) &&
-                    is_set($event->context['elementUid']) &&
+                    isset($event->context['elementUid']) &&
                     $event->context['elementUid']
                 ) {
                     LogToFile::info(json_encode($event->context['elementUid']), 'marketplace');
