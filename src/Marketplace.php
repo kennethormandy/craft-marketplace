@@ -23,6 +23,7 @@ use craft\helpers\App;
 use craft\helpers\UrlHelper;
 use craft\services\Fields;
 use craft\web\UrlManager;
+use craft\errors\InvalidFieldException;
 use kennethormandy\marketplace\fields\MarketplaceConnectButton as MarketplaceConnectButtonField;
 use kennethormandy\marketplace\fields\MarketplacePayee as MarketplacePayeeField;
 use kennethormandy\marketplace\models\Settings;
@@ -123,6 +124,7 @@ class Marketplace extends BasePlugin
             Provider::EVENT_CREATE_TOKEN_MODEL_FROM_RESPONSE,
             function (TokenEvent $event) {
                 $stripeResponse = $event->responseToken;
+                $token = $event->token;
 
                 LogToFile::info('EVENT_CREATE_TOKEN_MODEL_FROM_RESPONSE', 'marketplace');
                 LogToFile::info(json_encode($stripeResponse), 'marketplace');
@@ -132,33 +134,18 @@ class Marketplace extends BasePlugin
                     LogToFile::info(json_encode($stripeResponse), 'marketplace');
 
                     if (
-                  isset($stripeResponse) &&
-                  isset($stripeResponse->stripe_user_id)
-                ) {
+                        isset($stripeResponse) &&
+                        isset($stripeResponse->stripe_user_id)
+                    ) {
                         LogToFile::info('Stripe Account Id stripe_user_id', 'marketplace');
                         $stripeAccountId = $stripeResponse->stripe_user_id;
 
-                        // TODO Might be possible to pass along original user ID to Stripe,
-                        // and then get it back in the resp, otherwise hypothetically you can
-                        // be logged in as a different user to initiate the process, and have the
-                        // result applied to the wrong user.
-                        $userId = Craft::$app->user->getId();
-                        $userObject = Craft::$app->users->getUserById($userId);
-
-                        $stripeConnectHandle = $this->handlesService->getButtonHandle($userObject);
-
-                        LogToFile::info(
-                            'Got Marketplace handle ' . $stripeConnectHandle,
-                            'marketplace'
-                        );
-
-                        // TODO Instead of using a fallback, we should probably
-                        //      show a warning that we don’t have a the correct
-                        //      handle, or that there is no button.
-                        $stripeConnectHandle = $stripeConnectHandle ? $stripeConnectHandle : 'stripeConnect';
-                        $userObject->setFieldValue($stripeConnectHandle, $stripeAccountId);
-
-                        Craft::$app->elements->saveElement($userObject);
+                        // Save the Stripe Account ID on the token
+                        // This seems to get overwritten in the token, once it’s save to the DB, but it
+                        // works fine for our purposes. Otherwise, could change token->userId to the
+                        // element id I want to use, but I think that will cause other problems later, and we
+                        // still want to know what user created the token
+                        $event->token->uid = $stripeAccountId;
                     }
                 }
             }
@@ -223,7 +210,12 @@ class Marketplace extends BasePlugin
             AuthorizeController::class,
             AuthorizeController::EVENT_BEFORE_AUTHENTICATE,
             function (AuthorizationEvent $event) {
-                // LogToFile::info('EVENT_BEFORE_AUTHENTICATE', 'marketplace');
+
+                if ($event->context) {
+                    LogToFile::info('EVENT_BEFORE_AUTHENTICATE context', 'marketplace');
+                    LogToFile::info(json_encode($event->context), 'marketplace');    
+                }
+
                 if (
                 $event->context &&
                 isset($event->context['location']) &&
@@ -239,6 +231,81 @@ class Marketplace extends BasePlugin
                     LogToFile::info('Return URL', 'marketplace');
                     LogToFile::info($returnUrl, 'marketplace');
                     $event->returnUrl = $returnUrl;
+                }
+            }
+        );
+
+        // TODO Here, the uid on the token should be the Stripe Account ID
+        // The uid in the context is the API I’m thinking of using for saying
+        // “don’t save the Stripe Account ID on the current user, save it on this element”
+        Event::on(
+            AuthorizeController::class,
+            AuthorizeController::EVENT_AFTER_AUTHENTICATE,
+            function (AuthorizationEvent $event) {
+                LogToFile::info('EVENT_AFTER_AUTHENTICATE context', 'marketplace');
+                LogToFile::info(json_encode($event), 'marketplace');
+                LogToFile::info(json_encode($event->context), 'marketplace');
+
+                if (
+                    is_array($event->context) &&
+                    is_set($event->context['elementUid']) &&
+                    $event->context['elementUid']
+                ) {
+                    LogToFile::info(json_encode($event->context['elementUid']), 'marketplace');
+                    $elementUid = $event->context['elementUid'];
+    
+                    // This needs to be a string for the class, not a simple string like “category”
+                    // https://docs.craftcms.com/api/v3/craft-services-elements.html#public-methods
+                    $elementType = null;
+                    // if (isset($event->context['elementType'])) {
+                    //     LogToFile::info(json_encode($event->context['elementType']), 'marketplace');
+                    //     $elementType = $event->context['elementType'];
+                    // }
+
+                    $element = Craft::$app->elements->getElementByUid($elementUid, $elementType);    
+
+                    LogToFile::info('element', 'marketplace');
+                    LogToFile::info(json_encode($element), 'marketplace');
+                    LogToFile::info(json_encode($element->slug), 'marketplace');
+
+                    $token = $event->token;
+                    LogToFile::info(json_encode($token), 'marketplace');
+
+                    $stripeConnectHandle = $this->handlesService->getButtonHandle($element);
+                    $element->setFieldValue($stripeConnectHandle, $token->uid);
+
+                    Craft::$app->elements->saveElement($element);
+                } else {
+                    // Didn’t explicitly provide an elementUid to save the
+                    // Stripe Connect Account ID to, so we assume that
+                    // it should be saved to the current user, if there is
+                    // a Marketplace Button Field on the user.
+
+                    // TODO Could set elementUid to the current user uid when the
+                    // initial Stripe URL is created, and possibly remove this else
+                    // conditional entirely. Otherwise hypothetically you can
+                    // be logged in as a different user to initiate the process, and have the
+                    // result applied to the wrong user.
+
+                    $token = $event->token;
+                    $userId = Craft::$app->user->getId();
+                    $userObject = Craft::$app->users->getUserById($userId);
+                    $stripeConnectHandle = $this->handlesService->getButtonHandle($userObject);
+
+                    LogToFile::info(
+                        'Got Marketplace handle ' . $stripeConnectHandle,
+                        'marketplace'
+                    );
+
+                    if ($stripeConnectHandle && $userObject) {
+                        try {
+                            $userObject->setFieldValue($stripeConnectHandle, $token->uid);
+                            Craft::$app->elements->saveElement($userObject);
+                        } catch (InvalidFieldException $error) {
+                            LogToFile::error(json_encode($error));
+                        }
+                    }
+
                 }
             }
         );
