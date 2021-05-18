@@ -39,7 +39,10 @@ class AccountsController extends Controller
             // In handles service, when we look up the button handle, can we look up the type of element it is set on?
             $accountIdHandle = Marketplace::$plugin->handlesService->getButtonHandle();
 
-            if ((!$currentUserIdentity[$accountIdHandle] || $currentUserIdentity[$accountIdHandle] !== $accountId) && !$currentUser->getIsAdmin()) {
+            if (
+                !$currentUser->getIsAdmin() &&
+                (!$currentUserIdentity[$accountIdHandle] || $currentUserIdentity[$accountIdHandle] !== $accountId)
+            ) {
                 LogToFile::error('[AccountsController] User ' . $currentUserIdentity . ' attempting to create link for account that isn’t their own, without admin access.', 'marketplace');
 
                 // TODO Handle translations
