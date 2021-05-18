@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+### Added
+- Added support for connecting accounts to any Element, not just Users
+
+### Changed
+- When a User connects a new account, the account ID returned by the platform is saved in the `EVENT_AFTER_AUTHENTICATE` step, instead of the `EVENT_CREATE_TOKEN_MODEL_FROM_RESPONSE` step. There should be no difference in user experience, from an end user’s perspective.
+
+### Fixed
+- Fixed a presumptuous check that assumed `'stripeConnect'` could always be a fallback field handle for a Stripe Connect Button, when it actually probably means there is no Stripe Connect Button field
+
 ## v1.5.1 - 2021-04-26
 
 ### Fixed
