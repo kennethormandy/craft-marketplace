@@ -3,6 +3,7 @@
 namespace kennethormandy\marketplace\controllers;
 
 use Craft;
+use craft\elements\User;
 use craft\web\Controller;
 use kennethormandy\marketplace\Marketplace;
 use putyourlightson\logtofile\LogToFile;
@@ -21,21 +22,35 @@ class AccountsController extends Controller
         $request = Craft::$app->getRequest();
         $accountId = $request->getParam('accountId');
 
-        $currentUser = Craft::$app->getUser();
-        $currentUserIdentity = $currentUser->getIdentity();
-        $accountIdHandle = Marketplace::$plugin->handlesService->getButtonHandle();
+        $elementType = User::class;
 
-        if ((!$currentUserIdentity[$accountIdHandle] || $currentUserIdentity[$accountIdHandle] !== $accountId) || $currentUser->getIsAdmin()) {
-            LogToFile::error('[AccountsController] User ' . $currentUserIdentity . ' attempting to create link for account that isn’t their own, without admin access.', 'marketplace');
+        if ($request->getParam('elementUid')) {
+            $elementUid = $request->getParam('elementUid');
+            $elementType = Craft::$app->elements->getElementTypeByUid($elementUid);
+        }
 
-            // TODO Handle translations
-            $errorMessage = 'You do not have permission to access that account';
+        // Only do this if the Marketplace Connect Button is set on Users,
+        // TODO Do we want some other kind of permissions check for non-User cases? Can edit that element?
+        if ($elementType === User::class) {
 
-            Craft::$app->getUrlManager()->setRouteParams([
-                'variables' => ['errorMessage' => $errorMessage]
-            ]);
+            $currentUser = Craft::$app->getUser();
+            $currentUserIdentity = $currentUser->getIdentity();
 
-            return null;
+            // In handles service, when we look up the button handle, can we look up the type of element it is set on?
+            $accountIdHandle = Marketplace::$plugin->handlesService->getButtonHandle();
+
+            if ((!$currentUserIdentity[$accountIdHandle] || $currentUserIdentity[$accountIdHandle] !== $accountId) || !$currentUser->getIsAdmin()) {
+                LogToFile::error('[AccountsController] User ' . $currentUserIdentity . ' attempting to create link for account that isn’t their own, without admin access.', 'marketplace');
+
+                // TODO Handle translations
+                $errorMessage = 'You do not have permission to access that account';
+
+                Craft::$app->getUrlManager()->setRouteParams([
+                    'variables' => ['errorMessage' => $errorMessage]
+                ]);
+
+                return null;
+            }
         }
 
         // NOTE Decided not to use Account model yet.
