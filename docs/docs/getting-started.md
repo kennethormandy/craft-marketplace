@@ -6,6 +6,6 @@ slug: /
 ## Concepts
 
 - Payees
-- [Fees](/fees)
+- [Fees](fees)
 - Apps (OAuth plugin)
 - Accounts
