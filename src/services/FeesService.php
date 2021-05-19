@@ -23,8 +23,8 @@ use putyourlightson\logtofile\LogToFile;
 
 class FeesService extends Component
 {
-    public const EVENT_BEFORE_CALCULATE_FEE = 'EVENT_BEFORE_CALCULATE_FEE';
-    public const EVENT_AFTER_CALCULATE_FEE = 'EVENT_AFTER_CALCULATE_FEE';
+    public const EVENT_BEFORE_CALCULATE_FEES_AMOUNT = 'EVENT_BEFORE_CALCULATE_FEES_AMOUNT';
+    public const EVENT_AFTER_CALCULATE_FEES_AMOUNT = 'EVENT_AFTER_CALCULATE_FEES_AMOUNT';
 
     private $_FEES_BY_HANDLE = [];
     private $_FEES_BY_ID = [];
@@ -285,8 +285,8 @@ class FeesService extends Component
         // Don’t like this API
         $event->applicationFeeAmount = 0;
 
-        if ($this->hasEventHandlers(self::EVENT_AFTER_CALCULATE_FEE)) {
-            $this->trigger(self::EVENT_AFTER_CALCULATE_FEE, $event);
+        if ($this->hasEventHandlers(self::EVENT_BEFORE_CALCULATE_FEES_AMOUNT)) {
+            $this->trigger(self::EVENT_BEFORE_CALCULATE_FEES_AMOUNT, $event);
         }
 
         if (!$event->fees || 1 > count($event->fees)) {
@@ -314,8 +314,8 @@ class FeesService extends Component
         // foreach ($order->lineItems as $key => $lineItem) {
         // }
 
-        if ($this->hasEventHandlers(self::EVENT_AFTER_CALCULATE_FEE)) {
-            $this->trigger(self::EVENT_AFTER_CALCULATE_FEE, $event);
+        if ($this->hasEventHandlers(self::EVENT_AFTER_CALCULATE_FEES_AMOUNT)) {
+            $this->trigger(self::EVENT_AFTER_CALCULATE_FEES_AMOUNT, $event);
         }
 
         return $event->applicationFeeAmount;
