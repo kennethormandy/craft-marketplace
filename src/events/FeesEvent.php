@@ -24,5 +24,5 @@ class FeesEvent extends ModelEvent
     /** @var Order */
     public $order;
 
-    public $applicationFeeAmount;
+    public $amount;
 }

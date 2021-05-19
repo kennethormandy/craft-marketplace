@@ -269,34 +269,22 @@ class FeesService extends Component
      */
     public function calculateFeesAmount(Order $order)
     {
-
-        // 1. Get the global fee
-        // ?. Calculate the simple fee from the order total, and return if we are in Lite? Or is that actually
-        //    more complicated, because we split the path earlier?
-        // 2. Iterate over each line item, and determine the fee based on that, rather than the order subtotal
-        //    Unless there was an event to modify one or more item, should be the same as the simple result?
-        // 3. Provide before and after event hooks within that loop (pro)
-        // 4. Should have a value with the fees all added
-
         $event = new FeesEvent();
         $event->order = $order;
         $event->fees = $this->getAllFees();
 
-        // Don’t like this API
-        $event->applicationFeeAmount = 0;
+        $event->amount = 0;
 
         if ($this->hasEventHandlers(self::EVENT_BEFORE_CALCULATE_FEES_AMOUNT)) {
             $this->trigger(self::EVENT_BEFORE_CALCULATE_FEES_AMOUNT, $event);
         }
 
         if (!$event->fees || 1 > count($event->fees)) {
-            return $event->applicationFeeAmount;
+            return $event->amount;
         }
 
-        // TODO Should actually calc the initial fee based on the order subtotal, 
-        //      because with price-percentage we want the entire order subtotal,
-        //      not the price of the first line item.
-        //        Then, if it’s pro, do the line item stuff.
+        // Calculate the fee based on the order subtotal, because with price-percentage
+        // we want the entire order subtotal, not the price of the first line item.
         if (!$this->_isPro() && $event->fees[0]) {
             // The Lite Edition only supports 1 fee
             $firstFee = $event->fees[0];
@@ -306,11 +294,12 @@ class FeesService extends Component
 
         foreach ($event->fees as $feeId => $fee) {
             $currentFeeAmount = $this->calculateFeeAmount($fee, $order->itemSubtotal);
-            $event->applicationFeeAmount += $currentFeeAmount;
+            $event->amount += $currentFeeAmount;
         }
 
-        // We actually have no reason to go through each line item,
-        // maybe leave that for someone else to do in after?
+        // We actually have no reason to go through each line item within the plugin,
+        // but someone else can decide to do that and calculate their own line item
+        // -based fee logic in AFTER event.
         // foreach ($order->lineItems as $key => $lineItem) {
         // }
 
@@ -318,7 +307,7 @@ class FeesService extends Component
             $this->trigger(self::EVENT_AFTER_CALCULATE_FEES_AMOUNT, $event);
         }
 
-        return $event->applicationFeeAmount;
+        return $event->amount;
     }
 
     /**
