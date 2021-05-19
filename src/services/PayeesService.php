@@ -54,6 +54,9 @@ class PayeesService extends Component
         ) {
             // Typcial products
             $payeeUserId = $purchasable->product[$payeeHandle];
+
+            // The $payeeUserId actually a string that looks like an array,
+            // and that is working fine?
             $purchasablePayeeUser = User::find()->id($payeeUserId)->one();
         } else {
             LogToFile::info(
