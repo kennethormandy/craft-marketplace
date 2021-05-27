@@ -90,7 +90,7 @@ class Marketplace extends BasePlugin
             'fees' => FeesService::class,
             'payees' => PayeesService::class,
             'accounts' => AccountsService::class,
-            ]);
+        ]);
 
         Craft::info('Marketplace plugin loaded', __METHOD__);
 
