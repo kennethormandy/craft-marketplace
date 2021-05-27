@@ -74,7 +74,7 @@ context('Fees Event', () => {
 
           // We customized the fee using a module
           expect(result.application_fee_amount).to.exist
-          expect(result.application_fee_amount).to.equal(3456)
+          expect(result.application_fee_amount).to.equal(1234)
         })
       })
   })
