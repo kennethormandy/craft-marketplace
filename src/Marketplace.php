@@ -418,16 +418,19 @@ class Marketplace extends BasePlugin
                         }
                     }
 
-                    // If it’s the Lite edition, but payees are not the same,
-                    // we don’t support this scenario. Instead, we return,
-                    // which means the transaction will go through as a
-                    // normal Craft Commerce transaction.
-                    if (!$this->isPro() && $payeesSame == false) {
-                        LogToFile::info(
-                            'Stripe ' . $hardCodedApproach . ' line items have different User Payee Account IDs. Paying to parent account.',
-                            'marketplace'
-                        );
+                    if ($payeesSame == false) {
+                        // If it’s the Lite edition, but payees are not the same,
+                        // we don’t support this scenario. Instead, we return,
+                        // which means the transaction will go through as a
+                        // normal Craft Commerce transaction.
+                        if (!$this->isPro()) {
+                            LogToFile::info(
+                                'Stripe ' . $hardCodedApproach . ' line items have different User Payee Account IDs. Paying to parent account.',
+                                'marketplace'
+                            );
+                        }
 
+                        // If it’s the Pro edition, the remainder is handled after payment.
                         return;
                     }
                 }
