@@ -405,19 +405,10 @@ class Marketplace extends BasePlugin
                 }
 
                 // If there’s more than one line item, we check they all have the
-                // same payees, and allow the payment splitting as long as
-                // they all match.
+                // same payees. In Lite, we’ll allow the payment splitting as long as
+                // they all match. In Pro, we’ll split payments.
                 if (count($order->lineItems) > 1) {
-                    // Iterate over line items, and get payees
-                    // If one payee is different from all others, return
-                    // Maybe we don’t actually need a setting then: you are just gaining
-                    // a new feature if try and run through multiple line items with
-                    // Commerce Pro AND they are all the same payee. Otherwise, if they are
-                    // different payees, you’ll continue to get the same behvaiour: the plugin
-                    // won’t be used.
-
                     $payeesSame = true;
-                    $lineItemPayees = [];
                     foreach ($order->lineItems as $key => $lineItem) {
                         if ($key > 0) {
                             $payeeCurrent = $this->payees->getGatewayAccountId($lineItem);
