@@ -46,7 +46,6 @@ context('Fees Event', () => {
     // This is only telling us that the Payee is set correctly
     // on the Craft CMS order, not that it was correctly
     // handled and payment split by Stripe.
-    cy.contains('Payee 1')
     cy.contains('Demo Person')
 
     cy.get('[data-test=order-reference]:first-child')
