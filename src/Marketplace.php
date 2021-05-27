@@ -12,7 +12,9 @@ namespace kennethormandy\marketplace;
 
 use Craft;
 use craft\base\Plugin as BasePlugin;
+use craft\commerce\Plugin as Commerce;
 use craft\commerce\events\RefundTransactionEvent;
+use craft\commerce\elements\Order;
 use craft\commerce\services\Payments;
 use craft\commerce\stripe\base\Gateway as StripeGateway;
 use craft\commerce\stripe\events\BuildGatewayRequestEvent;
@@ -507,6 +509,116 @@ class Marketplace extends BasePlugin
                 }
             }
         );
+
+        Event::on(
+            Order::class,
+            Order::EVENT_AFTER_ORDER_PAID,
+            function(Event $event) {
+                /** @var Order $order */
+                $order = $event->sender;
+                $purchaseTransaction = null;
+
+                if (!$this->isPro() || 1 >= count($order->lineItems)) {
+                    return;
+                }
+
+                // TODO Have to check payees are the same again,
+                //      or store that in the snapshot. If they are
+                //      the same, we already made the transfer.
+
+                foreach ($order->transactions as $transaction) {
+                    // TODO Does auth and capture still create this?
+                    if ($transaction->type === 'purchase') {
+                        $purchaseTransaction = $transaction;                        
+                        break;
+                    }
+                }
+
+                if (!$purchaseTransaction || !$purchaseTransaction->reference) {
+                    LogToFile::error('No purchase transaction found on Order ' . $order->id, 'marketplace');
+                    return;
+                }
+
+                $stripeResp = json_decode($purchaseTransaction->response);
+
+                $stripeCharge = null;
+
+                // Get the first captured transaction
+                if (
+                    isset($stripeResp->charges) && $stripeResp->charges &&
+                    isset($stripeResp->charges->data) && $stripeResp->charges->data &&
+                    count($stripeResp->charges->data) >= 1
+                ) {
+                    foreach ($stripeResp->charges->data as $charge) {
+                        LogToFile::info(json_encode($charge), 'marketplace');
+                        if ($charge && $charge->captured && $charge->status === 'succeeded') {
+                            $stripeCharge = $charge;
+                            break;
+                        }
+                    }
+                }
+
+                if (!$stripeCharge) {
+                    LogToFile::error('No successful charge found on Order ' . $order->id, 'marketplace');
+                    return;
+                }
+
+                foreach ($order->lineItems as $key => $lineItem) {
+                    $payeeCurrent = $this->payees->getGatewayAccountId($lineItem);
+                    $currencyCountryCode = $transaction->paymentCurrency;
+                    $stripeAmount = $this->_toStripeAmount($lineItem->salePrice, $currencyCountryCode);
+
+                    LogToFile::info('In progress: Create transfer for ' . $payeeCurrent, 'marketplace');
+
+                    // TODO Calculate portion of fee
+                    $transfer = \Stripe\Transfer::create([
+                        'amount' => $stripeAmount,
+
+                        // Use the original currency?
+                        'currency' => $currencyCountryCode,
+
+                        'destination' => $payeeCurrent,
+                        // Don’t use Transfer Group, use Source Transacton instead?
+                        // 'transfer_group' => 'Craft Order ' . $order->id,
+                        'source_transaction' => $stripeCharge->id
+                    ]);
+
+                    LogToFile::info('Transfer Result', 'marketplace');
+                    LogToFile::info(json_encode($transfer), 'marketplace');
+                }
+            }
+        );
+    }
+
+    // TODO Move to service, ex. ConvertService?
+    private function _toStripeAmount($salePrice, $currencyCountryCode)
+    {
+        $currency = Commerce::getInstance()->getCurrencies()->getCurrencyByIso($currencyCountryCode);
+        
+        if (!$currency) {
+            throw new NotSupportedException('The currency “' . $transaction->paymentCurrency . '” is not supported!');
+        }
+
+        // https://git.io/JGqLi
+        // Ex. $50 * (10^2) = 5000
+        $amount = $salePrice * (10 ** $currency->minorUnit);
+
+        return $amount;
+    }
+
+    private function _fromStripeAmount($amount, $currencyCountryCode)
+    {
+        $currency = Commerce::getInstance()->getCurrencies()->getCurrencyByIso($currencyCountryCode);
+
+        if (!$currency) {
+            throw new NotSupportedException('The currency “' . $transaction->paymentCurrency . '” is not supported!');
+        }
+
+        // https://git.io/JGqLi
+        // Ex. 5000 / (10^2) = 50
+        $salePrice = $amount / (10 ** $currency->minorUnit);
+
+        return $salePrice;
     }
 
     // This logic is also very similar to Button input
