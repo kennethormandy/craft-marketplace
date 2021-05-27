@@ -203,6 +203,9 @@ As long as you’re using the Stripe Payment Gateway already, none of these chan
 - `kennethormandy\marketplace\services\PayeesService`
   - `PayeesService::EVENT_BEFORE_DETERMINE_PAYEE`
   - `PayeesService::EVENT_AFTER_DETERMINE_PAYEE`
+- `kennethormandy\marketplace\services\FeesService`
+  - `FeesService::EVENT_BEFORE_CALCULATE_FEES_AMOUNT`
+  - `FeesService::EVENT_AFTER_CALCULATE_FEES_AMOUNT`
 
 ```php
 use Craft;
