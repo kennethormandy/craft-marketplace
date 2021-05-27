@@ -68,6 +68,34 @@ context('Shop', () => {
           expect(result.amount).to.equal(11000)
           expect(result.status).to.equal('succeeded')
 
+          // TODO This is what we are working on now, shop test
+          //      for multiple payees
+          expect(result.application_fee_amount).to.exist
+          expect(result.application_fee_amount).to.equal(1100)
+          expect(result.transfer_data).to.exist
+          expect(result.transfer_data.destination).to.exist
+
+          cy.get('[data-test^=line-item-payee-]').should('have.length', 2)
+
+          cy.get('[data-test^=line-item-payee-1]')
+            .invoke('text')
+            .then((platformAccountId) => {
+              console.log(platformAccountId)
+              expect(result.transfer_data.destination).to.equal(
+                platformAccountId
+              )
+            })
+
+          cy.get('[data-test^=line-item-payee-2]')
+            .invoke('text')
+            .then((platformAccountId) => {
+              console.log(platformAccountId)
+              // TODO How does second account show up?
+              // acct_1HlhbR2RVz5nFpls
+              expect(result.transfer_data.destination).to.equal(
+                platformAccountId
+              )
+            })
         })
       })
   })
