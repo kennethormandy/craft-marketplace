@@ -6,10 +6,10 @@ context('Fees Event', () => {
   it('should support overriding fee', () => {
     cy.get('div')
 
-    cy.get('button[value=693]').click()
+    cy.get('button[value=871]').click()
 
     cy.contains('Cart').click()
-    cy.contains('Different Payee 1')
+    cy.contains('CustomFees Test Product')
     cy.contains('Checkout').click()
 
     cy.get('#email').type('hello+test@example.com')
