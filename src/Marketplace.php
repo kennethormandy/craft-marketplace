@@ -410,17 +410,9 @@ class Marketplace extends BasePlugin
                 // same payees. In Lite, we’ll allow the payment splitting as long as
                 // they all match. In Pro, we’ll split payments.
                 if (count($order->lineItems) > 1) {
-                    $payeesSame = true;
-                    foreach ($order->lineItems as $key => $lineItem) {
-                        if ($key > 0) {
-                            $payeeCurrent = $this->payees->getGatewayAccountId($lineItem);
-                            if ($payeeCurrent != $payeeStripeAccountId) {
-                                $payeesSame = false;
-                            }
-                        }
-                    }
+                    $payeesSame = $this->_checkAllPayeesSame($order);
 
-                    if ($payeesSame == false) {
+                    if (!$payeesSame) {
                         // If it’s the Lite edition, but payees are not the same,
                         // we don’t support this scenario. Instead, we return,
                         // which means the transaction will go through as a
