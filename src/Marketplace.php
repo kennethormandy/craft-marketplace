@@ -523,10 +523,14 @@ class Marketplace extends BasePlugin
                     return;
                 }
 
-                // TODO Have to check payees are the same again,
-                //      or store that in the snapshot. If they are
-                //      the same, we already made the transfer.
-                //      This is making at least one Codeception test fail.
+                // TODO Can we pass this along in the order snapshot,
+                // rather than needing to recalculate it?
+                $payeesSame = $this->_checkAllPayeesSame($order);
+
+                // If they are the same, we already made the transfer as part of payment
+                if ($payeesSame) {
+                    return;
+                }
 
                 foreach ($order->transactions as $transaction) {
                     // TODO Does auth and capture still create this?
@@ -634,6 +638,38 @@ class Marketplace extends BasePlugin
                 }
             }
         );
+    }
+
+    /**
+     * @param Order $order
+     */
+    private function _checkAllPayeesSame($order)
+    {
+        /** @var LineItem[] */
+        $lineItems = $order->lineItems;
+
+        if (!isset($lineItems) || !$lineItems) {
+            return null;
+        }
+
+        if (count($lineItems) <= 1) {
+            return true;
+        }
+
+        $payeeFirst = $this->payees->getGatewayAccountId($lineItems[0]);
+        $payeesSame = true;
+
+        foreach ($lineItems as $index => $lineItem) {
+            if ($index > 0) {
+                $payeeCurrent = $this->payees->getGatewayAccountId($lineItem);
+                if ($payeeCurrent != $payeeFirst) {
+                    $payeesSame = false;
+                    break;
+                }
+            }
+        }
+
+        return $payeesSame;
     }
 
     private function _getStripeExchangeRate($stripeBalanceTransaction, $craftCurrencyCountryCode)
