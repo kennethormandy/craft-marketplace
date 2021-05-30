@@ -525,6 +525,7 @@ class Marketplace extends BasePlugin
                 // TODO Have to check payees are the same again,
                 //      or store that in the snapshot. If they are
                 //      the same, we already made the transfer.
+                //      This is making at least one Codeception test fail.
 
                 foreach ($order->transactions as $transaction) {
                     // TODO Does auth and capture still create this?
