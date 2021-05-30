@@ -29,7 +29,7 @@ module.exports = (on, config) => {
         .then((paymentIntent) => paymentIntent)
         .catch((error) => console.error(error))
 
-      if (res) {
+      if (typeof res !== 'undefined') {
         return res
       }
 
