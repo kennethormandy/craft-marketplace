@@ -541,6 +541,12 @@ class Marketplace extends BasePlugin
                 }
 
                 $stripeResp = json_decode($purchaseTransaction->response);
+                $currencyCountryCode = $purchaseTransaction->paymentCurrency;
+
+                LogToFile::info('Original transaction currency: ' . $currencyCountryCode, 'marketplace');
+                LogToFile::info('Transaction:', 'marketplace');
+                LogToFile::info(json_encode($purchaseTransaction), 'marketplace');
+
 
                 $stripeCharge = null;
 
@@ -564,31 +570,84 @@ class Marketplace extends BasePlugin
                     return;
                 }
 
+                LogToFile::info('Charge:', 'marketplace');
+                LogToFile::info(json_encode($stripeCharge), 'marketplace');
+
+                // TODO try/catch
+                $balanceTransaction = BalanceTransaction::retrieve($stripeCharge->balance_transaction);
+
+                LogToFile::info('Balance transaction:', 'marketplace');
+                LogToFile::info(json_encode($balanceTransaction), 'marketplace');
+
+                $exchangeRate = $this->_getStripeExchangeRate($balanceTransaction, $currencyCountryCode);
+
                 foreach ($order->lineItems as $key => $lineItem) {
                     $payeeCurrent = $this->payees->getGatewayAccountId($lineItem);
-                    $currencyCountryCode = $transaction->paymentCurrency;
-                    $stripeAmount = $this->_toStripeAmount($lineItem->salePrice, $currencyCountryCode);
+                    LogToFile::info('Craft amount before currency conversion: ' . $lineItem->salePrice, 'marketplace');
 
+                    $lineItemSalePrice = $lineItem->salePrice;
+
+                    // Don’t touch the salePrice, unless we really to have to
+                    if ($exchangeRate && $exchangeRate !== 1) {
+                        $lineItemSalePrice = $lineItem->salePrice * $exchangeRate;
+                    }
+
+                    LogToFile::info('Craft amount after currency conversion: ' . $lineItemSalePrice, 'marketplace');
+
+                    $stripeAmount = $this->_toStripeAmount($lineItemSalePrice, $currencyCountryCode);
+                    LogToFile::info('Stripe amount: ' . $lineItemSalePrice, 'marketplace');
+                    
                     LogToFile::info('In progress: Create transfer for ' . $payeeCurrent, 'marketplace');
 
                     // TODO Calculate portion of fee
-                    $transfer = \Stripe\Transfer::create([
+                    // This is a temp test
+                    // $liteApplicationFeeAmount = $this->fees->calculateFeesAmount($order);
+
+                    // if ($liteApplicationFeeAmount) {
+                    //     $stripeAmount = $stripeAmount - $liteApplicationFeeAmount;
+                    // }
+
+                    $stripeTransferData = [
                         'amount' => $stripeAmount,
 
-                        // Use the original currency?
-                        'currency' => $currencyCountryCode,
+                        // Have to use the balance transaction currency
+                        // Ex. If the platform is using GBP (the settlement
+                        // currency), and the customer purchased using USD (the
+                        // presettlement currency), the balance transaction
+                        // and future payout will be in GBP, and therefore the
+                        // transfer has to be in GBP as well.
+                        'currency' => $balanceTransaction->currency,
 
                         'destination' => $payeeCurrent,
-                        // Don’t use Transfer Group, use Source Transacton instead?
-                        // 'transfer_group' => 'Craft Order ' . $order->id,
+
+                        // Don’t need to create a `transfer_group`, Stripe
+                        // does this via the source_transaction
                         'source_transaction' => $stripeCharge->id
-                    ]);
+                    ];
+
+                    // TODO try/catch
+                    $transferResult = Transfer::create($stripeTransferData);
 
                     LogToFile::info('Transfer Result', 'marketplace');
-                    LogToFile::info(json_encode($transfer), 'marketplace');
+                    LogToFile::info(json_encode($transferResult), 'marketplace');
                 }
             }
         );
+    }
+
+    private function _getStripeExchangeRate($stripeBalanceTransaction, $craftCurrencyCountryCode)
+    {
+        $exchangeRate = 1;
+
+        if (
+            strtolower($craftCurrencyCountryCode) !== strtolower($stripeBalanceTransaction) &&
+            $stripeBalanceTransaction->exchange_rate
+        ) {
+            // LogToFile::info('Need to convert currency', 'marketplace');
+            $exchangeRate = $stripeBalanceTransaction->exchange_rate;
+        }
+
+        return $exchangeRate;
     }
 
     // TODO Move to service, ex. ConvertService?
@@ -597,12 +656,14 @@ class Marketplace extends BasePlugin
         $currency = Commerce::getInstance()->getCurrencies()->getCurrencyByIso($currencyCountryCode);
         
         if (!$currency) {
-            throw new NotSupportedException('The currency “' . $transaction->paymentCurrency . '” is not supported!');
+            throw new NotSupportedException('The currency “' . $currencyCountryCode . '” is not supported!');
         }
 
         // https://git.io/JGqLi
         // Ex. $50 * (10^2) = 5000
         $amount = $salePrice * (10 ** $currency->minorUnit);
+
+        $amount = (int) round($amount, 0);
 
         return $amount;
     }
@@ -612,7 +673,7 @@ class Marketplace extends BasePlugin
         $currency = Commerce::getInstance()->getCurrencies()->getCurrencyByIso($currencyCountryCode);
 
         if (!$currency) {
-            throw new NotSupportedException('The currency “' . $transaction->paymentCurrency . '” is not supported!');
+            throw new NotSupportedException('The currency “' . $currencyCountryCode . '” is not supported!');
         }
 
         // https://git.io/JGqLi
