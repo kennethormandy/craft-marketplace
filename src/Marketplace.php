@@ -38,6 +38,7 @@ use kennethormandy\marketplace\services\PayeesService;
 use putyourlightson\logtofile\LogToFile;
 use Stripe\Stripe;
 use Stripe\Transfer;
+use Stripe\BalanceTransaction;
 use venveo\oauthclient\base\Provider;
 use venveo\oauthclient\controllers\AuthorizeController;
 use venveo\oauthclient\events\AuthorizationEvent;
@@ -510,6 +511,8 @@ class Marketplace extends BasePlugin
             }
         );
 
+        // TODO Move this until after order complete, to make
+        // sure the transaction is entiely completed?
         Event::on(
             Order::class,
             Order::EVENT_AFTER_ORDER_PAID,
