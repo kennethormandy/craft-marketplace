@@ -588,6 +588,12 @@ class Marketplace extends BasePlugin
 
                 foreach ($order->lineItems as $key => $lineItem) {
                     $payeeCurrent = $this->payees->getGatewayAccountId($lineItem);
+
+                    // If there isn’t a payee on this line item, nothing to do
+                    if (!$payeeCurrent) {
+                        break;
+                    }
+
                     LogToFile::info('Craft amount before currency conversion: ' . $lineItem->salePrice, 'marketplace');
 
                     $lineItemSalePrice = $lineItem->salePrice;
