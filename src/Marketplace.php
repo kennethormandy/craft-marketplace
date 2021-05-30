@@ -201,8 +201,6 @@ class Marketplace extends BasePlugin
                         if (isset($user['lastName'])) {
                             $e->options['stripe_user[last_name]'] = $user['lastName'];
                         }
-
-                        // TODO Handle Stripe redirect back to Craft
                     }
                 }
 
