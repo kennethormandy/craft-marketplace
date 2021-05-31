@@ -15,7 +15,7 @@ use craft\base\Plugin as BasePlugin;
 use craft\commerce\Plugin as Commerce;
 use craft\commerce\events\RefundTransactionEvent;
 use craft\commerce\elements\Order;
-use craft\commerce\elements\LineItem;
+use craft\commerce\models\LineItem;
 use craft\commerce\services\Payments;
 use craft\commerce\stripe\base\Gateway as StripeGateway;
 use craft\commerce\stripe\events\BuildGatewayRequestEvent;
