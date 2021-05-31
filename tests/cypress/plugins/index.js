@@ -35,6 +35,21 @@ module.exports = (on, config) => {
 
       return null
     },
+
+    checkTransferGroup(ref) {
+      const res = stripe.transfers
+        .list({
+          transfer_group: ref,
+        })
+        .then((obj) => obj)
+        .catch((err) => console.error(err))
+
+      if (typeof res !== 'undefined') {
+        return res
+      }
+
+      return null
+    },
   })
 
   return config
