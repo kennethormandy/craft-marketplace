@@ -310,6 +310,20 @@ class FeesService extends Component
         return $event->amount;
     }
 
+    private function _getFirstLineItem(Order $order) {
+        $firstLineItem = null;
+
+        if (
+            isset($order) &&
+            isset($order->lineItems) &&
+            count($order->lineItems) >= 1
+        ) {
+            $firstLineItem = $order->lineItems[0];
+        }
+
+        return $firstLineItem;
+    }
+
     /**
      * Is Pro.
      *
