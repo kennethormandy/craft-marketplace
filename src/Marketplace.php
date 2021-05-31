@@ -370,6 +370,7 @@ class Marketplace extends BasePlugin
                 // would require a change to Craft Commerce Stripe gateway
                 // $hardCodedApproach = 'direct-charge';
                 $hardCodedApproach = 'destination-charge';
+                $applicationFeeAmount = 0;
 
                 $applicationFees = self::$plugin->fees->getAllFees();
 
@@ -445,10 +446,14 @@ class Marketplace extends BasePlugin
                         'marketplace'
                     );
 
-                    $liteApplicationFeeAmount = $this->fees->calculateFeesAmount($order);
+                    // Fees are always based on lineItems
+                    foreach ($order->lineItems as $lineItemId => $lineItem) {
+                        $lineItemFeeAmount = $this->fees->calculateFeesAmount($lineItem, $order);
+                        $applicationFeeAmount = $applicationFeeAmount + $lineItemFeeAmount;
+                    }
 
-                    if ($liteApplicationFeeAmount) {
-                        $e->request['application_fee_amount'] = $liteApplicationFeeAmount;
+                    if ($applicationFeeAmount) {
+                        $e->request['application_fee_amount'] = $applicationFeeAmount;
                     }
 
                     if ($hardCodedOnBehalfOf) {
@@ -591,6 +596,20 @@ class Marketplace extends BasePlugin
 
                     $lineItemSalePrice = $lineItem->salePrice;
 
+                    // Calculate LineItem fee
+                    // This will change to calculateFeesAmount once it is properly finished
+                    // TODO To finish this, need to support flat-fee at line item level
+                    // Right now, we apply the flat fee to the first line item, which works if you are using
+                    // the application_fee for one Payee, but doesn’t make sense if you have multiple payees
+                    // to apply that flat fee to. Could either
+                    // - Apply the flat fee once per line item (breaking change for Lite with multiple line items, same payees)
+                    // - Apply the flat fee once per payee (same behaviour as lite), and possibly add a new fee type to support the other use case
+                    $feeAmountLineItem = $this->fees->_calculateLineItemFeesAmount($lineItem, $order);
+
+                    if ($feeAmountLineItem) {
+                        $lineItemSalePrice = $lineItemSalePrice - $feeAmountLineItem;
+                    }
+
                     // Don’t touch the salePrice, unless we really to have to
                     if ($exchangeRate && $exchangeRate !== 1) {
                         $lineItemSalePrice = $lineItem->salePrice * $exchangeRate;
@@ -602,14 +621,6 @@ class Marketplace extends BasePlugin
                     LogToFile::info('Stripe amount: ' . $lineItemSalePrice, 'marketplace');
                     
                     LogToFile::info('In progress: Create transfer for ' . $payeeCurrent, 'marketplace');
-
-                    // TODO Calculate portion of fee
-                    // This is a temp test
-                    // $liteApplicationFeeAmount = $this->fees->calculateFeesAmount($order);
-
-                    // if ($liteApplicationFeeAmount) {
-                    //     $stripeAmount = $stripeAmount - $liteApplicationFeeAmount;
-                    // }
 
                     $stripeTransferData = [
                         'amount' => $stripeAmount,
