@@ -3,7 +3,7 @@ context('Shop', () => {
     cy.visit(`${Cypress.env('CRAFT_DEFAULT_SITE_URL')}shop`)
   })
 
-  it.skip('Different Payees, same region as platform (Canada)', () => {
+  it('Different Payees, same region as platform (Canada)', () => {
     cy.get('div')
 
     cy.get('button[value=695]').click()
@@ -68,36 +68,42 @@ context('Shop', () => {
           expect(result.amount).to.equal(11000)
           expect(result.status).to.equal('succeeded')
 
-          // TODO This is what we are working on now, shop test
-          //      for multiple payees
-          expect(result.application_fee_amount).to.exist
-          expect(result.application_fee_amount).to.equal(1100)
-          expect(result.transfer_data).to.exist
-          expect(result.transfer_data.destination).to.exist
+          expect(result.application_fee_amount).to.not.exist
+          expect(result.transfer_data).to.not.exist
+          expect(result.transfer_group).to.exist
+          expect(result.transfer_group).to.exist
 
           cy.get('[data-test^=line-item-payee-]').should('have.length', 2)
 
-          // TODO Get Stripe Transfer Group and check results?
+          cy.task('checkTransferGroup', result.transfer_group).then(
+            (transferGroupObj) => {
+              console.log(transferGroupObj)
 
-          cy.get('[data-test^=line-item-payee-1]')
-            .invoke('text')
-            .then((platformAccountId) => {
-              console.log(platformAccountId)
-              expect(result.transfer_data.destination).to.equal(
-                platformAccountId
-              )
-            })
+              expect(transferGroupObj).to.exist
+              expect(transferGroupObj.data).to.exist
+              expect(transferGroupObj.data.length).to.equal(2)
 
-          cy.get('[data-test^=line-item-payee-2]')
-            .invoke('text')
-            .then((platformAccountId) => {
-              console.log(platformAccountId)
-              // TODO How does second account show up?
-              // acct_1HlhbR2RVz5nFpls
-              expect(result.transfer_data.destination).to.equal(
-                platformAccountId
-              )
-            })
+              let transferGroups = transferGroupObj.data.reverse()
+
+              // TODO Check price once using CA platform
+              cy.get('[data-test^=line-item-payee-1]')
+                .invoke('text')
+                .then((platformAccountId) => {
+                  expect(transferGroups[0].destination).to.equal(
+                    platformAccountId
+                  )
+                })
+
+              // TODO Check price once using CA platform
+              cy.get('[data-test^=line-item-payee-2]')
+                .invoke('text')
+                .then((platformAccountId) => {
+                  expect(transferGroups[1].destination).to.equal(
+                    platformAccountId
+                  )
+                })
+            }
+          )
         })
       })
   })
@@ -158,34 +164,42 @@ context('Shop', () => {
           expect(result.amount).to.equal(11000)
           expect(result.status).to.equal('succeeded')
 
-          // TODO This is what we are working on now, shop test
-          //      for multiple payees
-          expect(result.application_fee_amount).to.exist
-          expect(result.application_fee_amount).to.equal(1100)
-          expect(result.transfer_data).to.exist
-          expect(result.transfer_data.destination).to.exist
+          expect(result.application_fee_amount).to.not.exist
+          expect(result.transfer_data).to.not.exist
+          expect(result.transfer_group).to.exist
+          expect(result.transfer_group).to.exist
 
           cy.get('[data-test^=line-item-payee-]').should('have.length', 2)
 
-          cy.get('[data-test^=line-item-payee-1]')
-            .invoke('text')
-            .then((platformAccountId) => {
-              console.log(platformAccountId)
-              expect(result.transfer_data.destination).to.equal(
-                platformAccountId
-              )
-            })
+          cy.task('checkTransferGroup', result.transfer_group).then(
+            (transferGroupObj) => {
+              console.log(transferGroupObj)
 
-          cy.get('[data-test^=line-item-payee-2]')
-            .invoke('text')
-            .then((platformAccountId) => {
-              console.log(platformAccountId)
-              // TODO Get Stripe Transfer Group and check results?
-              // acct_1IvpRR2Q3nBjvQJZ
-              expect(result.transfer_data.destination).to.equal(
-                platformAccountId
-              )
-            })
+              expect(transferGroupObj).to.exist
+              expect(transferGroupObj.data).to.exist
+              expect(transferGroupObj.data.length).to.equal(2)
+
+              let transferGroups = transferGroupObj.data.reverse()
+
+              // TODO Check price once using CA platform
+              cy.get('[data-test^=line-item-payee-1]')
+                .invoke('text')
+                .then((platformAccountId) => {
+                  expect(transferGroups[0].destination).to.equal(
+                    platformAccountId
+                  )
+                })
+
+              // TODO Check price once using CA platform
+              cy.get('[data-test^=line-item-payee-2]')
+                .invoke('text')
+                .then((platformAccountId) => {
+                  expect(transferGroups[1].destination).to.equal(
+                    platformAccountId
+                  )
+                })
+            }
+          )
         })
       })
   })
