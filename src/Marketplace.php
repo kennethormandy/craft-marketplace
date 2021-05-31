@@ -97,7 +97,6 @@ class Marketplace extends BasePlugin
         ]);
 
         Craft::info('Marketplace plugin loaded', __METHOD__);
-        LogToFile::info('Marketplace plugin loaded ' . $this->isPro() ? '(Pro)' : '(Lite)');
 
         $this->_reviseOrderTemplate();
 
