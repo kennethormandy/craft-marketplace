@@ -6,6 +6,7 @@ use Craft;
 use craft\base\Component;
 use craft\db\Query;
 use craft\commerce\elements\Order;
+use craft\commerce\models\LineItem;
 use craft\helpers\App;
 use Exception;
 use kennethormandy\marketplace\models\Fee as FeeModel;
@@ -25,7 +26,7 @@ class FeesService extends Component
 {
     public const EVENT_BEFORE_CALCULATE_FEES_AMOUNT = 'EVENT_BEFORE_CALCULATE_FEES_AMOUNT';
     public const EVENT_AFTER_CALCULATE_FEES_AMOUNT = 'EVENT_AFTER_CALCULATE_FEES_AMOUNT';
-
+    
     private $_FEES_BY_HANDLE = [];
     private $_FEES_BY_ID = [];
     private $_FEES_BY_UID = [];
@@ -267,10 +268,14 @@ class FeesService extends Component
      * @param $order
      * @return int
      */
-    public function calculateFeesAmount(Order $order)
+    public function calculateFeesAmount(LineItem $lineItem = null, Order $order)
     {
         $event = new FeesEvent();
         $event->order = $order;
+
+        // TODO Actually support passing along the line item
+        $event->sender = $lineItem;
+
         $event->fees = $this->getAllFees();
 
         $event->amount = 0;
@@ -279,29 +284,66 @@ class FeesService extends Component
             $this->trigger(self::EVENT_BEFORE_CALCULATE_FEES_AMOUNT, $event);
         }
 
-        if (!$event->fees || 1 > count($event->fees)) {
-            return $event->amount;
+        $firstLineItem = $this->_getFirstLineItem($event->order);
+
+        if ($event->fees && count($event->fees) >= 1) {
+
+            // Calculate the fee based on the order subtotal, because with price-percentage
+            // we want the entire order subtotal, not the price of the first line item.
+            $feeCount = 0;
+
+            foreach ($event->fees as $feeId => $fee) {
+                if ($feeCount >= 1 && $this->_isPro()) {
+                    break;
+                }
+
+                if (
+                    $fee->type !== 'flat-fee' ||
+
+                    // Apply flat-fee to the first line item only
+                    // This is a work around, until we properly support the flat-fee at the
+                    // line item level, where it should be based on applying the fee once
+                    // per payee in an order.
+                    ($fee->type === 'flat-fee' && $lineItem->id === $firstLineItem->id)
+                ) {
+                    $currentFeeAmount = $this->calculateFeeAmount($fee, $lineItem->total);
+                    $event->amount += $currentFeeAmount;
+                }
+
+                $feeCount++;
+            }    
         }
 
-        // Calculate the fee based on the order subtotal, because with price-percentage
-        // we want the entire order subtotal, not the price of the first line item.
-        if (!$this->_isPro() && $event->fees[0]) {
-            // The Lite Edition only supports 1 fee
-            $firstFee = $event->fees[0];
-            $liteApplicationFeeAmount = $this->calculateFeeAmount($firstFee, $order->itemSubtotal);
-            return $liteApplicationFeeAmount;
+        if ($this->hasEventHandlers(self::EVENT_AFTER_CALCULATE_FEES_AMOUNT)) {
+            $this->trigger(self::EVENT_AFTER_CALCULATE_FEES_AMOUNT, $event);
         }
 
-        foreach ($event->fees as $feeId => $fee) {
-            $currentFeeAmount = $this->calculateFeeAmount($fee, $order->itemSubtotal);
-            $event->amount += $currentFeeAmount;
-        }
+        return $event->amount;
+    }
 
-        // We actually have no reason to go through each line item within the plugin,
-        // but someone else can decide to do that and calculate their own line item
-        // -based fee logic in AFTER event.
-        // foreach ($order->lineItems as $key => $lineItem) {
-        // }
+    /**
+     * @param LineItem $lineItem
+     * @param Order $order
+     * @return int
+     */
+    public function _calculateLineItemFeesAmount(LineItem $lineItem, Order $order)
+    {
+        $event = new FeesEvent();
+        $event->order = $order;
+        $event->sender = $lineItem;
+
+        // Get all LineItem fees?
+        $event->fees = [];
+
+        $event->amount = 0;
+
+        if ($this->hasEventHandlers(self::EVENT_BEFORE_CALCULATE_FEES_AMOUNT)) {
+            $this->trigger(self::EVENT_BEFORE_CALCULATE_FEES_AMOUNT, $event);
+        }
+        
+        // This will get consolidated with calculateFeesAmount, once global
+        // fees are changed to all work at the LineItem level, instead
+        // of a the Order level.
 
         if ($this->hasEventHandlers(self::EVENT_AFTER_CALCULATE_FEES_AMOUNT)) {
             $this->trigger(self::EVENT_AFTER_CALCULATE_FEES_AMOUNT, $event);
