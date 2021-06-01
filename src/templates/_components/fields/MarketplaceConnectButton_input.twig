@@ -151,7 +151,7 @@
               {% if order.lineItems|length %}
                 {# Only support one line item right now #}
                 {% set lineItem = order.lineItems|first %}
-                {% if lineItem is defined and lineItem.purchasable is defined and lineItem.purchasable.product is defined and lineItem.purchasable.product[payeeHandle] is defined %}
+                {% if payeeHandle and lineItem is defined and lineItem.purchasable is defined and lineItem.purchasable.product is defined and lineItem.purchasable.product[payeeHandle] is defined %}
                   {% set payeeId = lineItem.purchasable.product[payeeHandle] %}
                   {% if user.id == payeeId %}
                     {% set payee = craft.users.id(payeeId).one() %}
