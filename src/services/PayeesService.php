@@ -32,9 +32,12 @@ class PayeesService extends Component
             $this->trigger(self::EVENT_BEFORE_DETERMINE_PAYEE, $event);
         }
 
+        // It’s possible for this to be null, if they are only using
+        // Events to set the Payee, and not using any fields
         $payeeHandle = Marketplace::$plugin->handlesService->getPayeeHandle();
 
         if (
+            $payeeHandle &&
             isset($purchasable[$payeeHandle]) &&
             $purchasable[$payeeHandle] !== null &&
             $purchasable[$payeeHandle]
@@ -48,6 +51,7 @@ class PayeesService extends Component
                 $purchasablePayeeUser = $purchasable[$payeeHandle]->one();
             }
         } elseif (
+            $payeeHandle &&
             isset($purchasable->product[$payeeHandle]) &&
             $purchasable->product[$payeeHandle] !== null &&
             $purchasable->product[$payeeHandle]
