@@ -506,11 +506,9 @@ class Marketplace extends BasePlugin
             }
         );
 
-        // TODO Move this until after order complete, to make
-        // sure the transaction is entiely completed?
         Event::on(
             Order::class,
-            Order::EVENT_AFTER_ORDER_PAID,
+            Order::EVENT_AFTER_COMPLETE_ORDER,
             function(Event $event) {
                 /** @var Order $order */
                 $order = $event->sender;
@@ -585,6 +583,9 @@ class Marketplace extends BasePlugin
 
                 foreach ($order->lineItems as $key => $lineItem) {
                     $payeeCurrent = $this->payees->getGatewayAccountId($lineItem);
+
+                    LogToFile::info('lineItem', 'marketplace');
+                    LogToFile::info(json_encode($lineItem), 'marketplace');
 
                     // If there isn’t a payee on this line item, nothing to do
                     if (!$payeeCurrent) {
