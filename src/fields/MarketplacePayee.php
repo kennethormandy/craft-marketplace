@@ -281,7 +281,7 @@ class MarketplacePayee extends Field
         $payee = null;
         $payeeHandle = Marketplace::$plugin->handlesService->getPayeeHandle();
 
-        if (isset($element[$payeeHandle]) && $element[$payeeHandle]) {
+        if ($payeeHandle && isset($element[$payeeHandle]) && $element[$payeeHandle]) {
             $payeeId = $element[$payeeHandle];
             $payee = User::find()->id($payeeId)->one();
         }
