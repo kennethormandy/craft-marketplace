@@ -737,7 +737,7 @@ class Marketplace extends BasePlugin
         if ($order && $order['lineItems'] && count($order['lineItems']) >= 1) {
             $firstLineItem = $order['lineItems'][0];
             $product = $firstLineItem['purchasable']['product'];
-            if ($product) {
+            if ($payeeHandle && $product) {
                 $payeeId = $product[$payeeHandle];
                 if ($payeeId) {
                     $payee = User::find()
