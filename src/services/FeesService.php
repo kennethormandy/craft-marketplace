@@ -307,6 +307,10 @@ class FeesService extends Component
                     ($fee->type === 'flat-fee' && $lineItem->id === $firstLineItem->id)
                 ) {
                     $currentFeeAmount = $this->calculateFeeAmount($fee, $lineItem->total);
+
+                    // TODO Global fees are in Stripe format, but we are changing the event
+                    // hook to accept the amount in Craft format.
+
                     $event->amount += $currentFeeAmount;
                 }
 
