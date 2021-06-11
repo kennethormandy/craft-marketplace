@@ -452,7 +452,7 @@ class Marketplace extends BasePlugin
                     }
 
                     if ($applicationFeeAmount) {
-                        $stripeApplicationFeeAmount = $this->_toStripeAmount($lineItemSalePrice, $order->paymentCurrency);
+                        $stripeApplicationFeeAmount = $this->_toStripeAmount($applicationFeeAmount, $order->paymentCurrency);
                         $e->request['application_fee_amount'] = $stripeApplicationFeeAmount;
                     }
 
