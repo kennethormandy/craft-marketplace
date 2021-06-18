@@ -591,8 +591,8 @@ class Marketplace extends BasePlugin
                     LogToFile::info('lineItem', 'marketplace');
                     LogToFile::info(json_encode($lineItem), 'marketplace');
 
-                    // If there isn’t a payee on this line item, nothing to do
-                    if (!$payeeCurrent) {
+                    // If there isn’t a payee or a total on this line item, nothing to do
+                    if (!$payeeCurrent || $lineItem->total === 0) {
                         break;
                     }
 
