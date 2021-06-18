@@ -596,9 +596,9 @@ class Marketplace extends BasePlugin
                         break;
                     }
 
-                    LogToFile::info('Craft amount before currency conversion: ' . $lineItem->subtotal, 'marketplace');
+                    LogToFile::info('Craft amount before currency conversion: ' . $lineItem->total, 'marketplace');
 
-                    $lineItemSubtotal = $lineItem->subtotal;
+                    $lineItemTotal = $lineItem->total;
 
                     // Calculate LineItem fee
                     // This will change to calculateFeesAmount once it is properly finished
@@ -611,17 +611,17 @@ class Marketplace extends BasePlugin
                     $feeAmountLineItem = $this->fees->_calculateLineItemFeesAmount($lineItem, $order);
 
                     if ($feeAmountLineItem) {
-                        $lineItemSubtotal = $lineItemSubtotal - $feeAmountLineItem;
+                        $lineItemTotal = $lineItemTotal - $feeAmountLineItem;
                     }
 
                     // Don’t touch the subtotal, unless we really to have to
                     if ($exchangeRate && $exchangeRate !== 1) {
-                        $lineItemSubtotal = $lineItem->subtotal * $exchangeRate;
+                        $lineItemTotal = $lineItem->total * $exchangeRate;
                     }
 
-                    LogToFile::info('Craft amount after currency conversion: ' . $lineItemSubtotal, 'marketplace');
+                    LogToFile::info('Craft amount after currency conversion: ' . $lineItemTotal, 'marketplace');
 
-                    $stripeAmount = $this->_toStripeAmount($lineItemSubtotal, $currencyCountryCode);
+                    $stripeAmount = $this->_toStripeAmount($lineItemTotal, $currencyCountryCode);
                     LogToFile::info('Stripe amount: ' . $stripeAmount, 'marketplace');
                     
                     LogToFile::info('In progress: Create transfer for ' . $payeeCurrent, 'marketplace');
