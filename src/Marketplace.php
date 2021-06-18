@@ -644,11 +644,14 @@ class Marketplace extends BasePlugin
                         'source_transaction' => $stripeCharge->id
                     ];
 
-                    // TODO try/catch
-                    $transferResult = Transfer::create($stripeTransferData);
-
-                    LogToFile::info('Transfer Result', 'marketplace');
-                    LogToFile::info(json_encode($transferResult), 'marketplace');
+                    try {
+                        $transferResult = Transfer::create($stripeTransferData);
+                        LogToFile::info('Transfer Result', 'marketplace');
+                        LogToFile::info(json_encode($transferResult), 'marketplace');    
+                    } catch (\Exception $e) {
+                        LogToFile::error('Marketplace transfer error', 'marketplace');
+                        LogToFile::error($e->getTraceAsString(), 'marketplace');
+                    }
                 }
             }
         );
