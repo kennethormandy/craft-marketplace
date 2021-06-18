@@ -574,11 +574,14 @@ class Marketplace extends BasePlugin
                 LogToFile::info('Charge:', 'marketplace');
                 LogToFile::info(json_encode($stripeCharge), 'marketplace');
 
-                // TODO try/catch
-                $balanceTransaction = BalanceTransaction::retrieve($stripeCharge->balance_transaction);
-
-                LogToFile::info('Balance transaction:', 'marketplace');
-                LogToFile::info(json_encode($balanceTransaction), 'marketplace');
+                try {
+                    $balanceTransaction = BalanceTransaction::retrieve($stripeCharge->balance_transaction);
+                    LogToFile::info('Balance transaction:', 'marketplace');
+                    LogToFile::info(json_encode($balanceTransaction), 'marketplace');    
+                } catch (\Exception $e) {
+                    LogToFile::error('Marketplace transfer error', 'marketplace');
+                    LogToFile::error($e->getTraceAsString(), 'marketplace');
+                }
 
                 $exchangeRate = $this->_getStripeExchangeRate($balanceTransaction, $currencyCountryCode);
 
