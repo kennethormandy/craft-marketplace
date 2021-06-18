@@ -593,7 +593,7 @@ class Marketplace extends BasePlugin
 
                     // If there isn’t a payee or a total on this line item, nothing to do
                     if (!$payeeCurrent || $lineItem->total === (float) 0) {
-                        break;
+                        continue;
                     }
 
                     LogToFile::info('Craft amount before currency conversion: ' . $lineItem->total, 'marketplace');
