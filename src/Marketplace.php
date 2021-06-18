@@ -529,8 +529,9 @@ class Marketplace extends BasePlugin
                 }
 
                 foreach ($order->transactions as $transaction) {
+                    // Stop at the first successful transaction, can also be failed
                     // TODO Does auth and capture still create this?
-                    if ($transaction->type === 'purchase') {
+                    if ($transaction->type === 'purchase' && $transaction->status === 'success') {
                         $purchaseTransaction = $transaction;                        
                         break;
                     }
