@@ -705,7 +705,7 @@ class Marketplace extends BasePlugin
     }
 
     // TODO Move to service, ex. ConvertService?
-    private function _toStripeAmount($salePrice, $currencyCountryCode)
+    private function _toStripeAmount($craftPrice, $currencyCountryCode)
     {
         $currency = Commerce::getInstance()->getCurrencies()->getCurrencyByIso($currencyCountryCode);
         
@@ -715,7 +715,7 @@ class Marketplace extends BasePlugin
 
         // https://git.io/JGqLi
         // Ex. $50 * (10^2) = 5000
-        $amount = $salePrice * (10 ** $currency->minorUnit);
+        $amount = $craftPrice * (10 ** $currency->minorUnit);
 
         $amount = (int) round($amount, 0);
 
@@ -732,9 +732,9 @@ class Marketplace extends BasePlugin
 
         // https://git.io/JGqLi
         // Ex. 5000 / (10^2) = 50
-        $salePrice = $amount / (10 ** $currency->minorUnit);
+        $craftPrice = $amount / (10 ** $currency->minorUnit);
 
-        return $salePrice;
+        return $craftPrice;
     }
 
     // This logic is also very similar to Button input
