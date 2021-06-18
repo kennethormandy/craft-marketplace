@@ -593,9 +593,9 @@ class Marketplace extends BasePlugin
                         break;
                     }
 
-                    LogToFile::info('Craft amount before currency conversion: ' . $lineItem->salePrice, 'marketplace');
+                    LogToFile::info('Craft amount before currency conversion: ' . $lineItem->subtotal, 'marketplace');
 
-                    $lineItemSalePrice = $lineItem->salePrice;
+                    $lineItemSubtotal = $lineItem->subtotal;
 
                     // Calculate LineItem fee
                     // This will change to calculateFeesAmount once it is properly finished
@@ -608,18 +608,18 @@ class Marketplace extends BasePlugin
                     $feeAmountLineItem = $this->fees->_calculateLineItemFeesAmount($lineItem, $order);
 
                     if ($feeAmountLineItem) {
-                        $lineItemSalePrice = $lineItemSalePrice - $feeAmountLineItem;
+                        $lineItemSubtotal = $lineItemSubtotal - $feeAmountLineItem;
                     }
 
-                    // Don’t touch the salePrice, unless we really to have to
+                    // Don’t touch the subtotal, unless we really to have to
                     if ($exchangeRate && $exchangeRate !== 1) {
-                        $lineItemSalePrice = $lineItem->salePrice * $exchangeRate;
+                        $lineItemSubtotal = $lineItem->subtotal * $exchangeRate;
                     }
 
-                    LogToFile::info('Craft amount after currency conversion: ' . $lineItemSalePrice, 'marketplace');
+                    LogToFile::info('Craft amount after currency conversion: ' . $lineItemSubtotal, 'marketplace');
 
-                    $stripeAmount = $this->_toStripeAmount($lineItemSalePrice, $currencyCountryCode);
-                    LogToFile::info('Stripe amount: ' . $lineItemSalePrice, 'marketplace');
+                    $stripeAmount = $this->_toStripeAmount($lineItemSubtotal, $currencyCountryCode);
+                    LogToFile::info('Stripe amount: ' . $lineItemSubtotal, 'marketplace');
                     
                     LogToFile::info('In progress: Create transfer for ' . $payeeCurrent, 'marketplace');
 
