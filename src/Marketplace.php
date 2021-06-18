@@ -622,7 +622,7 @@ class Marketplace extends BasePlugin
                     LogToFile::info('Craft amount after currency conversion: ' . $lineItemSubtotal, 'marketplace');
 
                     $stripeAmount = $this->_toStripeAmount($lineItemSubtotal, $currencyCountryCode);
-                    LogToFile::info('Stripe amount: ' . $lineItemSubtotal, 'marketplace');
+                    LogToFile::info('Stripe amount: ' . $stripeAmount, 'marketplace');
                     
                     LogToFile::info('In progress: Create transfer for ' . $payeeCurrent, 'marketplace');
 
