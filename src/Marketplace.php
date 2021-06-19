@@ -363,6 +363,10 @@ class Marketplace extends BasePlugin
             StripeGateway::class,
             StripeGateway::EVENT_BUILD_GATEWAY_REQUEST,
             function (BuildGatewayRequestEvent $e) {
+                if ($this->isPro() && $this->getSettings()->stripePreferSeparateTransfers) {
+                    return;
+                }
+
                 // TODO Temporary hard-coded config
                 // Not supporting direct charges for now, looks like it
                 // would require a change to Craft Commerce Stripe gateway
@@ -507,17 +511,23 @@ class Marketplace extends BasePlugin
                 $order = $event->sender;
                 $purchaseTransaction = null;
 
-                if (!$this->isPro() || 1 >= count($order->lineItems)) {
+                if (!$this->isPro()) {
                     return;
                 }
 
-                // TODO Can we pass this along in the order snapshot,
-                // rather than needing to recalculate it?
-                $payeesSame = $this->_checkAllPayeesSame($order);
+                if ($this->getSettings()->stripePreferSeparateTransfers === false) {
+                    if (1 >= count($order->lineItems)) {
+                        return;
+                    }
 
-                // If they are the same, we already made the transfer as part of payment
-                if ($payeesSame) {
-                    return;
+                    // TODO Can we pass this along in the order snapshot,
+                    // rather than needing to recalculate it?
+                    $payeesSame = $this->_checkAllPayeesSame($order);
+
+                    // If they are the same, we already made the transfer as part of payment
+                    if ($payeesSame) {
+                        return;
+                    }
                 }
 
                 foreach ($order->transactions as $transaction) {
