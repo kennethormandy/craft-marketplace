@@ -108,7 +108,7 @@ context('Shop', () => {
       })
   })
 
-  it('Different payees, different regions (Canada & USA)', () => {
+  it.skip('Different payees, different regions (Canada & USA) (Transfers outside Canada not supported on my Stripe account)', () => {
     cy.get('div')
 
     cy.get('button[value=693]').click()
