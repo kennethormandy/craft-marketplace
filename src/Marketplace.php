@@ -659,6 +659,34 @@ class Marketplace extends BasePlugin
     }
 
     /**
+     * Log wrapper
+     * 
+     * @param string $msg
+     * @param array $params
+     * @param string $level
+     */
+    public function log($msg, array $params = [], $level = 'info')
+    {
+        // TODO Use Craft::t and params
+
+        /** @see https://www.yiiframework.com/doc/api/2.0/yii-log-logger#log()-detail */
+        switch ($level) {
+            case 'error':
+                Craft::error($msg, __METHOD__);
+            case 'warning':
+                Craft::warning($msg, __METHOD__);
+                break;
+            default:
+                Craft::info($msg, __METHOD__);
+                break;
+        }
+
+        // Right now, we are just double logging. Might prefer to move to this solution
+        // https://craftcms.stackexchange.com/a/25430/6392
+        LogToFile::log($msg, 'marketplace', $level);
+    }
+
+    /**
      * @param Order $order
      */
     private function _checkAllPayeesSame($order)
