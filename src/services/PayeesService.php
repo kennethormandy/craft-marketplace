@@ -8,7 +8,6 @@ use craft\commerce\models\LineItem;
 use craft\elements\User;
 use kennethormandy\marketplace\events\PayeeEvent;
 use kennethormandy\marketplace\Marketplace;
-use putyourlightson\logtofile\LogToFile;
 
 class PayeesService extends Component
 {
@@ -63,9 +62,8 @@ class PayeesService extends Component
             // and that is working fine?
             $purchasablePayeeUser = User::find()->id($payeeUserId)->one();
         } else {
-            LogToFile::info(
+            Marketplace::$plugin->log(
                 '[Marketplace] [PayeesService] No User Payee Account ID set in Craft CMS.',
-                'marketplace'
             );
 
             // We don’t return here, because people can still use

@@ -6,7 +6,6 @@ use Craft;
 use craft\base\Component;
 use craft\helpers\UrlHelper;
 use kennethormandy\marketplace\Marketplace;
-use putyourlightson\logtofile\LogToFile;
 use Stripe\Account as StripeAccount;
 use Stripe\Stripe;
 use Stripe\Exception\PermissionException;
@@ -44,7 +43,7 @@ class AccountsService extends Component
         try {
             Stripe::setApiKey($secretApiKey);
         } catch (Exception $e) {
-            LogToFile::error($e->getTraceAsString(), 'marketplace');
+            Marketplace::$plugin->log($e->getTraceAsString(), [], 'error');
             return null;
         }
 
@@ -54,7 +53,7 @@ class AccountsService extends Component
                 $link = $resp->url;
             }
         } catch (PermissionException $e) {
-            LogToFile::error($e->getTraceAsString(), 'marketplace');
+            Marketplace::$plugin->log($e->getTraceAsString(), [], 'error');
 
             // TODO Handle translations
             // TODO Handle altering of flash message, same as default Contact Form plugin?

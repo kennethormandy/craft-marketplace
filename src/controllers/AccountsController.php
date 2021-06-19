@@ -6,7 +6,6 @@ use Craft;
 use craft\elements\User;
 use craft\web\Controller;
 use kennethormandy\marketplace\Marketplace;
-use putyourlightson\logtofile\LogToFile;
 use Stripe\Account as StripeAccount;
 use Stripe\Stripe;
 
@@ -43,7 +42,7 @@ class AccountsController extends Controller
                 !$currentUser->getIsAdmin() &&
                 (!$currentUserIdentity[$accountIdHandle] || $currentUserIdentity[$accountIdHandle] !== $accountId)
             ) {
-                LogToFile::error('[AccountsController] User ' . $currentUserIdentity . ' attempting to create link for account that isn’t their own, without admin access.', 'marketplace');
+                Marketplace::$plugin->log('[AccountsController] User ' . $currentUserIdentity . ' attempting to create link for account that isn’t their own, without admin access.', [], 'error');
 
                 // TODO Handle translations
                 $errorMessage = 'You do not have permission to access that account';
@@ -61,7 +60,7 @@ class AccountsController extends Controller
         // $account->accountId = $accountId;
 
         if (!isset($accountId) || !$accountId) {
-            LogToFile::info('[AccountsController] Could not create login link. Missing account ID', 'marketplace');
+            Marketplace::$plugin->log('[AccountsController] Could not create login link. Missing account ID');
             return null;
         }
 
@@ -77,7 +76,7 @@ class AccountsController extends Controller
         $link = Marketplace::getInstance()->accounts->createLoginLink($accountId, $params);
 
         if (!$link) {
-            LogToFile::error('[AccountsController] Could not create login link.', 'marketplace');
+            Marketplace::$plugin->log('[AccountsController] Could not create login link.', [], 'error');
 
             // TODO Handle translations
             $errorMessage = 'Could not create a login link for “' . $accountId . '”';

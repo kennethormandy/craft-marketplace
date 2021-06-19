@@ -13,7 +13,6 @@ use kennethormandy\marketplace\models\Fee as FeeModel;
 use kennethormandy\marketplace\records\FeeRecord;
 use kennethormandy\marketplace\events\FeesEvent;
 use kennethormandy\marketplace\Marketplace;
-use putyourlightson\logtofile\LogToFile;
 
 /* This FeesService is based upon
  * the venveo/craft-oauthclient App and Token Services
@@ -174,7 +173,7 @@ class FeesService extends Component
         }
 
         if ($runValidation && !$fee->validate()) {
-            LogToFile::info('Fee was not saved as it did not pass validation.', 'marketplace');
+            Marketplace::$plugin->log('Fee was not saved as it did not pass validation.', [], 'error');
             return false;
         }
 
@@ -239,7 +238,7 @@ class FeesService extends Component
         if ($fee && (int) $fee->value > 0) {
             if ($fee->type === 'price-percentage') {
                 if (!isset($baseAmount) || $baseAmount == 0) {
-                    LogToFile::log('Fee type is “price-percentage,” and provided base amount is 0', 'marketplace', 'warning');
+                    Marketplace::$plugin->log('Fee type is “price-percentage,” and provided base amount is 0', [], 'warning');
                 }
 
                 // Ex. 12.50% fee stored in DB as 1250
@@ -256,7 +255,7 @@ class FeesService extends Component
 
         // Must be a positive int, in “cents”
         if (0 > $feeAmount || !is_int($feeAmount)) {
-            LogToFile::log('Invalid fee. Fee set to 0.', 'marketplace', 'warning');
+            Marketplace::$plugin->log('Invalid fee. Fee set to 0.', 'marketplace', [], 'warning');
 
             return 0;
         }
