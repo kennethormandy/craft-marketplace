@@ -294,9 +294,7 @@ class Marketplace extends BasePlugin
                     $userObject = Craft::$app->users->getUserById($userId);
                     $stripeConnectHandle = $this->handlesService->getButtonHandle($userObject);
 
-                    $this->log('Got Marketplace handle ' . $stripeConnectHandle,
-                        'marketplace'
-                    );
+                    $this->log('Got Marketplace handle ' . $stripeConnectHandle);
 
                     if ($stripeConnectHandle && $userObject) {
                         try {
