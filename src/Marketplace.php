@@ -12,7 +12,10 @@ namespace kennethormandy\marketplace;
 
 use Craft;
 use craft\base\Plugin as BasePlugin;
+use craft\commerce\Plugin as Commerce;
 use craft\commerce\events\RefundTransactionEvent;
+use craft\commerce\elements\Order;
+use craft\commerce\models\LineItem;
 use craft\commerce\services\Payments;
 use craft\commerce\stripe\base\Gateway as StripeGateway;
 use craft\commerce\stripe\events\BuildGatewayRequestEvent;
@@ -36,6 +39,7 @@ use kennethormandy\marketplace\services\PayeesService;
 use putyourlightson\logtofile\LogToFile;
 use Stripe\Stripe;
 use Stripe\Transfer;
+use Stripe\BalanceTransaction;
 use venveo\oauthclient\base\Provider;
 use venveo\oauthclient\controllers\AuthorizeController;
 use venveo\oauthclient\events\AuthorizationEvent;
@@ -90,7 +94,7 @@ class Marketplace extends BasePlugin
             'fees' => FeesService::class,
             'payees' => PayeesService::class,
             'accounts' => AccountsService::class,
-            ]);
+        ]);
 
         Craft::info('Marketplace plugin loaded', __METHOD__);
 
@@ -126,18 +130,18 @@ class Marketplace extends BasePlugin
                 $stripeResponse = $event->responseToken;
                 $token = $event->token;
 
-                LogToFile::info('EVENT_CREATE_TOKEN_MODEL_FROM_RESPONSE', 'marketplace');
-                LogToFile::info(json_encode($stripeResponse), 'marketplace');
+                $this->log('EVENT_CREATE_TOKEN_MODEL_FROM_RESPONSE');
+                $this->log(json_encode($stripeResponse));
 
                 if (isset($stripeResponse)) {
-                    LogToFile::info('Stripe response', 'marketplace');
-                    LogToFile::info(json_encode($stripeResponse), 'marketplace');
+                    $this->log('Stripe response');
+                    $this->log(json_encode($stripeResponse));
 
                     if (
                         isset($stripeResponse) &&
                         isset($stripeResponse->stripe_user_id)
                     ) {
-                        LogToFile::info('Stripe Account Id stripe_user_id', 'marketplace');
+                        $this->log('Stripe Account Id stripe_user_id');
                         $stripeAccountId = $stripeResponse->stripe_user_id;
 
                         // Save the Stripe Account ID on the token
@@ -155,11 +159,11 @@ class Marketplace extends BasePlugin
             AppsService::class,
             AppsService::EVENT_GET_URL_OPTIONS,
             function (AuthorizationUrlEvent $e) {
-                LogToFile::info('EVENT_GET_URL_OPTIONS', 'marketplace');
-                LogToFile::info(json_encode($e), 'marketplace');
+                $this->log('EVENT_GET_URL_OPTIONS');
+                $this->log(json_encode($e));
                 $appHandle = self::$plugin->getSettings()->getAppHandle();
 
-                LogToFile::info('Get App handle ' . $appHandle . ' ' . $e->app->handle, 'marketplace');
+                $this->log('Get App handle ' . $appHandle . ' ' . $e->app->handle);
 
                 // TODO We want to check the handle matches, and the type
                 // of provider is our Stripe provider, as you could in theory
@@ -197,8 +201,6 @@ class Marketplace extends BasePlugin
                         if (isset($user['lastName'])) {
                             $e->options['stripe_user[last_name]'] = $user['lastName'];
                         }
-
-                        // TODO Handle Stripe redirect back to Craft
                     }
                 }
 
@@ -212,8 +214,8 @@ class Marketplace extends BasePlugin
             function (AuthorizationEvent $event) {
 
                 if ($event->context) {
-                    LogToFile::info('EVENT_BEFORE_AUTHENTICATE context', 'marketplace');
-                    LogToFile::info(json_encode($event->context), 'marketplace');    
+                    $this->log('EVENT_BEFORE_AUTHENTICATE context');
+                    $this->log(json_encode($event->context));    
                 }
 
                 if (
@@ -228,8 +230,8 @@ class Marketplace extends BasePlugin
                     }
 
                     $returnUrl = UrlHelper::cpUrl($pathname, null, null);
-                    LogToFile::info('Return URL', 'marketplace');
-                    LogToFile::info($returnUrl, 'marketplace');
+                    $this->log('Return URL');
+                    $this->log($returnUrl);
                     $event->returnUrl = $returnUrl;
                 }
             }
@@ -242,34 +244,34 @@ class Marketplace extends BasePlugin
             AuthorizeController::class,
             AuthorizeController::EVENT_AFTER_AUTHENTICATE,
             function (AuthorizationEvent $event) {
-                LogToFile::info('EVENT_AFTER_AUTHENTICATE context', 'marketplace');
-                LogToFile::info(json_encode($event), 'marketplace');
-                LogToFile::info(json_encode($event->context), 'marketplace');
+                $this->log('EVENT_AFTER_AUTHENTICATE context');
+                $this->log(json_encode($event));
+                $this->log(json_encode($event->context));
 
                 if (
                     is_array($event->context) &&
                     isset($event->context['elementUid']) &&
                     $event->context['elementUid']
                 ) {
-                    LogToFile::info(json_encode($event->context['elementUid']), 'marketplace');
+                    $this->log(json_encode($event->context['elementUid']));
                     $elementUid = $event->context['elementUid'];
     
                     // This needs to be a string for the class, not a simple string like “category”
                     // https://docs.craftcms.com/api/v3/craft-services-elements.html#public-methods
                     $elementType = null;
                     // if (isset($event->context['elementType'])) {
-                    //     LogToFile::info(json_encode($event->context['elementType']), 'marketplace');
+                    //     $this->log(json_encode($event->context['elementType']));
                     //     $elementType = $event->context['elementType'];
                     // }
 
                     $element = Craft::$app->elements->getElementByUid($elementUid, $elementType);    
 
-                    LogToFile::info('element', 'marketplace');
-                    LogToFile::info(json_encode($element), 'marketplace');
-                    LogToFile::info(json_encode($element->slug), 'marketplace');
+                    $this->log('element');
+                    $this->log(json_encode($element));
+                    $this->log(json_encode($element->slug));
 
                     $token = $event->token;
-                    LogToFile::info(json_encode($token), 'marketplace');
+                    $this->log(json_encode($token));
 
                     $stripeConnectHandle = $this->handlesService->getButtonHandle($element);
                     $element->setFieldValue($stripeConnectHandle, $token->uid);
@@ -292,17 +294,14 @@ class Marketplace extends BasePlugin
                     $userObject = Craft::$app->users->getUserById($userId);
                     $stripeConnectHandle = $this->handlesService->getButtonHandle($userObject);
 
-                    LogToFile::info(
-                        'Got Marketplace handle ' . $stripeConnectHandle,
-                        'marketplace'
-                    );
+                    $this->log('Got Marketplace handle ' . $stripeConnectHandle);
 
                     if ($stripeConnectHandle && $userObject) {
                         try {
                             $userObject->setFieldValue($stripeConnectHandle, $token->uid);
                             Craft::$app->elements->saveElement($userObject);
                         } catch (InvalidFieldException $error) {
-                            LogToFile::error(json_encode($error));
+                            $this->log(json_encode($error), [], 'error');
                         }
                     }
 
@@ -320,7 +319,7 @@ class Marketplace extends BasePlugin
             Payments::class,
             Payments::EVENT_BEFORE_REFUND_TRANSACTION,
             function (RefundTransactionEvent $e) {
-                LogToFile::info('EVENT_BEFORE_REFUND_TRANSACTION', 'marketplace');
+                $this->log('EVENT_BEFORE_REFUND_TRANSACTION');
 
                 // We are assuming all of these are destination charges,
                 // might need to find some way to look at the charge and
@@ -335,7 +334,7 @@ class Marketplace extends BasePlugin
                     $res = json_decode($e->transaction->response);
 
                     // In progress:
-                    LogToFile::info('[Stripe refund] ' . $e->transaction->response, 'marketplace');
+                    $this->log('[Stripe refund] ' . $e->transaction->response);
 
                     if (isset($res->charges) && isset($res->charges->data) && count($res->charges->data) >= 1) {
                         $originalCharge = $res->charges->data[0];
@@ -362,11 +361,16 @@ class Marketplace extends BasePlugin
             StripeGateway::class,
             StripeGateway::EVENT_BUILD_GATEWAY_REQUEST,
             function (BuildGatewayRequestEvent $e) {
+                if ($this->isPro() && $this->getSettings()->stripePreferSeparateTransfers) {
+                    return;
+                }
+
                 // TODO Temporary hard-coded config
                 // Not supporting direct charges for now, looks like it
                 // would require a change to Craft Commerce Stripe gateway
                 // $hardCodedApproach = 'direct-charge';
                 $hardCodedApproach = 'destination-charge';
+                $applicationFeeAmount = 0;
 
                 $applicationFees = self::$plugin->fees->getAllFees();
 
@@ -375,9 +379,8 @@ class Marketplace extends BasePlugin
                 $hardCodedOnBehalfOf = false;
 
                 if ($e->transaction->type !== 'purchase' && $e->transaction->type !== 'authorize') {
-                    LogToFile::info(
-                        'Unsupported transaction type: ' . $e->transaction->type,
-                        'marketplace'
+                    $this->log(
+                        'Unsupported transaction type: ' . $e->transaction->type
                     );
 
                     return;
@@ -395,69 +398,57 @@ class Marketplace extends BasePlugin
                 $payeeStripeAccountId = $this->payees->getGatewayAccountId($lineItemOnly);
 
                 if (!$payeeStripeAccountId) {
-                    LogToFile::info(
-                        '[Order #' . $order->id . '] Stripe ' . $hardCodedApproach . ' no User Payee Account ID. Paying to parent account.',
-                        'marketplace'
+                    $this->log(
+                        '[Order #' . $order->id . '] Stripe ' . $hardCodedApproach . ' no User Payee Account ID. Paying to parent account.'
                     );
 
                     return;
                 }
 
                 // If there’s more than one line item, we check they all have the
-                // same payees, and allow the payment splitting as long as
-                // they all match.
+                // same payees. In Lite, we’ll allow the payment splitting as long as
+                // they all match. In Pro, we’ll split payments.
                 if (count($order->lineItems) > 1) {
-                    // Iterate over line items, and get payees
-                    // If one payee is different from all others, return
-                    // Maybe we don’t actually need a setting then: you are just gaining
-                    // a new feature if try and run through multiple line items with
-                    // Commerce Pro AND they are all the same payee. Otherwise, if they are
-                    // different payees, you’ll continue to get the same behvaiour: the plugin
-                    // won’t be used.
+                    $payeesSame = $this->_checkAllPayeesSame($order);
 
-                    $payeesSame = true;
-                    $lineItemPayees = [];
-                    foreach ($order->lineItems as $key => $lineItem) {
-                        if ($key > 0) {
-                            $payeeCurrent = $this->payees->getGatewayAccountId($lineItem);
-                            if ($payeeCurrent != $payeeStripeAccountId) {
-                                $payeesSame = false;
-                                return;
-                            }
+                    if (!$payeesSame) {
+                        // If it’s the Lite edition, but payees are not the same,
+                        // we don’t support this scenario. Instead, we return,
+                        // which means the transaction will go through as a
+                        // normal Craft Commerce transaction.
+                        if (!$this->isPro()) {
+                            $this->log(
+                                'Stripe ' . $hardCodedApproach . ' line items have different User Payee Account IDs. Paying to parent account.'
+                            );
                         }
-                    }
 
-                    if ($payeesSame == false) {
-                        LogToFile::info(
-                            'Stripe ' . $hardCodedApproach . ' line items have different User Payee Account IDs. Paying to parent account.',
-                            'marketplace'
-                        );
-
-
+                        // If it’s the Pro edition, the remainder is handled after payment.
                         return;
                     }
                 }
 
-                LogToFile::info(
-                    'Stripe ' . $hardCodedApproach . ' to Stripe Account ID: ' . $payeeStripeAccountId,
-                    'marketplace'
+                $this->log(
+                    'Stripe ' . $hardCodedApproach . ' to Stripe Account ID: ' . $payeeStripeAccountId
                 );
 
                 if ($hardCodedApproach === 'destination-charge') {
-                    LogToFile::info(
-                        '[Marketplace request] [' . $hardCodedApproach . '] ' . json_encode($e->request),
-                        'marketplace'
+                    $this->log(
+                        '[Marketplace request] [' . $hardCodedApproach . '] ' . json_encode($e->request)
                     );
 
-                    LogToFile::info(
-                        '[Marketplace request] [' . $hardCodedApproach . '] destination ' . $payeeStripeAccountId,
-                        'marketplace'
+                    $this->log(
+                        '[Marketplace request] [' . $hardCodedApproach . '] destination ' . $payeeStripeAccountId
                     );
 
-                    $liteApplicationFeeAmount = $this->fees->calculateFeesAmount($order);
+                    // Fees are always based on lineItems
+                    foreach ($order->lineItems as $lineItemId => $lineItem) {
+                        $lineItemFeeAmount = $this->fees->calculateFeesAmount($lineItem, $order);
+                        $applicationFeeAmount = $applicationFeeAmount + $lineItemFeeAmount;
+                    }
 
-                    if ($liteApplicationFeeAmount) {
-                        $e->request['application_fee_amount'] = $liteApplicationFeeAmount;
+                    if ($applicationFeeAmount) {
+                        $stripeApplicationFeeAmount = $this->_toStripeAmount($applicationFeeAmount, $order->paymentCurrency);
+                        $e->request['application_fee_amount'] = $stripeApplicationFeeAmount;
                     }
 
                     if ($hardCodedOnBehalfOf) {
@@ -470,9 +461,8 @@ class Marketplace extends BasePlugin
                         'destination' => $payeeStripeAccountId,
                     ];
 
-                    LogToFile::info(
-                        '[Marketplace request modified] [' . $hardCodedApproach . '] ' . json_encode($e->request),
-                        'marketplace'
+                    $this->log(
+                        '[Marketplace request modified] [' . $hardCodedApproach . '] ' . json_encode($e->request)
                     );
                 } elseif ($hardCodedApproach === 'direct-charge') {
 
@@ -510,6 +500,270 @@ class Marketplace extends BasePlugin
                 }
             }
         );
+
+        Event::on(
+            Order::class,
+            Order::EVENT_AFTER_COMPLETE_ORDER,
+            function(Event $event) {
+                /** @var Order $order */
+                $order = $event->sender;
+                $purchaseTransaction = null;
+
+                if (!$this->isPro()) {
+                    return;
+                }
+
+                if ($this->getSettings()->stripePreferSeparateTransfers === false) {
+                    if (1 >= count($order->lineItems)) {
+                        return;
+                    }
+
+                    // TODO Can we pass this along in the order snapshot,
+                    // rather than needing to recalculate it?
+                    $payeesSame = $this->_checkAllPayeesSame($order);
+
+                    // If they are the same, we already made the transfer as part of payment
+                    if ($payeesSame) {
+                        return;
+                    }
+                }
+
+                foreach ($order->transactions as $transaction) {
+                    // Stop at the first successful transaction, can also be failed
+                    // TODO Does auth and capture still create this?
+                    if ($transaction->type === 'purchase' && $transaction->status === 'success') {
+                        $purchaseTransaction = $transaction;                        
+                        break;
+                    }
+                }
+
+                if (!$purchaseTransaction || !$purchaseTransaction->reference) {
+                    $this->log('No purchase transaction found on Order ' . $order->id, [], 'error');
+                    return;
+                }
+
+                $stripeResp = json_decode($purchaseTransaction->response);
+                $currencyCountryCode = $purchaseTransaction->paymentCurrency;
+
+                $this->log('Original transaction currency: ' . $currencyCountryCode);
+                $this->log('Transaction:');
+                $this->log(json_encode($purchaseTransaction));
+
+
+                $stripeCharge = null;
+
+                // Get the first captured transaction
+                if (
+                    isset($stripeResp->charges) && $stripeResp->charges &&
+                    isset($stripeResp->charges->data) && $stripeResp->charges->data &&
+                    count($stripeResp->charges->data) >= 1
+                ) {
+                    foreach ($stripeResp->charges->data as $charge) {
+                        $this->log(json_encode($charge));
+                        if ($charge && $charge->captured && $charge->status === 'succeeded') {
+                            $stripeCharge = $charge;
+                            break;
+                        }
+                    }
+                }
+
+                if (!$stripeCharge) {
+                    $this->log('No successful charge found on Order ' . $order->id, [], 'error');
+                    return;
+                }
+
+                $this->log('Charge:');
+                $this->log(json_encode($stripeCharge));
+
+                try {
+                    $balanceTransaction = BalanceTransaction::retrieve($stripeCharge->balance_transaction);
+                    $this->log('Balance transaction:');
+                    $this->log(json_encode($balanceTransaction));    
+                } catch (\Exception $e) {
+                    $this->log('Marketplace transfer error', [], 'error');
+                    $this->log($e->getTraceAsString(), [], 'error');
+                }
+
+                $exchangeRate = $this->_getStripeExchangeRate($balanceTransaction, $currencyCountryCode);
+
+                foreach ($order->lineItems as $key => $lineItem) {
+                    $payeeCurrent = $this->payees->getGatewayAccountId($lineItem);
+
+                    $this->log('lineItem');
+                    $this->log(json_encode($lineItem));
+
+                    // If there isn’t a payee or a total on this line item, nothing to do
+                    if (!$payeeCurrent || $lineItem->total === (float) 0) {
+                        continue;
+                    }
+
+                    $this->log('Craft amount before currency conversion: ' . $lineItem->total);
+
+                    $lineItemTotal = $lineItem->total;
+
+                    // Calculate LineItem fee
+                    // This will change to calculateFeesAmount once it is properly finished
+                    // TODO To finish this, need to support flat-fee at line item level
+                    // Right now, we apply the flat fee to the first line item, which works if you are using
+                    // the application_fee for one Payee, but doesn’t make sense if you have multiple payees
+                    // to apply that flat fee to. Could either
+                    // - Apply the flat fee once per line item (breaking change for Lite with multiple line items, same payees)
+                    // - Apply the flat fee once per payee (same behaviour as lite), and possibly add a new fee type to support the other use case
+                    $feeAmountLineItem = $this->fees->_calculateLineItemFeesAmount($lineItem, $order);
+
+                    if ($feeAmountLineItem) {
+                        $lineItemTotal = $lineItemTotal - $feeAmountLineItem;
+                    }
+
+                    // Don’t touch the subtotal, unless we really to have to
+                    if ($exchangeRate && $exchangeRate !== 1) {
+                        $lineItemTotal = $lineItem->total * $exchangeRate;
+                    }
+
+                    $this->log('Craft amount after currency conversion: ' . $lineItemTotal);
+
+                    $stripeAmount = $this->_toStripeAmount($lineItemTotal, $currencyCountryCode);
+                    $this->log('Stripe amount: ' . $stripeAmount);
+                    
+                    $this->log('In progress: Create transfer for ' . $payeeCurrent);
+
+                    $stripeTransferData = [
+                        'amount' => $stripeAmount,
+
+                        // Have to use the balance transaction currency
+                        // Ex. If the platform is using GBP (the settlement
+                        // currency), and the customer purchased using USD (the
+                        // presettlement currency), the balance transaction
+                        // and future payout will be in GBP, and therefore the
+                        // transfer has to be in GBP as well.
+                        'currency' => $balanceTransaction->currency,
+
+                        'destination' => $payeeCurrent,
+
+                        // Don’t need to create a `transfer_group`, Stripe
+                        // does this via the source_transaction
+                        'source_transaction' => $stripeCharge->id
+                    ];
+
+                    try {
+                        $transferResult = Transfer::create($stripeTransferData);
+                        $this->log('Transfer Result');
+                        $this->log(json_encode($transferResult));    
+                    } catch (\Exception $e) {
+                        $this->log('Marketplace transfer error', [], 'error');
+                        $this->log($e->getTraceAsString(), [], 'error');
+                    }
+                }
+            }
+        );
+    }
+
+    /**
+     * Log wrapper
+     * 
+     * @param string $msg
+     * @param array $params
+     * @param string $level
+     */
+    public function log($msg, array $params = [], $level = 'info')
+    {
+        // TODO Use Craft::t and params
+
+        /** @see https://www.yiiframework.com/doc/api/2.0/yii-log-logger#log()-detail */
+        switch ($level) {
+            case 'error':
+                Craft::error($msg, __METHOD__);
+            case 'warning':
+                Craft::warning($msg, __METHOD__);
+                break;
+            default:
+                Craft::info($msg, __METHOD__);
+                break;
+        }
+
+        // Right now, we are just double logging. Might prefer to move to this solution
+        // https://craftcms.stackexchange.com/a/25430/6392
+        LogToFile::log($msg, 'marketplace', $level);
+    }
+
+    /**
+     * @param Order $order
+     */
+    private function _checkAllPayeesSame($order)
+    {
+        /** @var LineItem[] */
+        $lineItems = $order->lineItems;
+
+        if (!isset($lineItems) || !$lineItems) {
+            return null;
+        }
+
+        if (count($lineItems) <= 1) {
+            return true;
+        }
+
+        $payeeFirst = $this->payees->getGatewayAccountId($lineItems[0]);
+        $payeesSame = true;
+
+        foreach ($lineItems as $index => $lineItem) {
+            if ($index > 0) {
+                $payeeCurrent = $this->payees->getGatewayAccountId($lineItem);
+                if ($payeeCurrent != $payeeFirst) {
+                    $payeesSame = false;
+                    break;
+                }
+            }
+        }
+
+        return $payeesSame;
+    }
+
+    private function _getStripeExchangeRate($stripeBalanceTransaction, $craftCurrencyCountryCode)
+    {
+        $exchangeRate = 1;
+
+        if (
+            strtolower($craftCurrencyCountryCode) !== strtolower($stripeBalanceTransaction) &&
+            $stripeBalanceTransaction->exchange_rate
+        ) {
+            // $this->log('Need to convert currency');
+            $exchangeRate = $stripeBalanceTransaction->exchange_rate;
+        }
+
+        return $exchangeRate;
+    }
+
+    // TODO Move to service, ex. ConvertService?
+    private function _toStripeAmount($craftPrice, $currencyCountryCode)
+    {
+        $currency = Commerce::getInstance()->getCurrencies()->getCurrencyByIso($currencyCountryCode);
+        
+        if (!$currency) {
+            throw new NotSupportedException('The currency “' . $currencyCountryCode . '” is not supported!');
+        }
+
+        // https://git.io/JGqLi
+        // Ex. $50 * (10^2) = 5000
+        $amount = $craftPrice * (10 ** $currency->minorUnit);
+
+        $amount = (int) round($amount, 0);
+
+        return $amount;
+    }
+
+    private function _fromStripeAmount($amount, $currencyCountryCode)
+    {
+        $currency = Commerce::getInstance()->getCurrencies()->getCurrencyByIso($currencyCountryCode);
+
+        if (!$currency) {
+            throw new NotSupportedException('The currency “' . $currencyCountryCode . '” is not supported!');
+        }
+
+        // https://git.io/JGqLi
+        // Ex. 5000 / (10^2) = 50
+        $craftPrice = $amount / (10 ** $currency->minorUnit);
+
+        return $craftPrice;
     }
 
     // This logic is also very similar to Button input
@@ -519,7 +773,7 @@ class Marketplace extends BasePlugin
         if ($order && $order['lineItems'] && count($order['lineItems']) >= 1) {
             $firstLineItem = $order['lineItems'][0];
             $product = $firstLineItem['purchasable']['product'];
-            if ($product) {
+            if ($payeeHandle && $product) {
                 $payeeId = $product[$payeeHandle];
                 if ($payeeId) {
                     $payee = User::find()

@@ -42,13 +42,20 @@ Make your Craft ecommerce site into a Marketplace: add payees to products, charg
 
 ## Install
 
-To getting started, you should already have a Stripe account, and Craft Commerce the Stripe for Craft Commerce Payment Gateway installed in Craft CMS.
+To use Marketplace, you will need:
 
-First, you’ll install the Marketplace for Craft Commerce, and the OAuth 2.0 Client that it uses:
+- a [Stripe](https://stripe.com/) account
+- the [Craft Commerce](https://plugins.craftcms.com/commerce) plugin installed in Craft CMS
+- the [Stripe for Craft Commerce](https://plugins.craftcms.com/commerce-stripe) payment gateway installed in Craft CMS
+
+To start, install:
+
+- the [Marketplace for Craft Commerce](https://plugins.craftcms.com/marketplace) plugin
+- the [OAuth 2.0 Client](https://plugins.craftcms.com/oauthclient) plugin
 
 ![](./docs/static/images/marketplace-docs-1.png)
 
-This can be done through the Craft CMS dashboard, or using the command line:
+You can install the plugins through the Craft CMS dashboard, or using the command line:
 
 ```sh
 # Require Marketplace plugin
@@ -60,7 +67,6 @@ composer require kennethormandy/craft-marketplace
 # Install Marketplace plugin
 ./craft install/plugin marketplace
 ```
-
 
 ## Configure
 

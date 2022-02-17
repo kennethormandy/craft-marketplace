@@ -8,7 +8,6 @@ use craft\commerce\models\LineItem;
 use craft\elements\User;
 use kennethormandy\marketplace\events\PayeeEvent;
 use kennethormandy\marketplace\Marketplace;
-use putyourlightson\logtofile\LogToFile;
 
 class PayeesService extends Component
 {
@@ -32,9 +31,12 @@ class PayeesService extends Component
             $this->trigger(self::EVENT_BEFORE_DETERMINE_PAYEE, $event);
         }
 
+        // It’s possible for this to be null, if they are only using
+        // Events to set the Payee, and not using any fields
         $payeeHandle = Marketplace::$plugin->handlesService->getPayeeHandle();
 
         if (
+            $payeeHandle &&
             isset($purchasable[$payeeHandle]) &&
             $purchasable[$payeeHandle] !== null &&
             $purchasable[$payeeHandle]
@@ -48,6 +50,7 @@ class PayeesService extends Component
                 $purchasablePayeeUser = $purchasable[$payeeHandle]->one();
             }
         } elseif (
+            $payeeHandle &&
             isset($purchasable->product[$payeeHandle]) &&
             $purchasable->product[$payeeHandle] !== null &&
             $purchasable->product[$payeeHandle]
@@ -59,9 +62,8 @@ class PayeesService extends Component
             // and that is working fine?
             $purchasablePayeeUser = User::find()->id($payeeUserId)->one();
         } else {
-            LogToFile::info(
+            Marketplace::$plugin->log(
                 '[Marketplace] [PayeesService] No User Payee Account ID set in Craft CMS.',
-                'marketplace'
             );
 
             // We don’t return here, because people can still use

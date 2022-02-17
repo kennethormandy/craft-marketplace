@@ -75,4 +75,9 @@ context('Account', () => {
     })
     cy.contains('You do not have permission')
   })
+
+  it.skip('Team', () => {
+    cy.visit(`${Cypress.env('CRAFT_DEFAULT_SITE_URL')}account/team`)
+    cy.get('[data-test=connect]').click()
+  })
 })

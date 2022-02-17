@@ -25,6 +25,9 @@ class Settings extends Model
     public $secretApiKey;
     public $appHandle = 'stripe';
 
+    // Pro
+    public $stripePreferSeparateTransfers = true;
+
     // Public Methods
     // =========================================================================
 

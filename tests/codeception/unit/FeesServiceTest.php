@@ -111,7 +111,8 @@ class FeesServiceTest extends Unit
     public function testCalcFeesFromEmptyOrder()
     {
         $order = new Order();
-        $result = $this->plugin->fees->calculateFeesAmount($order);
+        $lineItem = new LineItem();
+        $result = $this->plugin->fees->calculateFeesAmount($lineItem, $order);
         $this->assertEquals($result, 0);
     }
 
@@ -134,10 +135,11 @@ class FeesServiceTest extends Unit
 
         $lineItem1 = new LineItem();
         $lineItem1->qty = 2;
+        $lineItem1->id = 1;
         $lineItem1->salePrice = 10;
         $order->setLineItems([$lineItem1]);
 
-        $result = $this->plugin->fees->calculateFeesAmount($order);
+        $result = $this->plugin->fees->calculateFeesAmount($lineItem1, $order);
 
         $this->assertEquals($result, 400);
     }
@@ -163,10 +165,11 @@ class FeesServiceTest extends Unit
 
         $lineItem1 = new LineItem();
         $lineItem1->qty = 2;
+        $lineItem1->id = 1;
         $lineItem1->salePrice = 10;
         $order->setLineItems([$lineItem1]);
 
-        $result = $this->plugin->fees->calculateFeesAmount($order);
+        $result = $this->plugin->fees->calculateFeesAmount($lineItem1, $order);
 
         $this->assertEquals($result, 500);
     }
@@ -194,13 +197,17 @@ class FeesServiceTest extends Unit
 
         $lineItem1 = new LineItem();
         $lineItem1->qty = 1;
+        $lineItem1->id = 1;
         $lineItem1->salePrice = 45.00;
         $lineItem2 = new LineItem();
         $lineItem2->qty = 1;
+        $lineItem1->id = 2;
         $lineItem2->salePrice = 63.50;
         $order->setLineItems([$lineItem1, $lineItem2]);
 
-        $result = $this->plugin->fees->calculateFeesAmount($order);
+        $result1 = $this->plugin->fees->calculateFeesAmount($lineItem1, $order);
+        $result2 = $this->plugin->fees->calculateFeesAmount($lineItem2, $order);
+        $result = $result1 + $result2;
 
         $this->assertEquals($result, 543);
     }
@@ -228,13 +235,17 @@ class FeesServiceTest extends Unit
 
         $lineItem1 = new LineItem();
         $lineItem1->qty = 1;
+        $lineItem1->id = 1;
         $lineItem1->salePrice = 45.00;
         $lineItem2 = new LineItem();
         $lineItem2->qty = 1;
+        $lineItem1->id = 2;
         $lineItem2->salePrice = 63.50;
         $order->setLineItems([$lineItem1, $lineItem2]);
 
-        $result = $this->plugin->fees->calculateFeesAmount($order);
+        $result1 = $this->plugin->fees->calculateFeesAmount($lineItem1, $order);
+        $result2 = $this->plugin->fees->calculateFeesAmount($lineItem2, $order);
+        $result = $result1 + $result2;
 
         $this->assertEquals($result, 500);
     }
@@ -278,13 +289,17 @@ class FeesServiceTest extends Unit
 
         $lineItem1 = new LineItem();
         $lineItem1->qty = 1;
+        $lineItem1->id = 1;
         $lineItem1->salePrice = 45.00;
         $lineItem2 = new LineItem();
         $lineItem2->qty = 1;
+        $lineItem2->id = 2;
         $lineItem2->salePrice = 63.50;
         $order->setLineItems([$lineItem1, $lineItem2]);
 
-        $result = $this->plugin->fees->calculateFeesAmount($order);
+        $result1 = $this->plugin->fees->calculateFeesAmount($lineItem1, $order);
+        $result2 = $this->plugin->fees->calculateFeesAmount($lineItem2, $order);
+        $result = $result1 + $result2;
 
         $this->assertEquals($result, 1043);
     }

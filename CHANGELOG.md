@@ -10,6 +10,7 @@
 
 ### Fixed
 - Fixed a presumptuous check that assumed `'stripeConnect'` could always be a fallback field handle for a Stripe Connect Button, when it actually probably means there is no Stripe Connect Button field
+- Fixed incorrect `log` argument during redirect, after authenticating with OAuth
 
 ## v1.5.1 - 2021-04-26
 
