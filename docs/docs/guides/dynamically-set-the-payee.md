@@ -109,7 +109,7 @@ That is the extent of the custom code, the rest is based on however you want to 
 
 Now, what you’ll want to do is modify the actual Twig templates, so you can add the `myUserToPayId` option to the Line Item. For example, on a Product’s Add to Cart form:
 
-```twig
+```html
 {# The name you gave your Marketplace Connect Button field #}
 {% set connectButtonFieldName = 'platformConnectButton' %}
 

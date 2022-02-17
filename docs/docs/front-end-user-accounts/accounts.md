@@ -6,7 +6,7 @@ title: "Accounts"
 
 Once a Payee has their account connected, you can display a button that will give them access to a simplified Stripe dashboard.
 
-```twig
+```html
 {# Whatever you called your Marketplace Connect Button handle,
  # ex. `currentUser.platformConnectButton` #}
 {% set fieldHandle = 'platformConnectButton' %}
@@ -37,7 +37,7 @@ By default, the referring page (ie. the page with your `create-login-link` form)
 
 If you’d like to customise this link, you can add a [Craft CMS `redirectInput`](https://craftcms.com/docs/3.x/dev/functions.html#redirectinput) to the form instead: 
 
-```twig
+```html
 {{ redirectInput('/see-you-later') }}
 ```
 
@@ -45,7 +45,7 @@ If you’d like to customise this link, you can add a [Craft CMS `redirectInput`
 
 If there’s an error when creating the login link, a Flash message will be shown, if these are set up in your templates. An error message can also be provided to the form by using:
 
-```twig
+```
 {% if errorMessage is defined %}
   <p>{{ errorMessage }}</p>
 {% endif %}

@@ -1,3 +1,6 @@
+const lightCodeTheme = require('prism-react-renderer/themes/github');
+const darkCodeTheme = require('prism-react-renderer/themes/dracula');
+
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 module.exports = {
   title: "Marketplace",
@@ -12,7 +15,13 @@ module.exports = {
   projectName: "craft-marketplace", // Usually your repo name.
   themeConfig: {
     prism: {
-      additionalLanguages: ["php", "twig"]
+      additionalLanguages: [
+        // Doesn’t work as described in docs, causes page to crash
+        // "markup-templating", "twig",
+        "php", "php-extras"
+      ],
+      theme: lightCodeTheme,
+      darkTheme: darkCodeTheme,
     },
     image: 'images/og-image.png',
     colorMode: {
