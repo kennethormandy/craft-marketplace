@@ -30,9 +30,9 @@ module.exports = {
     },
     {
       type: 'category',
-      label: 'Patterns',
+      label: 'Guides',
       items: [
-        'patterns/dynamically-set-the-payee',
+        'guides/dynamically-set-the-payee',
       ]
     },
   ],
