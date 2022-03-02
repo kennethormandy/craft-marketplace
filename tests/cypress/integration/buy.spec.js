@@ -59,18 +59,51 @@ context('Buy', () => {
           expect(result.amount).to.exist
           expect(result.amount).to.equal(6000)
           expect(result.status).to.equal('succeeded')
-          expect(result.application_fee_amount).to.exist
-          expect(result.application_fee_amount).to.equal(600)
-          expect(result.transfer_data).to.exist
-          expect(result.transfer_data.destination).to.exist
 
-          cy.get('[data-test=payee-platform-id]')
-            .invoke('text')
-            .then((platformAccountId) => {
-              expect(result.transfer_data.destination).to.equal(
-                platformAccountId
-              )
-            })
+          if (result.transfer_data) {
+            // TODO This check is correct for Lite edition,
+            // should be able to switch between them
+            // expect(result.transfer_data).to.exist
+            // expect(result.transfer_data.destination).to.exist
+            // expect(result.application_fee_amount).to.exist
+            // expect(result.application_fee_amount).to.equal(600)
+            // cy.get('[data-test=payee-platform-id]')
+            //   .invoke('text')
+            //   .then((platformAccountId) => {
+            //     expect(result.transfer_data.destination).to.equal(
+            //       platformAccountId
+            //     )
+            //   })
+          } else {
+            console.warn('Checking Pro path only')
+          }
+
+          // This check is for Pro edition, with stripePreferSeparateTransfers (the default)
+          cy.task('checkTransferGroup', result.transfer_group).then(
+            (transferGroupObj) => {
+              console.log(transferGroupObj)
+
+              expect(transferGroupObj).to.exist
+              expect(transferGroupObj.data).to.exist
+              expect(transferGroupObj.data.length).to.equal(1)
+
+              let transferGroups = transferGroupObj.data.reverse()
+
+              cy.get('[data-test=payee-platform-id]')
+                .invoke('text')
+                .then((platformAccountId) => {
+                  expect(transferGroups[0].destination).to.equal(
+                    platformAccountId
+                  )
+                })
+
+              // Global fees are stored in Stripe format, but we made the hook
+              // work in Craft format for Pro, and still need to convert there
+              transferGroups.forEach((transfer) => {
+                expect(transfer.amount).to.equal(600)
+              })
+            }
+          )
         })
       })
   })

@@ -57,6 +57,8 @@ context('Capture', () => {
           // The transaction won’t come through as already completed in this case
           expect(result.status).to.equal('requires_capture')
 
+          // TODO I think these are only failing because when we are on Pro, we use transfers,
+          // and the tests are still setup to expect a single Application Fee
           expect(result.application_fee_amount).to.exist
           expect(result.application_fee_amount).to.equal(600)
           expect(result.transfer_data).to.exist
