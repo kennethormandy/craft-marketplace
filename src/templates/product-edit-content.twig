@@ -1,0 +1,14 @@
+{# Where “platformPayee” is whatever you called your field on the Product #}
+{% set payeeUserId = product.platformPayee %}
+
+{% if not currentUser or (not currentUser.can('administrateUsers') and currentUser.id != payeeUserId) %}
+
+  {# Create a useful redirect URL, to send them back to the Product index #}
+  {% set urlSplit = craft.app.request.url|split('/') %}
+  {% set urlRedirect = craft.app.request.url|replace(urlSplit[urlSplit|length - 1], '') %}
+
+  {# Show a flash error message #}
+  {% do craft.app.session.setError("You are not set as a Payee on the “#{product.title}” Product.") %}
+
+  {% redirect urlRedirect %}
+{% endif %}
