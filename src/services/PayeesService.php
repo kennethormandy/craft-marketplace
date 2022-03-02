@@ -45,6 +45,16 @@ class PayeesService extends Component
                 // Craft Commerce v3 Digital Products
                 $payeeUserId = $purchasable[$payeeHandle];
                 $purchasablePayeeUser = User::find()->id($payeeUserId)->one();
+            // } else if (
+            //     is_string($purchasable[$payeeHandle]) &&
+            //     is_array(json_decode($purchasable[$payeeHandle])) &&
+            //     sizeof(json_decode($purchasable[$payeeHandle])) === 1
+            // ) {
+            //     // User incorrectly saved as string, ex. `"[\"15\"]"`
+            //     $payeeUserId = json_decode($purchasable[$payeeHandle])[0];
+            //     $purchasablePayeeUser = User::find()->id($payeeUserId)->one();
+            } else if (is_array($purchasable[$payeeHandle])) {
+                
             } else {
                 // Craft Commerce v2 Digital Products?
                 $purchasablePayeeUser = $purchasable[$payeeHandle]->one();
