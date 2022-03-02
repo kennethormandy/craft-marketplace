@@ -45,7 +45,7 @@ If you’d like to customise this link, you can add a [Craft CMS `redirectInput`
 
 If there’s an error when creating the login link, a Flash message will be shown, if these are set up in your templates. An error message can also be provided to the form by using:
 
-```
+```html
 {% if errorMessage is defined %}
   <p>{{ errorMessage }}</p>
 {% endif %}
