@@ -693,7 +693,7 @@ class Marketplace extends BasePlugin
                         $this->log('Transfer Result');
                         $this->log(json_encode($transferResult));    
                     } catch (\Exception $e) {
-                        throw $e; // Temp
+                        // throw $e; // Temp
                         $this->log('Marketplace transfer error', [], 'error');
                         $this->log($e->getTraceAsString(), [], 'error');
                     }
