@@ -19,6 +19,7 @@ use craft\commerce\models\LineItem;
 use craft\commerce\services\Payments;
 use craft\commerce\stripe\base\Gateway as StripeGateway;
 use craft\commerce\stripe\events\BuildGatewayRequestEvent;
+use craft\commerce\helpers\Currency as CurrencyHelper;
 use craft\elements\User;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterUrlRulesEvent;
@@ -585,6 +586,7 @@ class Marketplace extends BasePlugin
                 }
 
                 $exchangeRate = $this->_getStripeExchangeRate($balanceTransaction, $currencyCountryCode);
+                $this->log('$exchangeRate: ' . $exchangeRate);
 
                 foreach ($order->lineItems as $key => $lineItem) {
                     $payeeCurrent = $this->payees->getGatewayAccountId($lineItem);
@@ -599,7 +601,21 @@ class Marketplace extends BasePlugin
 
                     $this->log('Craft amount before currency conversion: ' . $lineItem->total);
 
-                    $lineItemTotal = $lineItem->total;
+                    $this->log('$lineItem->total: '. $lineItem->total);
+                    $this->log('$order->paymentCurrency: '. $order->paymentCurrency);
+
+                    $craftBaseAndPaymentCurrencyDiffer = $order->paymentCurrency !== $order->currency;
+
+                    if ($craftBaseAndPaymentCurrencyDiffer) {
+                        $lineItemTotal = CurrencyHelper::formatAsCurrency(
+                            $amount = $lineItem->total,
+                            $currency = $order->paymentCurrency,
+                            $convert = true,
+                            $format = false
+                        );                            
+                    }
+
+                    $this->log('$lineItemTotal: '. $lineItemTotal);
 
                     // Calculate LineItem fee
                     // This will change to calculateFeesAmount once it is properly finished
@@ -611,12 +627,37 @@ class Marketplace extends BasePlugin
                     // - Apply the flat fee once per payee (same behaviour as lite), and possibly add a new fee type to support the other use case
                     $feeAmountLineItem = $this->fees->_calculateLineItemFeesAmount($lineItem, $order);
 
+                    $this->log('$feeAmountLineItem before Craft conversion'. $feeAmountLineItem);
+
+                    if ($craftBaseAndPaymentCurrencyDiffer) {
+                        $feeAmountLineItem = CurrencyHelper::formatAsCurrency(
+                            $amount = $feeAmountLineItem,
+                            $currency = $order->paymentCurrency,
+                            $convert = true,
+                            $format = false
+                        );    
+                    }
+                    
+                    $this->log('$feeAmountLineItem after Craft conversion'. $feeAmountLineItem);
+
                     if ($feeAmountLineItem) {
                         $lineItemTotal = $lineItemTotal - $feeAmountLineItem;
                     }
 
                     // Don’t touch the subtotal, unless we really to have to
-                    if ($exchangeRate && $exchangeRate !== 1) {
+                    if ($craftBaseAndPaymentCurrencyDiffer) {
+                        $feeAmountLineItem = $feeAmountLineItem * $exchangeRate;
+                        $this->log('$lineItemTotal: ' . $lineItemTotal);
+                        $this->log('$lineItem->total: ' . $lineItem->total);
+                        $lineItemTotal = $lineItemTotal * $exchangeRate;
+
+                    } elseif ($exchangeRate && $exchangeRate !== 1) {
+
+                        // This seems wrong? Should be $lineItemTotal * $exchangeRate?
+                        // But I think we don’t ever hit this conditional right now on ILT,
+                        // because we didn’t have full base currency vs full currency support
+                        // OR it was started but not completed because they added a US bank account
+                        // part way through?
                         $lineItemTotal = $lineItem->total * $exchangeRate;
                     }
 
@@ -645,11 +686,14 @@ class Marketplace extends BasePlugin
                         'source_transaction' => $stripeCharge->id
                     ];
 
+                    $this->log(json_encode($stripeTransferData));
+
                     try {
                         $transferResult = Transfer::create($stripeTransferData);
                         $this->log('Transfer Result');
                         $this->log(json_encode($transferResult));    
                     } catch (\Exception $e) {
+                        throw $e; // Temp
                         $this->log('Marketplace transfer error', [], 'error');
                         $this->log($e->getTraceAsString(), [], 'error');
                     }
@@ -721,6 +765,8 @@ class Marketplace extends BasePlugin
     private function _getStripeExchangeRate($stripeBalanceTransaction, $craftCurrencyCountryCode)
     {
         $exchangeRate = 1;
+
+        $this->log('$stripeBalanceTransaction: ' . strtolower($stripeBalanceTransaction));
 
         if (
             strtolower($craftCurrencyCountryCode) !== strtolower($stripeBalanceTransaction) &&
