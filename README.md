@@ -243,7 +243,7 @@ Marketplace Lite also includes support for Craft Commerce Pro and orders with mu
 
 <!-- TODO Twig demo of what this might look like -->
 
-If you’re interested in more comprehensive payment splitting for items in carts, Marketplace Pro will pair with Craft Commerce Pro, and is in early development. Feel free to [send me an email](mailto:hello+marketplace@kennethormandy.com) if you’re interested in previewing it for your project.
+If you’re interested in more comprehensive payment splitting for items in carts, Marketplace Pro will pair with Craft Commerce Pro, and is in stable beta. Feel free to [send me an email](mailto:hello+marketplace@kennethormandy.com) if you’re interested in previewing it for your project. It can be installed immediately.
 
 <!-- TODO Not sure whether I’ll include this yet or not
 
