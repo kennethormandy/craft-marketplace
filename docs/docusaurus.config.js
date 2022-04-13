@@ -12,19 +12,17 @@ module.exports = {
   projectName: "craft-marketplace", // Usually your repo name.
   themeConfig: {
     prism: {
-      additionalLanguages: ["php", "twig"]
+      additionalLanguages: [
+        "php",
+        // This still crashes Docusaurus
+        // "twig"
+      ]
     },
     image: 'images/og-image.png',
     colorMode: {
       defaultMode: "dark",
       disableSwitch: false,
       respectPrefersColorScheme: true,
-      switchConfig: {
-        darkIcon: ' ',
-        darkIconStyle: { dispaly: 'none', visiblity: 'hidden '},
-        lightIcon: ' ',
-        lightIconStyle: { dispaly: 'none', visiblity: 'hidden '} 
-      },
     },
     navbar: {
       title: "Marketplace",
