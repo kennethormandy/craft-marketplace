@@ -14,8 +14,8 @@ module.exports = {
     prism: {
       additionalLanguages: [
         "php",
-        // This still crashes Docusaurus
-        // "twig"
+        // This crashes Docusaurus without the modifications in `_temp/prism-twig.js`
+        "twig",
       ]
     },
     image: 'images/og-image.png',

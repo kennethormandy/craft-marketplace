@@ -5,7 +5,10 @@
   "private": true,
   "scripts": {
     "docusaurus": "docusaurus",
+    "fix-prism-twig": "cp _temp/prism-twig.js node_modules/prismjs/components",
+    "prestart": "npm run fix-prism-twig",
     "start": "docusaurus start",
+    "prebuild": "npm run fix-prism-twig",
     "build": "docusaurus build",
     "swizzle": "docusaurus swizzle",
     "deploy": "surge ./build https://craft-marketplace.kennethormandy.com",
