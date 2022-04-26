@@ -55,7 +55,8 @@ class Marketplace extends BasePlugin
 {
     const EDITION_LITE = 'lite';
     // NOTE Edition marker doesn’t show, unless there
-    //      is more than one edition. https://git.io/JvAIY
+    //      is more than one edition.
+    // https://github.com/craftcms/cms/blob/develop/src/templates/settings/plugins/index.html#L40-L45
     // const EDITION_PRO = 'pro';
 
     // Public Properties
@@ -683,7 +684,14 @@ class Marketplace extends BasePlugin
 
                         // Don’t need to create a `transfer_group`, Stripe
                         // does this via the source_transaction
-                        'source_transaction' => $stripeCharge->id
+                        'source_transaction' => $stripeCharge->id,
+
+                        // TODO This works for applying metadata to the Transfer
+                        // (Shows up on the Transfer page, not the Payment)
+                        // Ex. `tr_3KWRgACsaQGJ3iYd184gVvyI`
+                        // 'metadata' => [
+                        //     'marketplace_asdf' => 'test',
+                        // ]
                     ];
 
                     $this->log(json_encode($stripeTransferData));
@@ -788,8 +796,10 @@ class Marketplace extends BasePlugin
             throw new NotSupportedException('The currency “' . $currencyCountryCode . '” is not supported!');
         }
 
-        // https://git.io/JGqLi
-        // Ex. $50 * (10^2) = 5000
+        /**
+         * Ex. $50 * (10^2) = 5000
+         * @see https://github.com/craftcms/commerce-stripe/blob/b922fd21090e0f2dd7bbb4ce266c1c1c0f185b9f/src/gateways/PaymentIntents.php#L235
+         */
         $amount = $craftPrice * (10 ** $currency->minorUnit);
 
         $amount = (int) round($amount, 0);
@@ -805,8 +815,10 @@ class Marketplace extends BasePlugin
             throw new NotSupportedException('The currency “' . $currencyCountryCode . '” is not supported!');
         }
 
-        // https://git.io/JGqLi
-        // Ex. 5000 / (10^2) = 50
+        /**
+         * Ex. 5000 / (10^2) = 50
+         * @see https://github.com/craftcms/commerce-stripe/blob/b922fd21090e0f2dd7bbb4ce266c1c1c0f185b9f/src/gateways/PaymentIntents.php#L235
+         */
         $craftPrice = $amount / (10 ** $currency->minorUnit);
 
         return $craftPrice;

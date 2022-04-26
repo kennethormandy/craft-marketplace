@@ -16,7 +16,8 @@ use kennethormandy\marketplace\Marketplace;
 
 /* This FeesService is based upon
  * the venveo/craft-oauthclient App and Token Services
- * https://git.io/JUtvR & https://git.io/JUtv0
+ * https://github.com/venveo/craft-oauthclient/blob/master/src/services/Apps.php
+ * https://github.com/venveo/craft-oauthclient/blob/master/src/services/Tokens.php
  * Copyright © 2019 Venveo, available under the MIT License
  * https://github.com/venveo/craft-oauthclient/blob/master/LICENSE.md
  */
