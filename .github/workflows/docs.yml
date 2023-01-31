@@ -43,3 +43,4 @@ jobs:
           npm run deploy:ci --if-present
         env:
           SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
+          FATHOM_SITE_ID: ${{ secrets.FATHOM_SITE_ID }}
