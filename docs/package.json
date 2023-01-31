@@ -38,6 +38,6 @@
     ]
   },
   "devDependencies": {
-    "surge": "0.22.1"
+    "surge": "^0.24.0-rc.15"
   }
 }
