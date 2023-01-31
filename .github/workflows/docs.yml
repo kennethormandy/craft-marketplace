@@ -40,6 +40,6 @@ jobs:
         run: |
           cd docs
           npm run build --if-present
-          npm run deploy --if-present
+          npm run deploy:ci --if-present
         env:
           SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
