@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 module.exports = {
   title: "Marketplace",
@@ -10,6 +12,7 @@ module.exports = {
   favicon: "images/favicon.ico",
   organizationName: "kennethormandy", // Usually your GitHub org/user name.
   projectName: "craft-marketplace", // Usually your repo name.
+  plugins: ['docusaurus-plugin-fathom'],
   themeConfig: {
     prism: {
       additionalLanguages: [
@@ -17,6 +20,10 @@ module.exports = {
         // This crashes Docusaurus without the modifications in `_temp/prism-twig.js`
         "twig",
       ]
+    },
+    fathomAnalytics: {
+      siteId: process.env.FATHOM_SITE_ID,
+      // customDomain: 'https://mycustomdomain.com', // Use a custom domain, see https://usefathom.com/support/custom-domains
     },
     image: 'images/og-image.png',
     colorMode: {
