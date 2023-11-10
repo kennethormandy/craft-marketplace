@@ -41,7 +41,10 @@ module.exports = (on, config) => {
         .list({
           transfer_group: ref,
         })
-        .then((obj) => obj)
+        .then((obj) => {
+          console.log(obj)
+          return obj
+        })
         .catch((err) => console.error(err))
 
       if (typeof res !== 'undefined') {
