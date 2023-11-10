@@ -58,5 +58,11 @@
   "scripts": {
     "test": "vendor/bin/codecept run --debug",
     "format": "./vendor/bin/php-cs-fixer fix"
+  },
+  "config": {
+    "allow-plugins": {
+      "yiisoft/yii2-composer": true,
+      "craftcms/plugin-installer": true
+    }
   }
 }
