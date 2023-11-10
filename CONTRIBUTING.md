@@ -13,8 +13,8 @@ ddev mysql -uroot -proot
 ```
 
 ```
-CREATE DATABASE testdb;
-GRANT ALL ON testdb.* to 'db'@'%' IDENTIFIED BY 'db';
+CREATE DATABASE IF NOT EXISTS testdb;
+GRANT ALL ON testdb.* to 'db'@'%';
 ```
 
 ### Running tests
