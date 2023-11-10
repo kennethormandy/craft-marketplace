@@ -1,5 +1,9 @@
 context('Account', () => {
   beforeEach(() => {
+    // Clear Stripe cookies
+    cy.clearCookies('https://stripe.com')
+    cy.clearCookies('https://connect.stripe.com')
+
     cy.visit(`${Cypress.env('CRAFT_DEFAULT_SITE_URL')}account/login`)
 
     cy.get('[name="loginName"]').type(Cypress.env('CRAFT_PAYEE_USERNAME'))
@@ -14,7 +18,56 @@ context('Account', () => {
     )
   })
 
-  it('Logs into Stripe dashboard, and handles custom redirect', () => {
+  it('Logs into Stripe dashboard', () => {
+
+    cy.get('button[data-test=connect]').click()
+    // cy.contains('Stripe')
+    cy.contains('Test mode')
+
+    // If you see the phone number code puncher
+
+    let phoneNumberCheck = document.querySelector('[data-testid=express_login_page_codepuncher]')
+
+    if (phoneNumberCheck) {
+
+      // Phone number confirmation
+      cy.contains('Enter the 6-digit code sent to your number ending in')
+
+      cy.contains('Continue')
+      expect(cy.get('.Margin-top--0 > .PressableCore > .PressableCore-overlay')).to.exist
+
+      // cy.get('.CodePuncher-minibox:first').click()
+      cy.get('[data-testid=express_login_page_codepuncher]').click()
+      cy.wait(1000)
+
+      let codePuncher = cy.get('[data-testid=express_login_page_codepuncher]:enabled')
+      expect(codePuncher).to.exist
+
+      codePuncher.type(0)
+      codePuncher.type(0)
+      codePuncher.type(0)
+      codePuncher.type(0)
+      codePuncher.type(0)
+      codePuncher.type(0)
+
+      cy.wait(1000)
+      cy.contains('Continue').click()
+      cy.wait(1000)
+
+    }
+
+    // Stripe Express Dashboard
+    cy.contains('Stripe Express')
+    cy.contains('US$')
+  })
+
+  it.skip('Logs into Stripe dashboard, and handles custom redirect (Stripe Express Dashboard no longer has redirect back to application?)', () => {
+    // Phone number confirmation
+    if (cy.get('[data-testid=express_login_page_codepuncher]')) {
+      // TODO Enter “0” into all of them
+      console.log(cy.get('[data-testid=express_login_page_codepuncher]'))
+    }
+
     cy.get('button[data-test=connect]').click()
 
     cy.get('[data-test-id=return-to-platform-link]').click()
@@ -23,7 +76,7 @@ context('Account', () => {
     cy.contains('Handled redirect')
   })
 
-  it('Logs into dashboard, and handles compromised redirect', () => {
+  it.skip('Logs into dashboard, and handles compromised redirect (Stripe Express Dashboard no longer has redirect back to application?)', () => {
     // This is typically a hidden input, but it’s text here so we can break the hash
     // We should still get re-drected back to the referrer
     cy.get('[name="redirect"]').type('b')
@@ -43,7 +96,7 @@ context('Account', () => {
     })
   })
 
-  it('Logs into dashboard, and handles empty redirect', () => {
+  it.skip('Logs into dashboard, and handles empty redirect (Stripe Express Dashboard no longer has redirect back to application?)', () => {
     // This is typically a hidden input, but it’s text here so we can break the hash
     // We should still get re-drected back to the referrer
     cy.get('[name="redirect"]').click()
