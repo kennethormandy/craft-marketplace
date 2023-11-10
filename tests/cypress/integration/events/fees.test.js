@@ -4,6 +4,9 @@ context('Fees Event', () => {
   })
 
   it('should support overriding fee', () => {
+    const paymentAmount = 5000
+    const feeAmount = 1234
+
     cy.get('div')
 
     cy.get('button[value=871]').click()
@@ -58,23 +61,67 @@ context('Fees Event', () => {
           // Check the info we have from Craft against the actual Stripe result
           expect(result.amount).to.exist
           expect(result.capture_method).to.equal('automatic')
-          expect(result.amount).to.equal(5000)
+          expect(result.amount).to.equal(paymentAmount)
           expect(result.status).to.equal('succeeded')
 
           // Check a transfer was made to the connected account
-          expect(result.transfer_data).to.exist
-          expect(result.transfer_data.destination).to.exist
-          cy.get('[data-test=payee-platform-id]')
-            .invoke('text')
-            .then((platformAccountId) => {
-              expect(result.transfer_data.destination).to.equal(
-                platformAccountId
-              )
-            })
 
-          // We customized the fee using a module
-          expect(result.application_fee_amount).to.exist
-          expect(result.application_fee_amount).to.equal(1234)
+          if (!result.transfer_data) {
+
+            // Pro Beta (separate charges & transfers)
+
+            expect(result.application_fee_amount).to.not.exist
+            expect(result.transfer_data).to.not.exist
+            expect(result.transfer_group).to.exist
+
+            // TODO Don’t think you get this with the payment intent anymore, have to query separately?
+            // Does look like it’s working on the Stripe end
+            cy.task('checkTransferGroup', result.transfer_group).then(
+              (transferGroupObj) => {
+
+                console.log(transferGroupObj)
+
+                expect(transferGroupObj).to.exist
+                expect(transferGroupObj.data).to.exist
+                expect(transferGroupObj.data.length).to.equal(1)
+
+                let transferGroups = transferGroupObj.data.reverse()
+
+                cy.get('[data-test=payee-platform-id]')
+                  .invoke('text')
+                  .then((platformAccountId) => {
+                    expect(transferGroups[0].destination).to.equal(
+                      platformAccountId
+                    )
+
+                    // Transferred price less fee
+                    expect(transferGroups[0].amount).to.equal(paymentAmount - feeAmount)
+                    expect(transferGroups[0].amount_reversed).to.equal(0)
+
+                  })
+
+              }
+            )
+
+          } else {
+
+            // Lite (application fee)
+            expect(result.transfer_data).to.exist
+            expect(result.transfer_data.destination).to.exist
+            cy.get('[data-test=payee-platform-id]')
+              .invoke('text')
+              .then((platformAccountId) => {
+                expect(result.transfer_data.destination).to.equal(
+                  platformAccountId
+                )
+              })
+  
+            // We customized the fee using a module
+            expect(result.application_fee_amount).to.exist
+            expect(result.application_fee_amount).to.equal(feeAmount)
+  
+          }
+
         })
       })
   })
