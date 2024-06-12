@@ -19,41 +19,44 @@ context('Account', () => {
   })
 
   it('Logs into Stripe dashboard', () => {
-
     cy.get('button[data-test=connect]').click()
     // cy.contains('Stripe')
     cy.contains('Test mode')
 
     // If you see the phone number code puncher
+    let codePromptSelector = '[data-testid=verify-code-prompt]'
+    let codePrompt = document.querySelector(codePromptSelector)
 
-    let phoneNumberCheck = document.querySelector('[data-testid=express_login_page_codepuncher]')
+    if (codePrompt) {
+      cy.get(codePromptSelector).then(() => {
+        // Phone number confirmation
+        cy.contains('Enter the 6-digit code sent to your number ending in')
 
-    if (phoneNumberCheck) {
+        cy.contains('Continue')
+        expect(
+          cy.get('.Margin-top--0 > .PressableCore > .PressableCore-overlay')
+        ).to.exist
 
-      // Phone number confirmation
-      cy.contains('Enter the 6-digit code sent to your number ending in')
+        // cy.get('.CodePuncher-minibox:first').click()
+        cy.get('[data-testid=express_login_page_codepuncher]').click()
+        cy.wait(1000)
 
-      cy.contains('Continue')
-      expect(cy.get('.Margin-top--0 > .PressableCore > .PressableCore-overlay')).to.exist
+        let codePuncher = cy.get(
+          '[data-testid=express_login_page_codepuncher]:enabled'
+        )
+        expect(codePuncher).to.exist
 
-      // cy.get('.CodePuncher-minibox:first').click()
-      cy.get('[data-testid=express_login_page_codepuncher]').click()
-      cy.wait(1000)
+        codePuncher.type(0)
+        codePuncher.type(0)
+        codePuncher.type(0)
+        codePuncher.type(0)
+        codePuncher.type(0)
+        codePuncher.type(0)
 
-      let codePuncher = cy.get('[data-testid=express_login_page_codepuncher]:enabled')
-      expect(codePuncher).to.exist
-
-      codePuncher.type(0)
-      codePuncher.type(0)
-      codePuncher.type(0)
-      codePuncher.type(0)
-      codePuncher.type(0)
-      codePuncher.type(0)
-
-      cy.wait(1000)
-      cy.contains('Continue').click()
-      cy.wait(1000)
-
+        cy.wait(1000)
+        cy.contains('Continue').click()
+        cy.wait(1000)
+      })
     }
 
     // Stripe Express Dashboard
