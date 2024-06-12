@@ -2,12 +2,15 @@ context('Capture', () => {
   it('Purchase using Manual Payment gateway', () => {
     cy.visit(`${Cypress.env('CRAFT_DEFAULT_SITE_URL')}shop`)
 
+    const paymentAmount = 6000
+    const feeAmount = 600
+
     const userToPay = {
       name: 'Jane Example',
       id: '15',
     }
 
-    cy.get('[name="purchasableId"][value="12"]').click()
+    cy.get('[name="purchasableId"][value="695"]').click()
     cy.get('.fa-shopping-cart').click()
     cy.get('.checkout-button').click()
 
@@ -50,25 +53,56 @@ context('Capture', () => {
         cy.task('checkPaymentIntent', paymentIntentRef).then((result) => {
           console.log(result)
 
-          // Check the info we have from Craft against the actual Stripe result
-          expect(result.amount).to.exist
-          expect(result.amount).to.equal(6000)
+          // This is identical to fees.test.js and below
 
-          // The transaction won’t come through as already completed in this case
-          expect(result.status).to.equal('requires_capture')
+          if (!result.application_fee_amount) {
+            // Pro Beta (separate charges & transfers)
 
-          expect(result.application_fee_amount).to.exist
-          expect(result.application_fee_amount).to.equal(600)
-          expect(result.transfer_data).to.exist
-          expect(result.transfer_data.destination).to.exist
+            expect(result.application_fee_amount).to.not.exist
+            expect(result.transfer_data).to.not.exist
+            expect(result.transfer_group).to.exist
 
-          cy.get('[data-test=payee-platform-id]')
-            .invoke('text')
-            .then((platformAccountId) => {
-              expect(result.transfer_data.destination).to.equal(
-                platformAccountId
-              )
-            })
+            cy.task('checkTransferGroup', result.transfer_group).then(
+              (transferGroupObj) => {
+                console.log(transferGroupObj)
+
+                expect(transferGroupObj).to.exist
+                expect(transferGroupObj.data).to.exist
+                expect(transferGroupObj.data.length).to.equal(1)
+
+                let transferGroups = transferGroupObj.data.reverse()
+
+                cy.get('[data-test=payee-platform-id]')
+                  .invoke('text')
+                  .then((platformAccountId) => {
+                    expect(transferGroups[0].destination).to.equal(
+                      platformAccountId
+                    )
+
+                    // Transferred price less fee
+                    expect(transferGroups[0].amount).to.equal(
+                      paymentAmount - feeAmount
+                    )
+                    expect(transferGroups[0].amount_reversed).to.equal(0)
+                  })
+              }
+            )
+          } else {
+            // Lite
+
+            expect(result.application_fee_amount).to.exist
+            expect(result.application_fee_amount).to.equal(feeAmount)
+            expect(result.transfer_data).to.exist
+            expect(result.transfer_data.destination).to.exist
+
+            cy.get('[data-test=payee-platform-id]')
+              .invoke('text')
+              .then((platformAccountId) => {
+                expect(result.transfer_data.destination).to.equal(
+                  platformAccountId
+                )
+              })
+          }
         })
       })
 

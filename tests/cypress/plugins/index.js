@@ -37,6 +37,11 @@ module.exports = (on, config) => {
     },
 
     checkTransferGroup(ref) {
+      if (!ref) {
+        console.warn('No transfer group reference was provided.')
+        return null
+      }
+
       const res = stripe.transfers
         .list({
           transfer_group: ref,
@@ -48,6 +53,7 @@ module.exports = (on, config) => {
         .catch((err) => console.error(err))
 
       if (typeof res !== 'undefined') {
+        console.log('res', res)
         return res
       }
 
