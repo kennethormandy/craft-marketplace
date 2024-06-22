@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+## Removed
+- OAuth Client plugin
+- Unused provider for standards Stripe accounts (only Express accounts were and are supported)
+
+***
+
+## v1.6.0 (never tagged?)
+
 ### Added
 - Added support for connecting accounts to any Element, not just Users
 
