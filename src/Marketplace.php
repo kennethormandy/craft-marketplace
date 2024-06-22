@@ -76,8 +76,6 @@ class Marketplace extends BasePlugin
         parent::init();
         self::$plugin = $this;
 
-        $this->_registerCpRoutes();
-
         // Register services
         $this->setComponents([
             // TODO Rename to just “handles” for nicer API
@@ -326,8 +324,6 @@ class Marketplace extends BasePlugin
                 // $hardCodedApproach = 'direct-charge';
                 $hardCodedApproach = 'destination-charge';
                 $applicationFeeAmount = 0;
-
-                $applicationFees = self::$plugin->fees->getAllFees();
 
                 // Make Destination Charges behave more like Direct Charges
                 // https://stripe.com/docs/payments/connected-accounts#charge-on-behalf-of-a-connected-account
@@ -803,25 +799,6 @@ class Marketplace extends BasePlugin
         });
     }
 
-    /**
-     * Adds the event handler for registering CP routes.
-     */
-    private function _registerCpRoutes()
-    {
-        Event::on(UrlManager::class, UrlManager::EVENT_REGISTER_CP_URL_RULES, function (RegisterUrlRulesEvent $event) {
-            $event->rules = array_merge($event->rules, [
-                'marketplace/fees/new' => 'marketplace/fees/edit',
-                'marketplace/fees/<handle:{handle}>' => 'marketplace/fees/edit',
-
-                // Invalid handle – It should be possible to edit them, but not
-                // to save them, as they should get validated after that.
-                // https://github.com/kennethormandy/craft-marketplace/issues/11
-                // TODO Depricate in v2.x
-                'marketplace/fees/<handle:[^(?!\s*$)].+>' => 'marketplace/fees/edit',
-            ]);
-        });
-    }
-
     // Protected Methods
     // =========================================================================
 
@@ -850,14 +827,6 @@ class Marketplace extends BasePlugin
         // $app = $oauthPlugin->apps->createApp([]);
         $supportedApps = [];
 
-        // TODO Utility function, where we can send all fees
-        // and get back only supported fees? ie. one place
-        // where the 1st fee gets removed / split into two
-        // different arrays. That can be used by the plugin
-        // itself, and then also passed the same way to the
-        // settings template to render the two different lists
-        $fees = self::$plugin->fees->getAllFees();
-
         // foreach ($apps as $key => $app) {
         //     if (
         //     $app &&
@@ -877,7 +846,6 @@ class Marketplace extends BasePlugin
                 'settings' => $this->getSettings(),
                 'supportedApps' => $supportedApps,
                 // 'app' => $app,
-                'fees' => $fees,
                 'isPro' => $this->isPro(),
             ]
         );
