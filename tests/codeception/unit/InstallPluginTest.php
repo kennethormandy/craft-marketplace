@@ -55,10 +55,10 @@ class InstallPluginTest extends Unit
     {
         $pluginCommerce = Craft::$app->plugins->getPlugin('commerce');
         $pluginCommerceStripe = Craft::$app->plugins->getPlugin('commerce-stripe');
-        $pluginOauth = Craft::$app->plugins->getPlugin('oauthclient');
+        // $pluginOauth = Craft::$app->plugins->getPlugin('oauthclient');
 
         $this->assertNotNull($pluginCommerce);
         $this->assertNotNull($pluginCommerceStripe);
-        $this->assertNotNull($pluginOauth);
+        // $this->assertNotNull($pluginOauth);
     }
 }

@@ -23,7 +23,7 @@ modules:
       plugins:
         - { class: '\craft\commerce\Plugin', handle: "commerce" }
         - { class: '\craft\commerce\stripe\Plugin', handle: "commerce-stripe" }
-        - { class: '\venveo\oauthclient\Plugin', handle: "oauthclient" }
+        # - { class: '\venveo\oauthclient\Plugin', handle: "oauthclient" }
         - { class: Marketplace, handle: "marketplace" }
       cleanup: true
       transaction: true

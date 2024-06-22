@@ -40,14 +40,6 @@ use putyourlightson\logtofile\LogToFile;
 use Stripe\Stripe;
 use Stripe\Transfer;
 use Stripe\BalanceTransaction;
-use venveo\oauthclient\base\Provider;
-use venveo\oauthclient\controllers\AuthorizeController;
-use venveo\oauthclient\events\AuthorizationEvent;
-use venveo\oauthclient\events\AuthorizationUrlEvent;
-use venveo\oauthclient\events\TokenEvent;
-use venveo\oauthclient\Plugin as OAuthPlugin;
-use venveo\oauthclient\services\Apps as AppsService;
-use venveo\oauthclient\services\Providers;
 use yii\base\Event;
 
 class Marketplace extends BasePlugin
@@ -100,15 +92,15 @@ class Marketplace extends BasePlugin
 
         $this->_reviseOrderTemplate();
 
-        // Register provider
-        Event::on(
-            Providers::class,
-            Providers::EVENT_REGISTER_PROVIDER_TYPES,
-            function (RegisterComponentTypesEvent $event) {
-                $event->types[] = StripeConnectProvider::class;
-                $event->types[] = StripeConnectExpressProvider::class;
-            }
-        );
+        // Register custom provider
+        // Event::on(
+        //     Providers::class,
+        //     Providers::EVENT_REGISTER_PROVIDER_TYPES,
+        //     function (RegisterComponentTypesEvent $event) {
+        //         $event->types[] = StripeConnectProvider::class;
+        //         $event->types[] = StripeConnectExpressProvider::class;
+        //     }
+        // );
 
         // Register our fields
         Event::on(
@@ -120,194 +112,159 @@ class Marketplace extends BasePlugin
             }
         );
 
-        // Before saving the token, use the response to get the
-        // Stirpe Account ID provided by Stripe, and save that to
-        // the plugin’s custom field
-        Event::on(
-            Provider::class,
-            Provider::EVENT_CREATE_TOKEN_MODEL_FROM_RESPONSE,
-            function (TokenEvent $event) {
-                $stripeResponse = $event->responseToken;
-                $token = $event->token;
+        // Event::on(
+        //     AppsService::class,
+        //     AppsService::EVENT_GET_URL_OPTIONS,
+        //     function (AuthorizationUrlEvent $e) {
+        //         $this->log('EVENT_GET_URL_OPTIONS');
+        //         $this->log(json_encode($e));
+        //         $appHandle = self::$plugin->getSettings()->getAppHandle();
 
-                $this->log('EVENT_CREATE_TOKEN_MODEL_FROM_RESPONSE');
-                $this->log(json_encode($stripeResponse));
+        //         $this->log('Get App handle ' . $appHandle . ' ' . $e->app->handle);
 
-                if (isset($stripeResponse)) {
-                    $this->log('Stripe response');
-                    $this->log(json_encode($stripeResponse));
+        //         // TODO We want to check the handle matches, and the type
+        //         // of provider is our Stripe provider, as you could in theory
+        //         // have an app wit hthe handle `stripe` that matches that is
+        //         // actually the Google provider (or whatever)
+        //         if ($e->app->handle === $appHandle) {
+        //             if ($e->context && isset($e->context['user'])) {
+        //                 $user = $e->context['user'];
+        //                 $userId = $user['id'];
 
-                    if (
-                        isset($stripeResponse) &&
-                        isset($stripeResponse->stripe_user_id)
-                    ) {
-                        $this->log('Stripe Account Id stripe_user_id');
-                        $stripeAccountId = $stripeResponse->stripe_user_id;
+        //                 // Set user id that oauth plugin will use to the
+        //                 // profile page’s userId, rather than the logged in
+        //                 // person’s userId
+        //                 // This didn’t actually work
+        //                 // $e->app->userId = $userId;
 
-                        // Save the Stripe Account ID on the token
-                        // This seems to get overwritten in the token, once it’s save to the DB, but it
-                        // works fine for our purposes. Otherwise, could change token->userId to the
-                        // element id I want to use, but I think that will cause other problems later, and we
-                        // still want to know what user created the token
-                        $event->token->uid = $stripeAccountId;
-                    }
-                }
-            }
-        );
+        //                 // So we have this when the request comes back
+        //                 $e->options['craft_user_id'] = $userId;
+        //                 $e->options['craft_user_uid'] = $user['uid'];
 
-        Event::on(
-            AppsService::class,
-            AppsService::EVENT_GET_URL_OPTIONS,
-            function (AuthorizationUrlEvent $e) {
-                $this->log('EVENT_GET_URL_OPTIONS');
-                $this->log(json_encode($e));
-                $appHandle = self::$plugin->getSettings()->getAppHandle();
+        //                 // Add other options to the base url, ex. existing profile into to prefill
+        //                 // https://stripe.com/docs/connect/express-accounts#prefill-form-fields
+        //                 if (isset($user['email'])) {
+        //                     $e->options['stripe_user[email]'] = $user['email'];
+        //                 }
 
-                $this->log('Get App handle ' . $appHandle . ' ' . $e->app->handle);
+        //                 if (isset($user['url'])) {
+        //                     $e->options['stripe_user[url]'] = $user['url'];
+        //                 }
 
-                // TODO We want to check the handle matches, and the type
-                // of provider is our Stripe provider, as you could in theory
-                // have an app wit hthe handle `stripe` that matches that is
-                // actually the Google provider (or whatever)
-                if ($e->app->handle === $appHandle) {
-                    if ($e->context && isset($e->context['user'])) {
-                        $user = $e->context['user'];
-                        $userId = $user['id'];
+        //                 if (isset($user['firstName'])) {
+        //                     $e->options['stripe_user[first_name]'] = $user['firstName'];
+        //                 }
 
-                        // Set user id that oauth plugin will use to the
-                        // profile page’s userId, rather than the logged in
-                        // person’s userId
-                        // This didn’t actually work
-                        // $e->app->userId = $userId;
+        //                 if (isset($user['lastName'])) {
+        //                     $e->options['stripe_user[last_name]'] = $user['lastName'];
+        //                 }
+        //             }
+        //         }
 
-                        // So we have this when the request comes back
-                        $e->options['craft_user_id'] = $userId;
-                        $e->options['craft_user_uid'] = $user['uid'];
+        //         return $e;
+        //     }
+        // );
 
-                        // Add other options to the base url, ex. existing profile into to prefill
-                        // https://stripe.com/docs/connect/express-accounts#prefill-form-fields
-                        if (isset($user['email'])) {
-                            $e->options['stripe_user[email]'] = $user['email'];
-                        }
+        // Event::on(
+        //     AuthorizeController::class,
+        //     AuthorizeController::EVENT_BEFORE_AUTHENTICATE,
+        //     function (AuthorizationEvent $event) {
 
-                        if (isset($user['url'])) {
-                            $e->options['stripe_user[url]'] = $user['url'];
-                        }
+        //         if ($event->context) {
+        //             $this->log('EVENT_BEFORE_AUTHENTICATE context');
+        //             $this->log(json_encode($event->context));    
+        //         }
 
-                        if (isset($user['firstName'])) {
-                            $e->options['stripe_user[first_name]'] = $user['firstName'];
-                        }
+        //         if (
+        //         $event->context &&
+        //         isset($event->context['location']) &&
+        //         isset($event->context['location']['pathname']) &&
+        //         $event->context['contextName'] === 'MarketplaceConnectButton') {
+        //             $loc = $event->context['location'];
+        //             $pathname = $loc['pathname'];
+        //             if (isset($loc['hash'])) {
+        //                 $pathname = $pathname . $loc['hash'];
+        //             }
 
-                        if (isset($user['lastName'])) {
-                            $e->options['stripe_user[last_name]'] = $user['lastName'];
-                        }
-                    }
-                }
+        //             $returnUrl = UrlHelper::cpUrl($pathname, null, null);
+        //             $this->log('Return URL');
+        //             $this->log($returnUrl);
+        //             $event->returnUrl = $returnUrl;
+        //         }
+        //     }
+        // );
 
-                return $e;
-            }
-        );
+        // // TODO Here, the uid on the token should be the Stripe Account ID
+        // // The uid in the context is the API I’m thinking of using for saying
+        // // “don’t save the Stripe Account ID on the current user, save it on this element”
+        // Event::on(
+        //     AuthorizeController::class,
+        //     AuthorizeController::EVENT_AFTER_AUTHENTICATE,
+        //     function (AuthorizationEvent $event) {
+        //         $this->log('EVENT_AFTER_AUTHENTICATE context');
+        //         $this->log(json_encode($event));
+        //         $this->log(json_encode($event->context));
 
-        Event::on(
-            AuthorizeController::class,
-            AuthorizeController::EVENT_BEFORE_AUTHENTICATE,
-            function (AuthorizationEvent $event) {
-
-                if ($event->context) {
-                    $this->log('EVENT_BEFORE_AUTHENTICATE context');
-                    $this->log(json_encode($event->context));    
-                }
-
-                if (
-                $event->context &&
-                isset($event->context['location']) &&
-                isset($event->context['location']['pathname']) &&
-                $event->context['contextName'] === 'MarketplaceConnectButton') {
-                    $loc = $event->context['location'];
-                    $pathname = $loc['pathname'];
-                    if (isset($loc['hash'])) {
-                        $pathname = $pathname . $loc['hash'];
-                    }
-
-                    $returnUrl = UrlHelper::cpUrl($pathname, null, null);
-                    $this->log('Return URL');
-                    $this->log($returnUrl);
-                    $event->returnUrl = $returnUrl;
-                }
-            }
-        );
-
-        // TODO Here, the uid on the token should be the Stripe Account ID
-        // The uid in the context is the API I’m thinking of using for saying
-        // “don’t save the Stripe Account ID on the current user, save it on this element”
-        Event::on(
-            AuthorizeController::class,
-            AuthorizeController::EVENT_AFTER_AUTHENTICATE,
-            function (AuthorizationEvent $event) {
-                $this->log('EVENT_AFTER_AUTHENTICATE context');
-                $this->log(json_encode($event));
-                $this->log(json_encode($event->context));
-
-                if (
-                    is_array($event->context) &&
-                    isset($event->context['elementUid']) &&
-                    $event->context['elementUid']
-                ) {
-                    $this->log(json_encode($event->context['elementUid']));
-                    $elementUid = $event->context['elementUid'];
+        //         if (
+        //             is_array($event->context) &&
+        //             isset($event->context['elementUid']) &&
+        //             $event->context['elementUid']
+        //         ) {
+        //             $this->log(json_encode($event->context['elementUid']));
+        //             $elementUid = $event->context['elementUid'];
     
-                    // This needs to be a string for the class, not a simple string like “category”
-                    // https://docs.craftcms.com/api/v3/craft-services-elements.html#public-methods
-                    $elementType = null;
-                    // if (isset($event->context['elementType'])) {
-                    //     $this->log(json_encode($event->context['elementType']));
-                    //     $elementType = $event->context['elementType'];
-                    // }
+        //             // This needs to be a string for the class, not a simple string like “category”
+        //             // https://docs.craftcms.com/api/v3/craft-services-elements.html#public-methods
+        //             $elementType = null;
+        //             // if (isset($event->context['elementType'])) {
+        //             //     $this->log(json_encode($event->context['elementType']));
+        //             //     $elementType = $event->context['elementType'];
+        //             // }
 
-                    $element = Craft::$app->elements->getElementByUid($elementUid, $elementType);    
+        //             $element = Craft::$app->elements->getElementByUid($elementUid, $elementType);    
 
-                    $this->log('element');
-                    $this->log(json_encode($element));
-                    $this->log(json_encode($element->slug));
+        //             $this->log('element');
+        //             $this->log(json_encode($element));
+        //             $this->log(json_encode($element->slug));
 
-                    $token = $event->token;
-                    $this->log(json_encode($token));
+        //             $token = $event->token;
+        //             $this->log(json_encode($token));
 
-                    $stripeConnectHandle = $this->handlesService->getButtonHandle($element);
-                    $element->setFieldValue($stripeConnectHandle, $token->uid);
+        //             $stripeConnectHandle = $this->handlesService->getButtonHandle($element);
+        //             $element->setFieldValue($stripeConnectHandle, $token->uid);
 
-                    Craft::$app->elements->saveElement($element);
-                } else {
-                    // Didn’t explicitly provide an elementUid to save the
-                    // Stripe Connect Account ID to, so we assume that
-                    // it should be saved to the current user, if there is
-                    // a Marketplace Button Field on the user.
+        //             Craft::$app->elements->saveElement($element);
+        //         } else {
+        //             // Didn’t explicitly provide an elementUid to save the
+        //             // Stripe Connect Account ID to, so we assume that
+        //             // it should be saved to the current user, if there is
+        //             // a Marketplace Button Field on the user.
 
-                    // TODO Could set elementUid to the current user uid when the
-                    // initial Stripe URL is created, and possibly remove this else
-                    // conditional entirely. Otherwise hypothetically you can
-                    // be logged in as a different user to initiate the process, and have the
-                    // result applied to the wrong user.
+        //             // TODO Could set elementUid to the current user uid when the
+        //             // initial Stripe URL is created, and possibly remove this else
+        //             // conditional entirely. Otherwise hypothetically you can
+        //             // be logged in as a different user to initiate the process, and have the
+        //             // result applied to the wrong user.
 
-                    $token = $event->token;
-                    $userId = Craft::$app->user->getId();
-                    $userObject = Craft::$app->users->getUserById($userId);
-                    $stripeConnectHandle = $this->handlesService->getButtonHandle($userObject);
+        //             $token = $event->token;
+        //             $userId = Craft::$app->user->getId();
+        //             $userObject = Craft::$app->users->getUserById($userId);
+        //             $stripeConnectHandle = $this->handlesService->getButtonHandle($userObject);
 
-                    $this->log('Got Marketplace handle ' . $stripeConnectHandle);
+        //             $this->log('Got Marketplace handle ' . $stripeConnectHandle);
 
-                    if ($stripeConnectHandle && $userObject) {
-                        try {
-                            $userObject->setFieldValue($stripeConnectHandle, $token->uid);
-                            Craft::$app->elements->saveElement($userObject);
-                        } catch (InvalidFieldException $error) {
-                            $this->log(json_encode($error), [], 'error');
-                        }
-                    }
+        //             if ($stripeConnectHandle && $userObject) {
+        //                 try {
+        //                     $userObject->setFieldValue($stripeConnectHandle, $token->uid);
+        //                     Craft::$app->elements->saveElement($userObject);
+        //                 } catch (InvalidFieldException $error) {
+        //                     $this->log(json_encode($error), [], 'error');
+        //                 }
+        //             }
 
-                }
-            }
-        );
+        //         }
+        //     }
+        // );
 
         // Full and Parial refunds are supported here.
         // TODO Could provide more options around this, ex: Who is responsible
@@ -447,7 +404,7 @@ class Marketplace extends BasePlugin
                     }
 
                     if ($applicationFeeAmount) {
-                        $stripeApplicationFeeAmount = $this->_toStripeAmount($applicationFeeAmount, $order->paymentCurrency);
+                        $stripeApplicationFeeAmount = $this->_toStripeAmount($applicationFeeAmount, $order->paymentCurrency->iso);
                         $e->request['application_fee_amount'] = $stripeApplicationFeeAmount;
                     }
 
@@ -888,11 +845,11 @@ class Marketplace extends BasePlugin
      */
     protected function settingsHtml(): string
     {
-        $oauthPlugin = OAuthPlugin::$plugin;
-        // TODO Might need to only do this if the handle isn’t set
-        // (ie. if the settings for the related OAuth app are empty)
-        $apps = $oauthPlugin->apps->getAllApps();
-        $app = $oauthPlugin->apps->createApp([]);
+        // $oauthPlugin = OAuthPlugin::$plugin;
+        // // TODO Might need to only do this if the handle isn’t set
+        // // (ie. if the settings for the related OAuth app are empty)
+        // $apps = $oauthPlugin->apps->getAllApps();
+        // $app = $oauthPlugin->apps->createApp([]);
         $supportedApps = [];
 
         // TODO Utility function, where we can send all fees
@@ -903,25 +860,25 @@ class Marketplace extends BasePlugin
         // settings template to render the two different lists
         $fees = self::$plugin->fees->getAllFees();
 
-        foreach ($apps as $key => $app) {
-            if (
-            $app &&
-            $app->provider &&
+        // foreach ($apps as $key => $app) {
+        //     if (
+        //     $app &&
+        //     $app->provider &&
 
-            // TODO This would check against the list of supported providers
-            //      …but right now we are really only supporting this one.
-            $app->provider == 'kennethormandy\marketplace\provider\StripeConnectExpressProvider'
-          ) {
-                $supportedApps[] = $app;
-            }
-        }
+        //     // TODO This would check against the list of supported providers
+        //     //      …but right now we are really only supporting this one.
+        //     $app->provider == 'kennethormandy\marketplace\provider\StripeConnectExpressProvider'
+        //   ) {
+        //         $supportedApps[] = $app;
+        //     }
+        // }
 
         return Craft::$app->view->renderTemplate(
             'marketplace/settings',
             [
                 'settings' => $this->getSettings(),
                 'supportedApps' => $supportedApps,
-                'app' => $app,
+                // 'app' => $app,
                 'fees' => $fees,
                 'isPro' => $this->isPro(),
             ]
