@@ -5,6 +5,7 @@
 ## Removed
 - OAuth Client plugin
 - Unused provider for standards Stripe accounts (only Express accounts were and are supported)
+- Removed internal references to potentially supporting direct charges; Marketplace is only going to support destination changes for the forseeable future.
 
 ***
 

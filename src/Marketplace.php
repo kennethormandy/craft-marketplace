@@ -318,11 +318,6 @@ class Marketplace extends BasePlugin
                     return;
                 }
 
-                // TODO Temporary hard-coded config
-                // Not supporting direct charges for now, looks like it
-                // would require a change to Craft Commerce Stripe gateway
-                // $hardCodedApproach = 'direct-charge';
-                $hardCodedApproach = 'destination-charge';
                 $applicationFeeAmount = 0;
 
                 // Make Destination Charges behave more like Direct Charges
@@ -350,7 +345,7 @@ class Marketplace extends BasePlugin
 
                 if (!$payeeStripeAccountId) {
                     $this->log(
-                        '[Order #' . $order->id . '] Stripe ' . $hardCodedApproach . ' no User Payee Account ID. Paying to parent account.'
+                        '[Order #' . $order->id . '] Stripe no User Payee Account ID. Paying to parent account.'
                     );
 
                     return;
@@ -369,7 +364,7 @@ class Marketplace extends BasePlugin
                         // normal Craft Commerce transaction.
                         if (!$this->isPro()) {
                             $this->log(
-                                'Stripe ' . $hardCodedApproach . ' line items have different User Payee Account IDs. Paying to parent account.'
+                                'Stripe line items have different User Payee Account IDs. Paying to parent account.'
                             );
                         }
 
@@ -379,76 +374,41 @@ class Marketplace extends BasePlugin
                 }
 
                 $this->log(
-                    'Stripe ' . $hardCodedApproach . ' to Stripe Account ID: ' . $payeeStripeAccountId
+                    'Stripe to Stripe Account ID: ' . $payeeStripeAccountId
                 );
 
-                if ($hardCodedApproach === 'destination-charge') {
-                    $this->log(
-                        '[Marketplace request] [' . $hardCodedApproach . '] ' . json_encode($e->request)
-                    );
+                $this->log(
+                    '[Marketplace request]' . json_encode($e->request)
+                );
 
-                    $this->log(
-                        '[Marketplace request] [' . $hardCodedApproach . '] destination ' . $payeeStripeAccountId
-                    );
+                $this->log(
+                    '[Marketplace request] destination ' . $payeeStripeAccountId
+                );
 
-                    // Fees are always based on lineItems
-                    foreach ($order->lineItems as $lineItemId => $lineItem) {
-                        $lineItemFeeAmount = $this->fees->calculateFeesAmount($lineItem, $order);
-                        $applicationFeeAmount = $applicationFeeAmount + $lineItemFeeAmount;
-                    }
-
-                    if ($applicationFeeAmount) {
-                        $stripeApplicationFeeAmount = $this->_toStripeAmount($applicationFeeAmount, $order->paymentCurrency->iso);
-                        $e->request['application_fee_amount'] = $stripeApplicationFeeAmount;
-                    }
-
-                    if ($hardCodedOnBehalfOf) {
-                        $e->request['on_behalf_of'] = $payeeStripeAccountId;
-                    }
-
-                    // https://stripe.com/docs/connect/quickstart#process-payment
-                    // https://stripe.com/docs/connect/destination-charges
-                    $e->request['transfer_data'] = [
-                        'destination' => $payeeStripeAccountId,
-                    ];
-
-                    $this->log(
-                        '[Marketplace request modified] [' . $hardCodedApproach . '] ' . json_encode($e->request)
-                    );
-                } elseif ($hardCodedApproach === 'direct-charge') {
-
-                // This doesn’t work by default
-                // Modifying the plugin to support this
-                // $e->request['stripe_account'] = $hardCodedConnectedAccountId;
-
-                // in commerce-stripe/src/gateways/PaymentIntents.php I added:
-
-                // $secondArgs = ['idempotency_key' => $transaction->hash];
-                // if ($requestData['stripe_account']) {
-                //   $secondArgs['stripe_account'] = $requestData['stripe_account'];
-                //   unset($requestData['stripe_account']);
-                // }
-
-                // …and then added $secondArgs as the second arg to the change.
-
-                // That worked, but then hit another error. You have
-                // to fully auth using publishableKey and secretKey
-                // for the connected account to use direct charges,
-                // so you probably need the full OAuth flow to get those
-                //   Although also confused because the example does
-                // show them using the platform key.
-
-                // Can use this to behave more like direct-charge,
-                // changed to do this via $hardCodedOnBehalfOf because it
-                // it still seems to be to do with desitnation charges rather than
-                // direct charges, which presumably wouldn’t take an application fee either
-                // https://stripe.com/docs/payments/payment-intents/use-cases#connected-accounts
-                // https://stripe.com/docs/payments/connected-accounts#charge-on-behalf-of-a-connected-account
-                // $e->request['on_behalf_of'] = $payeeStripeAccountId;
-                // $e->request['transfer_data'] = [
-                //   "destination" => $payeeStripeAccountId
-                // ];
+                // Fees are always based on lineItems
+                foreach ($order->lineItems as $lineItemId => $lineItem) {
+                    $lineItemFeeAmount = $this->fees->calculateFeesAmount($lineItem, $order);
+                    $applicationFeeAmount = $applicationFeeAmount + $lineItemFeeAmount;
                 }
+
+                if ($applicationFeeAmount) {
+                    $stripeApplicationFeeAmount = $this->_toStripeAmount($applicationFeeAmount, $order->paymentCurrency->iso);
+                    $e->request['application_fee_amount'] = $stripeApplicationFeeAmount;
+                }
+
+                if ($hardCodedOnBehalfOf) {
+                    $e->request['on_behalf_of'] = $payeeStripeAccountId;
+                }
+
+                // https://stripe.com/docs/connect/quickstart#process-payment
+                // https://stripe.com/docs/connect/destination-charges
+                $e->request['transfer_data'] = [
+                    'destination' => $payeeStripeAccountId,
+                ];
+
+                $this->log(
+                    '[Marketplace request modified] ' . json_encode($e->request)
+                );
             }
         );
 
