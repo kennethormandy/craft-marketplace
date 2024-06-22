@@ -30,8 +30,7 @@ use craft\errors\InvalidFieldException;
 use kennethormandy\marketplace\fields\MarketplaceConnectButton as MarketplaceConnectButtonField;
 use kennethormandy\marketplace\fields\MarketplacePayee as MarketplacePayeeField;
 use kennethormandy\marketplace\models\Settings;
-use kennethormandy\marketplace\provider\StripeConnectExpressProvider;
-use kennethormandy\marketplace\provider\StripeConnectProvider;
+use kennethormandy\marketplace\providers\StripeExpressProvider;
 use kennethormandy\marketplace\services\AccountsService;
 use kennethormandy\marketplace\services\FeesService;
 use kennethormandy\marketplace\services\HandlesService;
@@ -98,7 +97,6 @@ class Marketplace extends BasePlugin
         //     Providers::EVENT_REGISTER_PROVIDER_TYPES,
         //     function (RegisterComponentTypesEvent $event) {
         //         $event->types[] = StripeConnectProvider::class;
-        //         $event->types[] = StripeConnectExpressProvider::class;
         //     }
         // );
 
