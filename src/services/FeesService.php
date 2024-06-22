@@ -92,10 +92,6 @@ class FeesService extends Component
             $feeCount = 0;
 
             foreach ($event->fees as $feeId => $fee) {
-                if ($feeCount >= 1 && $this->_isPro()) {
-                    break;
-                }
-
                 if (
                     $fee->type !== 'flat-fee' ||
 
@@ -167,26 +163,5 @@ class FeesService extends Component
         }
 
         return $firstLineItem;
-    }
-
-    /**
-     * Is Pro.
-     *
-     * Whether or not this the Pro edition of the plugin is being used.
-     *
-     * @since 1.6.0
-     * @return bool
-     */
-    private function _isPro()
-    {
-        if (defined('Marketplace::EDITION_PRO') && Marketplace::$plugin->is(Marketplace::EDITION_PRO)) {
-            return true;
-        }
-
-        if (App::env('MARKETPLACE_PRO_BETA')) {
-            return true;
-        }
-
-        return false;
     }
 }

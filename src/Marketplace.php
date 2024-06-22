@@ -310,107 +310,107 @@ class Marketplace extends BasePlugin
             }
         );
 
-        Event::on(
-            StripeGateway::class,
-            StripeGateway::EVENT_BUILD_GATEWAY_REQUEST,
-            function (BuildGatewayRequestEvent $e) {
-                if ($this->isPro() && $this->getSettings()->stripePreferSeparateTransfers) {
-                    return;
-                }
+        // Event::on(
+        //     StripeGateway::class,
+        //     StripeGateway::EVENT_BUILD_GATEWAY_REQUEST,
+        //     function (BuildGatewayRequestEvent $e) {
+        //         if ($this->isPro() && $this->getSettings()->stripePreferSeparateTransfers) {
+        //             return;
+        //         }
 
-                $applicationFeeAmount = 0;
+        //         $applicationFeeAmount = 0;
 
-                // Make Destination Charges behave more like Direct Charges
-                // https://stripe.com/docs/payments/connected-accounts#charge-on-behalf-of-a-connected-account
-                $hardCodedOnBehalfOf = false;
+        //         // Make Destination Charges behave more like Direct Charges
+        //         // https://stripe.com/docs/payments/connected-accounts#charge-on-behalf-of-a-connected-account
+        //         $hardCodedOnBehalfOf = false;
 
-                if ($e->transaction->type !== 'purchase' && $e->transaction->type !== 'authorize') {
-                    $this->log(
-                        'Unsupported transaction type: ' . $e->transaction->type
-                    );
+        //         if ($e->transaction->type !== 'purchase' && $e->transaction->type !== 'authorize') {
+        //             $this->log(
+        //                 'Unsupported transaction type: ' . $e->transaction->type
+        //             );
 
-                    return;
-                }
+        //             return;
+        //         }
 
 
-                $order = $e->transaction->order;
+        //         $order = $e->transaction->order;
 
-                if (!$order || !$order->lineItems || count($order->lineItems) == 0) {
-                    return;
-                }
+        //         if (!$order || !$order->lineItems || count($order->lineItems) == 0) {
+        //             return;
+        //         }
 
-                // By default only supports one line item, to match Commerce Lite
-                $lineItemOnly = $order->lineItems[0];
-                $payeeStripeAccountId = $this->payees->getGatewayAccountId($lineItemOnly);
+        //         // By default only supports one line item, to match Commerce Lite
+        //         $lineItemOnly = $order->lineItems[0];
+        //         $payeeStripeAccountId = $this->payees->getGatewayAccountId($lineItemOnly);
 
-                if (!$payeeStripeAccountId) {
-                    $this->log(
-                        '[Order #' . $order->id . '] Stripe no User Payee Account ID. Paying to parent account.'
-                    );
+        //         if (!$payeeStripeAccountId) {
+        //             $this->log(
+        //                 '[Order #' . $order->id . '] Stripe no User Payee Account ID. Paying to parent account.'
+        //             );
 
-                    return;
-                }
+        //             return;
+        //         }
 
-                // If there’s more than one line item, we check they all have the
-                // same payees. In Lite, we’ll allow the payment splitting as long as
-                // they all match. In Pro, we’ll split payments.
-                if (count($order->lineItems) > 1) {
-                    $payeesSame = $this->_checkAllPayeesSame($order);
+        //         // If there’s more than one line item, we check they all have the
+        //         // same payees. In Lite, we’ll allow the payment splitting as long as
+        //         // they all match. In Pro, we’ll split payments.
+        //         if (count($order->lineItems) > 1) {
+        //             $payeesSame = $this->_checkAllPayeesSame($order);
 
-                    if (!$payeesSame) {
-                        // If it’s the Lite edition, but payees are not the same,
-                        // we don’t support this scenario. Instead, we return,
-                        // which means the transaction will go through as a
-                        // normal Craft Commerce transaction.
-                        if (!$this->isPro()) {
-                            $this->log(
-                                'Stripe line items have different User Payee Account IDs. Paying to parent account.'
-                            );
-                        }
+        //             if (!$payeesSame) {
+        //                 // If it’s the Lite edition, but payees are not the same,
+        //                 // we don’t support this scenario. Instead, we return,
+        //                 // which means the transaction will go through as a
+        //                 // normal Craft Commerce transaction.
+        //                 if (!$this->isPro()) {
+        //                     $this->log(
+        //                         'Stripe line items have different User Payee Account IDs. Paying to parent account.'
+        //                     );
+        //                 }
 
-                        // If it’s the Pro edition, the remainder is handled after payment.
-                        return;
-                    }
-                }
+        //                 // If it’s the Pro edition, the remainder is handled after payment.
+        //                 return;
+        //             }
+        //         }
 
-                $this->log(
-                    'Stripe to Stripe Account ID: ' . $payeeStripeAccountId
-                );
+        //         $this->log(
+        //             'Stripe to Stripe Account ID: ' . $payeeStripeAccountId
+        //         );
 
-                $this->log(
-                    '[Marketplace request]' . json_encode($e->request)
-                );
+        //         $this->log(
+        //             '[Marketplace request]' . json_encode($e->request)
+        //         );
 
-                $this->log(
-                    '[Marketplace request] destination ' . $payeeStripeAccountId
-                );
+        //         $this->log(
+        //             '[Marketplace request] destination ' . $payeeStripeAccountId
+        //         );
 
-                // Fees are always based on lineItems
-                foreach ($order->lineItems as $lineItemId => $lineItem) {
-                    $lineItemFeeAmount = $this->fees->calculateFeesAmount($lineItem, $order);
-                    $applicationFeeAmount = $applicationFeeAmount + $lineItemFeeAmount;
-                }
+        //         // Fees are always based on lineItems
+        //         foreach ($order->lineItems as $lineItemId => $lineItem) {
+        //             $lineItemFeeAmount = $this->fees->calculateFeesAmount($lineItem, $order);
+        //             $applicationFeeAmount = $applicationFeeAmount + $lineItemFeeAmount;
+        //         }
 
-                if ($applicationFeeAmount) {
-                    $stripeApplicationFeeAmount = $this->_toStripeAmount($applicationFeeAmount, $order->paymentCurrency->iso);
-                    $e->request['application_fee_amount'] = $stripeApplicationFeeAmount;
-                }
+        //         if ($applicationFeeAmount) {
+        //             $stripeApplicationFeeAmount = $this->_toStripeAmount($applicationFeeAmount, $order->paymentCurrency->iso);
+        //             $e->request['application_fee_amount'] = $stripeApplicationFeeAmount;
+        //         }
 
-                if ($hardCodedOnBehalfOf) {
-                    $e->request['on_behalf_of'] = $payeeStripeAccountId;
-                }
+        //         if ($hardCodedOnBehalfOf) {
+        //             $e->request['on_behalf_of'] = $payeeStripeAccountId;
+        //         }
 
-                // https://stripe.com/docs/connect/quickstart#process-payment
-                // https://stripe.com/docs/connect/destination-charges
-                $e->request['transfer_data'] = [
-                    'destination' => $payeeStripeAccountId,
-                ];
+        //         // https://stripe.com/docs/connect/quickstart#process-payment
+        //         // https://stripe.com/docs/connect/destination-charges
+        //         $e->request['transfer_data'] = [
+        //             'destination' => $payeeStripeAccountId,
+        //         ];
 
-                $this->log(
-                    '[Marketplace request modified] ' . json_encode($e->request)
-                );
-            }
-        );
+        //         $this->log(
+        //             '[Marketplace request modified] ' . json_encode($e->request)
+        //         );
+        //     }
+        // );
 
         Event::on(
             Order::class,
@@ -419,25 +419,6 @@ class Marketplace extends BasePlugin
                 /** @var Order $order */
                 $order = $event->sender;
                 $purchaseTransaction = null;
-
-                if (!$this->isPro()) {
-                    return;
-                }
-
-                if ($this->getSettings()->stripePreferSeparateTransfers === false) {
-                    if (1 >= count($order->lineItems)) {
-                        return;
-                    }
-
-                    // TODO Can we pass this along in the order snapshot,
-                    // rather than needing to recalculate it?
-                    $payeesSame = $this->_checkAllPayeesSame($order);
-
-                    // If they are the same, we already made the transfer as part of payment
-                    if ($payeesSame) {
-                        return;
-                    }
-                }
 
                 foreach ($order->transactions as $transaction) {
                     // Stop at the first successful transaction, can also be failed
@@ -702,9 +683,7 @@ class Marketplace extends BasePlugin
     }
 
     /**
-     * Is Pro.
-     *
-     * Whether or not this the Pro edition of the plugin is being used.
+     * Whether or not the Pro edition of this plugin is being used.
      *
      * @since 1.4.0
      * @return bool
@@ -712,10 +691,6 @@ class Marketplace extends BasePlugin
     private function isPro()
     {
         if (isset($this->EDITION_PRO) && $this->is($this->EDITION_PRO)) {
-            return true;
-        }
-
-        if (App::env('MARKETPLACE_PRO_BETA')) {
             return true;
         }
 
