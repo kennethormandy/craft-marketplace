@@ -25,107 +25,11 @@ class FeesService extends Component
     }
 
     /**
-     * @param $fee
-     * @param float $baseAmount Typically, the `$order->itemSubtotal` from Craft Commerce, which is stored as a float.
-     * @return int
-     */
-    public function calculateFeeAmount(FeeModel $fee, float $baseAmount = 0): int
-    {
-        $feeAmount = 0;
-
-        if ($fee && (int) $fee->value > 0) {
-            if ($fee->type === 'price-percentage') {
-                if (!isset($baseAmount) || $baseAmount == 0) {
-                    Marketplace::$plugin->log('Fee type is “price-percentage,” and provided base amount is 0', [], 'warning');
-                }
-
-                // Ex. 12.50% fee stored in DB as 1250
-                $percent = ($fee->value / 100);
-
-                // $10 subtotal * 12.5 = 125 cent application fee
-                $feeAmount = (float) $baseAmount * $percent;
-                $feeAmount = (int) round($feeAmount);
-            } elseif ($fee->type === 'flat-fee') {
-                // Ex. $10 fee stored in DB as 1000 = 1000 cent fee
-                $feeAmount = (int) $fee->value;
-            }
-        }
-
-        // Must be a positive int, in “cents”
-        if (0 > $feeAmount || !is_int($feeAmount)) {
-            Marketplace::$plugin->log('Invalid fee. Fee set to 0.', 'marketplace', [], 'warning');
-
-            return 0;
-        }
-
-        return $feeAmount;
-    }
-
-    /**
-     * @param $order
-     * @return int
-     */
-    public function calculateFeesAmount(LineItem $lineItem = null, Order $order)
-    {
-        $event = new FeesEvent();
-        $event->order = $order;
-
-        // TODO Actually support passing along the line item
-        $event->sender = $lineItem;
-
-        // $event->fees = $this->getAllFees();
-        $event->fees = [];
-
-
-        $event->amount = 0;
-
-        if ($this->hasEventHandlers(self::EVENT_BEFORE_CALCULATE_FEES_AMOUNT)) {
-            $this->trigger(self::EVENT_BEFORE_CALCULATE_FEES_AMOUNT, $event);
-        }
-
-        $firstLineItem = $this->_getFirstLineItem($event->order);
-
-        if ($event->fees && count($event->fees) >= 1) {
-
-            // Calculate the fee based on the order subtotal, because with price-percentage
-            // we want the entire order subtotal, not the price of the first line item.
-            $feeCount = 0;
-
-            foreach ($event->fees as $feeId => $fee) {
-                if (
-                    $fee->type !== 'flat-fee' ||
-
-                    // Apply flat-fee to the first line item only
-                    // This is a work around, until we properly support the flat-fee at the
-                    // line item level, where it should be based on applying the fee once
-                    // per payee in an order.
-                    ($fee->type === 'flat-fee' && $lineItem->id === $firstLineItem->id)
-                ) {
-                    $currentFeeAmount = $this->calculateFeeAmount($fee, $lineItem->total);
-
-                    // TODO Global fees are in Stripe format, but we are changing the event
-                    // hook to accept the amount in Craft format.
-
-                    $event->amount += $currentFeeAmount;
-                }
-
-                $feeCount++;
-            }    
-        }
-
-        if ($this->hasEventHandlers(self::EVENT_AFTER_CALCULATE_FEES_AMOUNT)) {
-            $this->trigger(self::EVENT_AFTER_CALCULATE_FEES_AMOUNT, $event);
-        }
-
-        return $event->amount;
-    }
-
-    /**
      * @param LineItem $lineItem
      * @param Order $order
      * @return int
      */
-    public function _calculateLineItemFeesAmount(LineItem $lineItem, Order $order)
+    public function calculateFeesAmount(LineItem $lineItem, Order $order)
     {
         $event = new FeesEvent();
         $event->order = $order;
@@ -151,17 +55,4 @@ class FeesService extends Component
         return $event->amount;
     }
 
-    private function _getFirstLineItem(Order $order) {
-        $firstLineItem = null;
-
-        if (
-            isset($order) &&
-            isset($order->lineItems) &&
-            count($order->lineItems) >= 1
-        ) {
-            $firstLineItem = $order->lineItems[0];
-        }
-
-        return $firstLineItem;
-    }
 }

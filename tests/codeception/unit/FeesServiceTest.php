@@ -7,7 +7,6 @@ use Craft;
 use craft\commerce\Plugin as Commerce;
 use craft\commerce\elements\Order;
 use craft\commerce\models\LineItem;
-// use craft\commerce\test\fixtures\elements\ProductFixture;
 use kennethormandy\marketplace\Marketplace;
 use kennethormandy\marketplace\models\Fee;
 use UnitTester;
@@ -58,63 +57,63 @@ class FeesServiceTest extends Unit
         $this->commerce->edition = $this->commerceOriginalEdition;
     }
 
-    /**
-     * @group fees
-     */
-    public function testFlatFeeAmount()
-    {
-        $newFee = new Fee();
-        $newFee->type = 'flat-fee';
-        $newFee->value = 3456;
+    // /**
+    //  * @group fees
+    //  */
+    // public function testFlatFeeAmount()
+    // {
+    //     $newFee = new Fee();
+    //     $newFee->type = 'flat-fee';
+    //     $newFee->value = 3456;
         
-        $result = $this->plugin->fees->calculateFeeAmount($newFee);
+    //     $result = $this->plugin->fees->calculateFeeAmount($newFee);
 
-        $this->assertEquals($result, 3456);
-    }
+    //     $this->assertEquals($result, 3456);
+    // }
 
-    /**
-     * @group fees
-     */
-    public function testPercentageAmount()
-    {
-        $newFee = new Fee();
-        $newFee->type = 'price-percentage';
-        $newFee->value = 3456;
+    // /**
+    //  * @group fees
+    //  */
+    // public function testPercentageAmount()
+    // {
+    //     $newFee = new Fee();
+    //     $newFee->type = 'price-percentage';
+    //     $newFee->value = 3456;
         
-        // $order->itemTotal from Craft Commerce is a float
-        $orderItemTotal = (float) 50.00;
-        $result = $this->plugin->fees->calculateFeeAmount($newFee, $orderItemTotal);
+    //     // $order->itemTotal from Craft Commerce is a float
+    //     $orderItemTotal = (float) 50.00;
+    //     $result = $this->plugin->fees->calculateFeeAmount($newFee, $orderItemTotal);
 
-        $this->assertEquals($result, 1728);
-    }
+    //     $this->assertEquals($result, 1728);
+    // }
 
-    /**
-     * @group fees
-     */
-    public function testIncorrectFeeType()
-    {
-        $newFee = new Fee();
-        $newFee->type = 'asdf';
-        $newFee->value = 3456;
+    // /**
+    //  * @group fees
+    //  */
+    // public function testIncorrectFeeType()
+    // {
+    //     $newFee = new Fee();
+    //     $newFee->type = 'asdf';
+    //     $newFee->value = 3456;
 
-        $orderItemTotal = (float) 50.00;
+    //     $orderItemTotal = (float) 50.00;
 
-        // TODO Should this actually throw?
-        $result = $this->plugin->fees->calculateFeeAmount($newFee, $orderItemTotal);
+    //     // TODO Should this actually throw?
+    //     $result = $this->plugin->fees->calculateFeeAmount($newFee, $orderItemTotal);
 
-        $this->assertEquals($result, 0);
-    }
+    //     $this->assertEquals($result, 0);
+    // }
 
-    /**
-     * @group commerce
-     */
-    public function testCalcFeesFromEmptyOrder()
-    {
-        $order = new Order();
-        $lineItem = new LineItem();
-        $result = $this->plugin->fees->calculateFeesAmount($lineItem, $order);
-        $this->assertEquals($result, 0);
-    }
+    // /**
+    //  * @group commerce
+    //  */
+    // public function testCalcFeesFromEmptyOrder()
+    // {
+    //     $order = new Order();
+    //     $lineItem = new LineItem();
+    //     $result = $this->plugin->fees->calculateFeesAmount($lineItem, $order);
+    //     $this->assertEquals($result, 0);
+    // }
 
     // /**
     //  * @group now

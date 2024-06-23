@@ -494,14 +494,7 @@ class Marketplace extends BasePlugin
                     $lineItemTotal = $lineItem->total;
 
                     // Calculate LineItem fee
-                    // This will change to calculateFeesAmount once it is properly finished
-                    // TODO To finish this, need to support flat-fee at line item level
-                    // Right now, we apply the flat fee to the first line item, which works if you are using
-                    // the application_fee for one Payee, but doesn’t make sense if you have multiple payees
-                    // to apply that flat fee to. Could either
-                    // - Apply the flat fee once per line item (breaking change for Lite with multiple line items, same payees)
-                    // - Apply the flat fee once per payee (same behaviour as lite), and possibly add a new fee type to support the other use case
-                    $feeAmountLineItem = $this->fees->_calculateLineItemFeesAmount($lineItem, $order);
+                    $feeAmountLineItem = $this->fees->calculateFeesAmount($lineItem, $order);
 
                     if ($feeAmountLineItem) {
                         $lineItemTotal = $lineItemTotal - $feeAmountLineItem;
