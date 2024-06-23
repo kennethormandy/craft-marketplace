@@ -571,38 +571,6 @@ class Marketplace extends BasePlugin
         LogToFile::log($msg, 'marketplace', $level);
     }
 
-    /**
-     * @param Order $order
-     */
-    private function _checkAllPayeesSame($order)
-    {
-        /** @var LineItem[] */
-        $lineItems = $order->lineItems;
-
-        if (!isset($lineItems) || !$lineItems) {
-            return null;
-        }
-
-        if (count($lineItems) <= 1) {
-            return true;
-        }
-
-        $payeeFirst = $this->payees->getGatewayAccountId($lineItems[0]);
-        $payeesSame = true;
-
-        foreach ($lineItems as $index => $lineItem) {
-            if ($index > 0) {
-                $payeeCurrent = $this->payees->getGatewayAccountId($lineItem);
-                if ($payeeCurrent != $payeeFirst) {
-                    $payeesSame = false;
-                    break;
-                }
-            }
-        }
-
-        return $payeesSame;
-    }
-
     private function _getStripeExchangeRate($stripeBalanceTransaction, $craftCurrencyCountryCode)
     {
         $exchangeRate = 1;
