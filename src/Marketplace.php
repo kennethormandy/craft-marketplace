@@ -33,7 +33,7 @@ use kennethormandy\marketplace\models\Settings;
 use kennethormandy\marketplace\providers\StripeExpressProvider;
 use kennethormandy\marketplace\services\AccountsService;
 use kennethormandy\marketplace\services\FeesService;
-use kennethormandy\marketplace\services\HandlesService;
+use kennethormandy\marketplace\services\Handles;
 use kennethormandy\marketplace\services\PayeesService;
 use putyourlightson\logtofile\LogToFile;
 use Stripe\Stripe;
@@ -79,7 +79,7 @@ class Marketplace extends BasePlugin
         // Register services
         $this->setComponents([
             // TODO Rename to just “handles” for nicer API
-            'handlesService' => HandlesService::class,
+            'handles' => Handles::class,
             'fees' => FeesService::class,
             'payees' => PayeesService::class,
             'accounts' => AccountsService::class,
@@ -226,7 +226,7 @@ class Marketplace extends BasePlugin
         //             $token = $event->token;
         //             $this->log(json_encode($token));
 
-        //             $stripeConnectHandle = $this->handlesService->getButtonHandle($element);
+        //             $stripeConnectHandle = $this->handles->getButtonHandle($element);
         //             $element->setFieldValue($stripeConnectHandle, $token->uid);
 
         //             Craft::$app->elements->saveElement($element);
@@ -245,7 +245,7 @@ class Marketplace extends BasePlugin
         //             $token = $event->token;
         //             $userId = Craft::$app->user->getId();
         //             $userObject = Craft::$app->users->getUserById($userId);
-        //             $stripeConnectHandle = $this->handlesService->getButtonHandle($userObject);
+        //             $stripeConnectHandle = $this->handles->getButtonHandle($userObject);
 
         //             $this->log('Got Marketplace handle ' . $stripeConnectHandle);
 
@@ -622,7 +622,7 @@ class Marketplace extends BasePlugin
     // This logic is also very similar to Button input
     private function _getPayeeFromOrder($order)
     {
-        $payeeHandle = self::$plugin->handlesService->getPayeeHandle();
+        $payeeHandle = self::$plugin->handles->getPayeeHandle();
         if ($order && $order['lineItems'] && count($order['lineItems']) >= 1) {
             $firstLineItem = $order['lineItems'][0];
             $product = $firstLineItem['purchasable']['product'];

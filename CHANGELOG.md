@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+## Changed
+- Renamed `handlesService` to `handles`
+
 ## Removed
 - OAuth Client plugin
 - Unused provider for standards Stripe accounts (only Express accounts were and are supported)

@@ -8,7 +8,7 @@ use kennethormandy\marketplace\fields\MarketplaceConnectButton as MarketplaceCon
 use kennethormandy\marketplace\fields\MarketplacePayee as MarketplacePayeeField;
 use kennethormandy\marketplace\Marketplace;
 
-class HandlesService extends Component
+class Handles extends Component
 {
     public function init()
     {
@@ -64,7 +64,7 @@ class HandlesService extends Component
      * The CMS admin can set the OAuth API field handle
      * to whatever they want. We have already determined
      * what the selected app handle is in the settings, but
-     * this keeps all the handles in HandlesService.
+     * this keeps all the handles in handles.
      */
     public function getAppHandle()
     {

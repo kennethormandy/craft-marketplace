@@ -36,7 +36,7 @@ class AccountsController extends Controller
             $currentUserIdentity = $currentUser->getIdentity();
 
             // In handles service, when we look up the button handle, can we look up the type of element it is set on?
-            $accountIdHandle = Marketplace::$plugin->handlesService->getButtonHandle();
+            $accountIdHandle = Marketplace::$plugin->handles->getButtonHandle();
 
             if (
                 !$currentUser->getIsAdmin() &&

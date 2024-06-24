@@ -61,7 +61,7 @@ class MarketplacePayee extends Field
     // {
     //     parent::init();
     //     // $this->handle = '';
-    //     // $this->handlesService->getButtonHandle($userObject)
+    //     // $this->handles->getButtonHandle($userObject)
     // }
 
     // public function modifyElementIndexQuery(ElementQueryInterface $query)
@@ -279,7 +279,7 @@ class MarketplacePayee extends Field
         $namespacedId = Craft::$app->getView()->namespaceInputId($id);
 
         $payee = null;
-        $payeeHandle = Marketplace::$plugin->handlesService->getPayeeHandle();
+        $payeeHandle = Marketplace::$plugin->handles->getPayeeHandle();
 
         if ($payeeHandle && isset($element[$payeeHandle]) && $element[$payeeHandle]) {
             $payeeId = $element[$payeeHandle];

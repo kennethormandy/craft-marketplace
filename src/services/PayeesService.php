@@ -33,7 +33,7 @@ class PayeesService extends Component
 
         // It’s possible for this to be null, if they are only using
         // Events to set the Payee, and not using any fields
-        $payeeHandle = Marketplace::$plugin->handlesService->getPayeeHandle();
+        $payeeHandle = Marketplace::$plugin->handles->getPayeeHandle();
 
         if (
             $payeeHandle &&
@@ -73,7 +73,7 @@ class PayeesService extends Component
         $payeeStripeAccountId = null;
 
         if (isset($purchasablePayeeUser)) {
-            $stripeConnectHandle = Marketplace::$plugin->handlesService->getButtonHandle($purchasablePayeeUser);
+            $stripeConnectHandle = Marketplace::$plugin->handles->getButtonHandle($purchasablePayeeUser);
             $payeeStripeAccountId = $purchasablePayeeUser[$stripeConnectHandle];
         }
 
