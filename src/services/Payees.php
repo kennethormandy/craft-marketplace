@@ -9,7 +9,7 @@ use craft\elements\User;
 use kennethormandy\marketplace\events\PayeeEvent;
 use kennethormandy\marketplace\Marketplace;
 
-class PayeesService extends Component
+class Payees extends Component
 {
     public const EVENT_BEFORE_DETERMINE_PAYEE = 'EVENT_BEFORE_DETERMINE_PAYEE';
     public const EVENT_AFTER_DETERMINE_PAYEE = 'EVENT_AFTER_DETERMINE_PAYEE';
@@ -63,7 +63,7 @@ class PayeesService extends Component
             $purchasablePayeeUser = User::find()->id($payeeUserId)->one();
         } else {
             Marketplace::$plugin->log(
-                '[Marketplace] [PayeesService] No User Payee Account ID set in Craft CMS.',
+                '[Marketplace] [Payees] No User Payee Account ID set in Craft CMS.',
             );
 
             // We don’t return here, because people can still use

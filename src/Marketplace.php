@@ -31,9 +31,9 @@ use kennethormandy\marketplace\fields\MarketplaceConnectButton as MarketplaceCon
 use kennethormandy\marketplace\fields\MarketplacePayee as MarketplacePayeeField;
 use kennethormandy\marketplace\models\Settings;
 use kennethormandy\marketplace\providers\StripeExpressProvider;
-use kennethormandy\marketplace\services\AccountsService;
-use kennethormandy\marketplace\services\FeesService;
-use kennethormandy\marketplace\services\Handles;
+use kennethormandy\marketplace\services\Accounts as AccountsService;
+use kennethormandy\marketplace\services\Fees as FeesService;
+use kennethormandy\marketplace\services\Handles as HandlesService;
 use kennethormandy\marketplace\services\PayeesService;
 use putyourlightson\logtofile\LogToFile;
 use Stripe\Stripe;
@@ -78,8 +78,7 @@ class Marketplace extends BasePlugin
 
         // Register services
         $this->setComponents([
-            // TODO Rename to just “handles” for nicer API
-            'handles' => Handles::class,
+            'handles' => HandlesService::class,
             'fees' => FeesService::class,
             'payees' => PayeesService::class,
             'accounts' => AccountsService::class,

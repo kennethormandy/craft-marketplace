@@ -14,7 +14,7 @@ use kennethormandy\marketplace\records\FeeRecord;
 use kennethormandy\marketplace\events\FeesEvent;
 use kennethormandy\marketplace\Marketplace;
 
-class FeesService extends Component
+class Fees extends Component
 {
     public const EVENT_BEFORE_CALCULATE_FEES_AMOUNT = 'EVENT_BEFORE_CALCULATE_FEES_AMOUNT';
     public const EVENT_AFTER_CALCULATE_FEES_AMOUNT = 'EVENT_AFTER_CALCULATE_FEES_AMOUNT';
