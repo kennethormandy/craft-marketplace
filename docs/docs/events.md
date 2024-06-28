@@ -8,9 +8,9 @@ Craft’s guide: https://craftcms.com/knowledge-base/custom-module-events
 
 ## Events
 
-- `kennethormandy\marketplace\services\PayeesService`
-  - `PayeesService::EVENT_BEFORE_DETERMINE_PAYEE`
-  - `PayeesService::EVENT_AFTER_DETERMINE_PAYEE`
-- `kennethormandy\marketplace\services\FeesService` (in progress)
-  - `FeesService::EVENT_BEFORE_CALCULATE_FEE`
-  - `FeesService::EVENT_AFTER_CALCULATE_FEE`
+- `kennethormandy\marketplace\services\Payees`
+  - `Payees::EVENT_BEFORE_DETERMINE_PAYEE`
+  - `Payees::EVENT_AFTER_DETERMINE_PAYEE`
+- `kennethormandy\marketplace\services\Fees`
+  - `Fees::EVENT_BEFORE_CALCULATE_FEES_AMOUNT`
+  - `Fees::EVENT_AFTER_CALCULATE_FEES_AMOUNT`

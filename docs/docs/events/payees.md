@@ -1,3 +1,3 @@
 ---
-title: PayeesService Events
+title: Payees Events
 ---

@@ -206,23 +206,23 @@ As long as you’re using the Stripe Payment Gateway already, none of these chan
 
 ### Events
 
-- `kennethormandy\marketplace\services\PayeesService`
-  - `PayeesService::EVENT_BEFORE_DETERMINE_PAYEE`
-  - `PayeesService::EVENT_AFTER_DETERMINE_PAYEE`
-- `kennethormandy\marketplace\services\FeesService`
-  - `FeesService::EVENT_BEFORE_CALCULATE_FEES_AMOUNT`
-  - `FeesService::EVENT_AFTER_CALCULATE_FEES_AMOUNT`
+- `kennethormandy\marketplace\services\Payees`
+  - `Payees::EVENT_BEFORE_DETERMINE_PAYEE`
+  - `Payees::EVENT_AFTER_DETERMINE_PAYEE`
+- `kennethormandy\marketplace\services\Fees`
+  - `Fees::EVENT_BEFORE_CALCULATE_FEES_AMOUNT`
+  - `Fees::EVENT_AFTER_CALCULATE_FEES_AMOUNT`
 
 ```php
 use Craft;
 use yii\base\Event;
-use kennethormandy\marketplace\services\PayeesService;
+use kennethormandy\marketplace\services\Payees;
 
 // …
 
 Event::on(
-    PayeesService::class,
-    PayeesService::EVENT_AFTER_DETERMINE_PAYEE,
+    Payees::class,
+    Payees::EVENT_AFTER_DETERMINE_PAYEE,
     function (Event $event) {
         $lineItem = $event->lineItem;
 

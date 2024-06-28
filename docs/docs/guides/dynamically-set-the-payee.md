@@ -14,7 +14,7 @@ use Craft;
 use yii\base\Module;
 use yii\base\Event;
 use craft\elements\User;
-use kennethormandy\marketplace\services\PayeesService;
+use kennethormandy\marketplace\services\Payees;
 
 class CustomPayeeModule extends Module
 {
@@ -37,8 +37,8 @@ class CustomPayeeModule extends Module
         // Custom part starts here
 
         Event::on(
-            PayeesService::class,
-            PayeesService::EVENT_AFTER_DETERMINE_PAYEE,
+            Payees::class,
+            Payees::EVENT_AFTER_DETERMINE_PAYEE,
             function (Event $event) {
                 Craft::info("Handle EVENT_AFTER_DETERMINE_PAYEE event here", __METHOD__);
 
