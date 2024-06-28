@@ -10,7 +10,7 @@ use Stripe\Account as StripeAccount;
 use Stripe\Stripe;
 use Stripe\Exception\PermissionException;
 
-class AccountsService extends Component
+class Accounts extends Component
 {
     public function init()
     {
