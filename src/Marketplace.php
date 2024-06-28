@@ -34,7 +34,7 @@ use kennethormandy\marketplace\providers\StripeExpressProvider;
 use kennethormandy\marketplace\services\Accounts as AccountsService;
 use kennethormandy\marketplace\services\Fees as FeesService;
 use kennethormandy\marketplace\services\Handles as HandlesService;
-use kennethormandy\marketplace\services\PayeesService;
+use kennethormandy\marketplace\services\Payees as PayeesService;
 use putyourlightson\logtofile\LogToFile;
 use Stripe\Stripe;
 use Stripe\Transfer;
