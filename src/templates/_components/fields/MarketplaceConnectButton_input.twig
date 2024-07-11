@@ -35,6 +35,9 @@
    of element right now #}
 {% set user = element %}
 
+<code>{{ value }}</code>
+
+{% if craft.oauth.getAppByHandle is defined %}
 {% set app = craft.oauth.getAppByHandle(appHandle) %}
 
 {# TODO Alternatively, could only send along userId in context,
@@ -192,4 +195,5 @@
     {% endif %}
 {% else %}
     Could not find app to authorize with.
+{% endif %}
 {% endif %}
