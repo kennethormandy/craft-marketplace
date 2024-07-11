@@ -35,7 +35,6 @@ use kennethormandy\marketplace\services\Accounts as AccountsService;
 use kennethormandy\marketplace\services\Fees as FeesService;
 use kennethormandy\marketplace\services\Handles as HandlesService;
 use kennethormandy\marketplace\services\Payees as PayeesService;
-use putyourlightson\logtofile\LogToFile;
 use Stripe\Stripe;
 use Stripe\Transfer;
 use Stripe\BalanceTransaction;
@@ -551,23 +550,16 @@ class Marketplace extends BasePlugin
      */
     public function log($msg, array $params = [], $level = 'info')
     {
-        // TODO Use Craft::t and params
-
-        /** @see https://www.yiiframework.com/doc/api/2.0/yii-log-logger#log()-detail */
         switch ($level) {
             case 'error':
-                Craft::error($msg, __METHOD__);
+                Craft::error($msg, 'marketplace');
             case 'warning':
-                Craft::warning($msg, __METHOD__);
+                Craft::warning($msg, 'marketplace');
                 break;
             default:
-                Craft::info($msg, __METHOD__);
+                Craft::info($msg, 'marketplace');
                 break;
         }
-
-        // Right now, we are just double logging. Might prefer to move to this solution
-        // https://craftcms.stackexchange.com/a/25430/6392
-        LogToFile::log($msg, 'marketplace', $level);
     }
 
     private function _getStripeExchangeRate($stripeBalanceTransaction, $craftCurrencyCountryCode)
