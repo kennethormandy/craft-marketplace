@@ -22,12 +22,10 @@
 }}
 
 {% if supportedApps is not defined or not supportedApps %}
-  {# Shows a “Register New App” button that simply points to the OAuth
-     plugin setting spage, if there are no supported apps already.
-     Ideally, replace with a process that creates the app for you programatically.
-  #}
-  <a href="{{ url('oauthclient/apps/new') }}"
-     class="btn submit add icon">{{ 'Register A New Stripe App'|t }}</a>
+  {% set socialLoginEditUrl = "social-login/settings/providers/edit/#{providerHandle}" %}
+  <a href="{{ cpUrl(socialLoginEditUrl) }}" class="btn submit add icon">
+    {{ 'Configure Stripe Express in Social Login'|t }}
+  </a>
 {% else %}
   {{ forms.selectField({
     label: 'Stripe OAuth App',

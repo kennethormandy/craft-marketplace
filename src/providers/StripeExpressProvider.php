@@ -1,28 +1,75 @@
 <?php
-
 namespace kennethormandy\marketplace\providers;
 
-use AdamPaterson\OAuth2\Client\Provider\Stripe as LeagueProvider;
-use venveo\oauthclient\base\Provider;
+use Craft;
+use kennethormandy\marketplace\providers\clients\StripeExpressResourceOwner;
+use League\OAuth2\Client\Token\AccessToken;
+use verbb\auth\base\ProviderTrait;
+use verbb\auth\helpers\Provider as ProviderHelper;
+use verbb\auth\providers\Stripe as StripeAuthProvider;
+use verbb\sociallogin\providers\Stripe as StripeSocialLoginProvider;
+use verbb\auth\models\Token;
+use verbb\sociallogin\base\OAuthProvider;
 
-// This also works, but now have it working with original
-// approach, with baseUrl.
-// TODO $express from Plugin Settings or Auth Settings
-
-class StripeExpressProvider extends Provider
+class StripeExpress extends StripeAuthProvider
 {
-    /**
-     * @inheritDoc
-     */
-    public static function displayName(): string
+    /** @inheritdoc */
+    public function getBaseAuthorizationUrl()
     {
-        // This is what is displayed in the CP when registering an App
-        return 'Stripe Connect Express';
+        // https://docs.stripe.com/connect/oauth-reference#get-authorize
+        return 'https://connect.stripe.com/express/oauth/authorize';
     }
 
-    public static function getProviderClass(): string
+    /**
+     * @inheritdoc
+     * @return StripeExpressResourceOwner
+     */
+    protected function createResourceOwner(array $response, AccessToken $token): StripeExpressResourceOwner
     {
-        // Return the class name for the league provider
-        return null;
+        return new StripeExpressResourceOwner($response);
+    }
+}
+
+class StripeExpressProvider extends OAuthProvider
+// class StripeExpressProvider extends StripeSocialLoginProvider
+{
+    // Static Methods
+    // =========================================================================
+
+    public static function displayName(): string
+    {
+        return 'Stripe Express (Marketplace)';
+    }
+
+    public static function getOAuthProviderClass(): string
+    {
+        return StripeExpress::class;
+    }
+
+
+    // Properties
+    // =========================================================================
+
+    public static string $handle = 'marketplaceStripeExpress';
+
+
+    // Public Methods
+    // =========================================================================
+
+    public function getPrimaryColor(): ?string
+    {
+        return ProviderHelper::getPrimaryColor('stripe');
+    }
+
+    public function getIcon(): ?string
+    {
+        return ProviderHelper::getIcon('stripe');
+    }
+
+    public function getSettingsHtml(): ?string
+    {
+        return Craft::$app->view->renderTemplate('marketplace/providers/stripe-express', [
+            'provider' => $this,
+        ]);
     }
 }

@@ -20,13 +20,15 @@ use craft\commerce\services\Payments;
 use craft\commerce\stripe\base\Gateway as StripeGateway;
 use craft\commerce\stripe\events\BuildGatewayRequestEvent;
 use craft\elements\User;
+use craft\errors\InvalidFieldException;
 use craft\events\RegisterComponentTypesEvent;
+use craft\events\RegisterTemplateRootsEvent;
 use craft\events\RegisterUrlRulesEvent;
 use craft\helpers\App;
 use craft\helpers\UrlHelper;
 use craft\services\Fields;
 use craft\web\UrlManager;
-use craft\errors\InvalidFieldException;
+use craft\web\View;
 use kennethormandy\marketplace\fields\MarketplaceConnectButton as MarketplaceConnectButtonField;
 use kennethormandy\marketplace\fields\MarketplacePayee as MarketplacePayeeField;
 use kennethormandy\marketplace\models\Settings;
@@ -38,6 +40,7 @@ use kennethormandy\marketplace\services\Payees as PayeesService;
 use Stripe\Stripe;
 use Stripe\Transfer;
 use Stripe\BalanceTransaction;
+use verbb\sociallogin\services\Providers;
 use yii\base\Event;
 
 class Marketplace extends BasePlugin
@@ -84,6 +87,15 @@ class Marketplace extends BasePlugin
         ]);
 
         Craft::info('Marketplace plugin loaded', __METHOD__);
+
+        // This has to run before `onInit` for some reason
+        Event::on(
+            Providers::class,
+            Providers::EVENT_REGISTER_PROVIDER_TYPES,
+            function(RegisterComponentTypesEvent $event) {
+                $event->types[] = StripeExpressProvider::class;
+            }
+        );
 
         $this->_reviseOrderTemplate();
 
@@ -734,6 +746,7 @@ class Marketplace extends BasePlugin
                 'supportedApps' => $supportedApps,
                 // 'app' => $app,
                 'isPro' => $this->isPro(),
+                'providerHandle' => StripeExpressProvider::$handle,
             ]
         );
     }
