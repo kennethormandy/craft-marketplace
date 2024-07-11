@@ -1,6 +1,35 @@
 {% import '_includes/forms' as forms %}
 {% import 'verbb-base/_macros' as macros %}
 
-{% include 'social-login/providers/_oauth' with {
-  instructions: 'These are my custom instructions. [Read more here.](#)'
-} %}
+<div class="ss-settings-block">
+  {{ 'Instructions [Read more…](#)'|t('marketplace')|md }}
+</div>
+
+{{ forms.textField({
+  readonly: true,
+  label: 'Redirect URI' | t('social-login'),
+  instructions: 'Use this URI when setting up Stripe Connect.' | t('social-login', { provider: provider.name }),
+  value: provider.getRedirectUri(),
+}) }}
+
+{{ forms.autosuggestField({
+  label: 'Publishable Stripe Connect API Key'|t('marketplace'),
+  instructions: 'Your publishable Stripe Connect API key.'|t('marketplace'),
+  name: 'clientId',
+  required: true,
+  suggestEnvVars: true,
+  value: provider.clientId ?? '',
+  warning: macros.configWarning("providers.#{provider.handle}.clientId", 'social-login'),
+  errors: provider.getErrors('clientId'),
+}) }}
+
+{{ forms.autosuggestField({
+  label: 'Secret API Key' | t('commerce-stripe'),
+  instructions: 'Your Stripe API key.'|t('commerce-stripe'),
+  name: 'clientSecret',
+  required: true,
+  suggestEnvVars: true,
+  value: provider.clientSecret ?? '',
+  warning: macros.configWarning("providers.#{provider.handle}.clientSecret", 'social-login'),
+  errors: provider.getErrors('clientSecret'),
+}) }}
