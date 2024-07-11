@@ -13,8 +13,8 @@
 }) }}
 
 {{ forms.autosuggestField({
-  label: 'Publishable Stripe Connect API Key'|t('marketplace'),
-  instructions: 'Your publishable Stripe Connect API key.'|t('marketplace'),
+  label: 'Stripe Connect Client ID'|t('marketplace'),
+  instructions: 'Your Client ID for Stripe Connect, which is not the same as your Stripe publishable key.'|t('marketplace'),
   name: 'clientId',
   required: true,
   suggestEnvVars: true,
@@ -25,7 +25,7 @@
 
 {{ forms.autosuggestField({
   label: 'Secret API Key' | t('commerce-stripe'),
-  instructions: 'Your Stripe API key.'|t('commerce-stripe'),
+  instructions: 'Your main secret Stripe API key.'|t('commerce-stripe'),
   name: 'clientSecret',
   required: true,
   suggestEnvVars: true,
