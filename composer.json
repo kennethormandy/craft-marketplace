@@ -32,13 +32,9 @@
     }
   },
   "extra": {
-    "handle": "marketplace",
-    "name": "Marketplace for Craft Commerce",
     "class": "kennethormandy\\marketplace\\Marketplace",
-    "documentationUrl": "https://github.com/kennethormandy/craft-marketplace/blob/master/README.md",
-    "components": {
-      "TODO hanldesService": "kennethormandy\\marketplace\\services\\HandlesService"
-    }
+    "handle": "marketplace",
+    "name": "Marketplace for Craft Commerce"
   },
   "require-dev": {
     "codeception/codeception": "^4.1",
