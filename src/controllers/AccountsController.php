@@ -4,20 +4,43 @@ namespace kennethormandy\marketplace\controllers;
 
 use Craft;
 use craft\elements\User;
+use craft\helpers\App;
 use craft\web\Controller;
+use craft\web\Response;
+use Stripe\StripeClient;
+use stripe\exception\PermissionException;
+use stripe\exception\InvalidRequestException;
 use kennethormandy\marketplace\Marketplace;
-use Stripe\Account as StripeAccount;
-use Stripe\Stripe;
+use verbb\auth\helpers\Session;
 
 class AccountsController extends Controller
 {
-    public $allowAnonymous = ['create-logout-link'];
+    public array|int|bool $allowAnonymous = ['create-logout-link'];
 
-    public function actionCreateLoginLink()
+    public function actionCreateLoginLink(): Response
+    {
+        return $this->_createLink(function ($accountId, $params) {
+            return Marketplace::getInstance()->accounts->createLoginLink($accountId, $params);
+        });
+    }
+
+    public function actionCreateAccountLink(): Response
+    {
+        return $this->_createLink(function ($accountId, $params) {
+
+            // TODO Pass params like redirect to Accounts service, and then onto Stripe?
+            return Marketplace::getInstance()->accounts->createAccountLink($accountId, $params);
+
+        });
+    }
+
+    private function _createLink($callback): Response
     {
         $this->requirePostRequest();
         $this->requireLogin();
 
+        // Note `accounts->createLoginLink` gets you the express dashboard and is what we’ve always used
+        // Note `accountLinks->create` gets you an account link to refresh/finish your onboarding?
         $request = Craft::$app->getRequest();
         $accountId = $request->getParam('accountId');
 
@@ -55,15 +78,6 @@ class AccountsController extends Controller
             }
         }
 
-        // NOTE Decided not to use Account model yet.
-        // $account = new Account();
-        // $account->accountId = $accountId;
-
-        if (!isset($accountId) || !$accountId) {
-            Marketplace::$plugin->log('[AccountsController] Could not create login link. Missing account ID');
-            return null;
-        }
-
         $params = (object) [
             'redirect' => null,
             'referrer' => $request->referrer,
@@ -73,29 +87,19 @@ class AccountsController extends Controller
             $params->redirect = $request->getParam('redirect');
         }
 
-        $link = Marketplace::getInstance()->accounts->createLoginLink($accountId, $params);
-
-        if (!$link) {
-            Marketplace::$plugin->log('[AccountsController] Could not create login link.', [], 'error');
-
-            // TODO Handle translations
-            $errorMessage = 'Could not create a login link for “' . $accountId . '”';
-
-            // If there was an Account model, and we wanted to
-            // add errors to specific properties
-            // $account->addError('accountId', $errorMessage);
-
-            Craft::$app->getUrlManager()->setRouteParams([
-                'variables' => ['errorMessage' => $errorMessage]
-            ]);
-
-            return null;
+        try {
+            $resp = call_user_func($callback, $accountId, $params);
+        } catch (PermissionException|InvalidRequestException) {
+            // Using Social Login’s flash messages
+            // This error could occur if the account ID was wrong, revoked, didn’t match between test versus live, etc.
+            Session::setError('social-login', 'Unable to provide access to that account, or the account does not exist.');
+            return;
         }
 
-        return $this->redirect($link, 302);
+        return $this->redirect($resp->url);
     }
 
-    public function actionCreateLogoutLink()
+    public function actionCreateLogoutLink(): Response
     {
         $request = Craft::$app->getRequest();
         $redirectParam = $request->getParam('redirect');
@@ -103,4 +107,5 @@ class AccountsController extends Controller
 
         return $this->redirect($validatedUrl);
     }
+
 }

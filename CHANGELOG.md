@@ -8,6 +8,8 @@
 - Renamed `kennethormandy\marketplace\services\HandlesService` → `kennethormandy\marketplace\services\Handles`
 - Renamed `kennethormandy\marketplace\services\PayeesService` → `kennethormandy\marketplace\services\Payees`
 - Renamed `handlesService` to `handles`
+- `Marketplace::getInstance()->accounts->createLoginLink($accountId, $params)` requires a Stripe account ID as the first argument, which was effectively already the case.
+- `Marketplace::getInstance()->accounts->createAccountLink($accountId, $params)` has been added, which may be what you’d prefer if you were using `createLoginLink()`
 
 ## Removed
 - OAuth Client plugin
