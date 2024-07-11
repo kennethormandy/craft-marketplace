@@ -10,7 +10,7 @@ use kennethormandy\marketplace\Marketplace;
 
 class Handles extends Component
 {
-    public function init()
+    public function init(): void
     {
         parent::init();
     }

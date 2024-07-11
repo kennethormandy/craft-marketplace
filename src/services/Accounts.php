@@ -12,7 +12,7 @@ use Stripe\Exception\PermissionException;
 
 class Accounts extends Component
 {
-    public function init()
+    public function init(): void
     {
         parent::init();
     }

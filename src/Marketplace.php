@@ -48,21 +48,21 @@ class Marketplace extends BasePlugin
     //      is more than one edition. https://git.io/JvAIY
     // const EDITION_PRO = 'pro';
 
-    // Public Properties
-    // =========================================================================
+    /**
+     * @inheritDoc
+     */
+    public bool $hasCpSettings = true;
 
     /**
-     * To execute your plugin’s migrations, you’ll need to increase its schema version.
-     *
-     * @var string
+     * @inheritDoc
      */
-    public $schemaVersion = '0.1.0';
-    public $hasCpSettings = true;
+    public string $schemaVersion = '0.1.0';
 
     /**
      * @var Plugin
      */
     public static $plugin;
+
     public static function editions(): array
     {
         return [
@@ -702,7 +702,7 @@ class Marketplace extends BasePlugin
      *
      * @return \craft\base\Model|null
      */
-    protected function createSettingsModel()
+    protected function createSettingsModel(): ?\craft\base\Model
     {
         return new Settings();
     }

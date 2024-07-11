@@ -107,7 +107,7 @@ class MarketplacePayee extends Field
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         $rules = parent::rules();
         // $rules = array_merge($rules, [
@@ -121,7 +121,7 @@ class MarketplacePayee extends Field
     // the database. In serializeValue, we now provide a single item as a string.
     //   Relevant, especially if changing to relation later:
     // https://github.com/craftcms/cms/blob/develop/src/fields/BaseRelationField.php#L398
-    public function normalizeValue($value, ElementInterface $element = null)
+    public function normalizeValue(mixed $value, ?ElementInterface $element = null): mixed
     {
         if (is_string($value)) {
             // Handles an issue in very early versions of the plugin, it was possible for
@@ -150,7 +150,7 @@ class MarketplacePayee extends Field
     /**
      * @inheritdoc
      */
-    public function serializeValue($value, ElementInterface $element = null)
+    public function serializeValue(mixed $value, ?ElementInterface $element = null): mixed
     {
 
         if (is_array($value)) {
@@ -272,7 +272,7 @@ class MarketplacePayee extends Field
      *
      * @return string The input HTML.
      */
-    public function getInputHtml($value, ElementInterface $element = null): string
+    public function getInputHtml(mixed $value, ?ElementInterface $element = null): string
     {
         // Get our id and namespace
         $id = Craft::$app->getView()->formatInputId($this->handle);

@@ -67,7 +67,7 @@ class MarketplaceConnectButton extends Field
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         $rules = parent::rules();
         // $rules = array_merge($rules, [
@@ -106,7 +106,7 @@ class MarketplaceConnectButton extends Field
      *
      * @return mixed The prepared field value
      */
-    public function normalizeValue($value, ElementInterface $element = null)
+    public function normalizeValue(mixed $value, ?ElementInterface $element = null): mixed
     {
         return $value;
     }
@@ -124,7 +124,7 @@ class MarketplaceConnectButton extends Field
      *
      * @return null|false `false` in the event that the method is sure that no elements are going to be found.
      */
-    public function serializeValue($value, ElementInterface $element = null)
+    public function serializeValue(mixed $value, ?ElementInterface $element = null): mixed
     {
         return parent::serializeValue($value, $element);
     }
@@ -221,7 +221,7 @@ class MarketplaceConnectButton extends Field
      *
      * @return string|null
      */
-    public function getSettingsHtml()
+    public function getSettingsHtml(): ?string
     {
         // Render the settings template
         return Craft::$app->getView()->renderTemplate(
@@ -329,7 +329,7 @@ class MarketplaceConnectButton extends Field
      *
      * @return string The input HTML.
      */
-    public function getInputHtml($value, ElementInterface $element = null): string
+    public function getInputHtml($value, ?ElementInterface $element = null): string
     {
         // Register our asset bundle
         // Craft::$app->getView()->registerAssetBundle(MarketplaceConnectButtonFieldAsset::class);

@@ -14,7 +14,7 @@ class Payees extends Component
     public const EVENT_BEFORE_DETERMINE_PAYEE = 'EVENT_BEFORE_DETERMINE_PAYEE';
     public const EVENT_AFTER_DETERMINE_PAYEE = 'EVENT_AFTER_DETERMINE_PAYEE';
 
-    public function init()
+    public function init(): void
     {
         parent::init();
     }

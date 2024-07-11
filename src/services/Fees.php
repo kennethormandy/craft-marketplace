@@ -19,7 +19,7 @@ class Fees extends Component
     public const EVENT_BEFORE_CALCULATE_FEES_AMOUNT = 'EVENT_BEFORE_CALCULATE_FEES_AMOUNT';
     public const EVENT_AFTER_CALCULATE_FEES_AMOUNT = 'EVENT_AFTER_CALCULATE_FEES_AMOUNT';
 
-    public function init()
+    public function init(): void
     {
         parent::init();
     }

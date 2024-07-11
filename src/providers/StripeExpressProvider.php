@@ -1,6 +1,6 @@
 <?php
 
-namespace kennethormandy\marketplace\provider;
+namespace kennethormandy\marketplace\providers;
 
 use AdamPaterson\OAuth2\Client\Provider\Stripe as LeagueProvider;
 use venveo\oauthclient\base\Provider;
@@ -9,16 +9,7 @@ use venveo\oauthclient\base\Provider;
 // approach, with baseUrl.
 // TODO $express from Plugin Settings or Auth Settings
 
-// TODO Probably possible to remove kennethormandy/oauth2-stripe with this
-class LeagueProviderCustomized extends LeagueProvider
-{
-    public function getBaseAuthorizationUrl(): string
-    {
-        return 'https://connect.stripe.com/express/oauth/authorize';
-    }
-}
-
-class StripeConnectExpressProvider extends Provider
+class StripeExpressProvider extends Provider
 {
     /**
      * @inheritDoc
@@ -32,6 +23,6 @@ class StripeConnectExpressProvider extends Provider
     public static function getProviderClass(): string
     {
         // Return the class name for the league provider
-        return LeagueProviderCustomized::class;
+        return null;
     }
 }

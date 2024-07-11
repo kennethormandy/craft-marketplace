@@ -11,7 +11,7 @@ use Stripe\Stripe;
 
 class AccountsController extends Controller
 {
-    public $allowAnonymous = ['create-logout-link'];
+    public array|int|bool $allowAnonymous = ['create-logout-link'];
 
     public function actionCreateLoginLink()
     {
@@ -76,8 +76,6 @@ class AccountsController extends Controller
         $link = Marketplace::getInstance()->accounts->createLoginLink($accountId, $params);
 
         if (!$link) {
-            Marketplace::$plugin->log('[AccountsController] Could not create login link.', [], 'error');
-
             // TODO Handle translations
             $errorMessage = 'Could not create a login link for “' . $accountId . '”';
 
