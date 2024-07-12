@@ -361,7 +361,9 @@ class MarketplaceConnectButton extends Field
             $accountLoginUrl = Marketplace::$plugin->accounts->createLoginLink($value);
         }
 
-        $appHandle = Marketplace::$plugin->handles->getAppHandle();
+        // This doesn’t exist anymore
+        $appHandle = null;
+
         $payeeHandle = Marketplace::$plugin->handles->getPayeeHandle();
 
         // Render the input template

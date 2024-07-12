@@ -21,18 +21,8 @@
   })
 }}
 
-{% if supportedApps is not defined or not supportedApps %}
-  {% set socialLoginEditUrl = "social-login/settings/providers/edit/#{providerHandle}" %}
-  <a href="{{ cpUrl(socialLoginEditUrl) }}" class="btn submit add icon">
-    {{ 'Configure Stripe Express in Social Login'|t }}
-  </a>
-{% else %}
-  {{ forms.selectField({
-    label: 'Stripe OAuth App',
-    instructions: '',
-    id: 'appHandle',
-    name: 'appHandle',
-    options: supportedApps|map((obj) => { label: "#{obj.name} (#{obj.handle})", value: obj.handle })
-  }) }}
+{% set socialLoginEditUrl = "social-login/settings/providers/edit/#{providerHandle}" %}
 
-{% endif %}
+<a href="{{ cpUrl(socialLoginEditUrl) }}" class="btn submit add icon">
+  {{ 'Configure Stripe Express in Social Login'|t }}
+</a>

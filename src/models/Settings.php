@@ -23,7 +23,6 @@ class Settings extends Model
      * @var string
      */
     public $secretApiKey;
-    public $appHandle = 'stripe';
 
     // Pro
     public $stripePreferSeparateTransfers = true;
@@ -44,11 +43,6 @@ class Settings extends Model
         }
 
         return Craft::parseEnv($this->secretApiKey);
-    }
-
-    public function getAppHandle(): string
-    {
-        return $this->appHandle;
     }
 
     // Public Methods

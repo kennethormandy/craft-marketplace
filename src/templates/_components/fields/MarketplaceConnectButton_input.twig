@@ -38,7 +38,7 @@
 <code>{{ value }}</code>
 
 {% if craft.oauth.getAppByHandle is defined %}
-{% set app = craft.oauth.getAppByHandle(appHandle) %}
+{% set app = null %}
 
 {# TODO Alternatively, could only send along userId in context,
  # and then query user in event. #}

@@ -6,7 +6,6 @@ use Craft;
 use craft\base\Component;
 use kennethormandy\marketplace\fields\MarketplaceConnectButton as MarketplaceConnectButtonField;
 use kennethormandy\marketplace\fields\MarketplacePayee as MarketplacePayeeField;
-use kennethormandy\marketplace\Marketplace;
 
 class Handles extends Component
 {
@@ -16,11 +15,9 @@ class Handles extends Component
     }
 
     /**
-     * The CMS admin can set the field handle to
-     * whatever they want, so we need to find that
-     * handle, for the Stripe Connect Button field.
+     * Get the custom field handle for the Marketplace Connect Button field.
      */
-    public function getButtonHandle()
+    public function getButtonHandle(): ?string
     {
         $fields = Craft::$app->fields->getFieldsWithContent();
 
@@ -36,11 +33,9 @@ class Handles extends Component
     }
 
     /**
-     * The CMS admin can set the field handle to
-     * whatever they want, so we need to find that
-     * handle, for the Stripe Connect Payee field.
+     * Get the custom field handle for the Marketplace Payee field.
      */
-    public function getPayeeHandle()
+    public function getPayeeHandle(): ?string
     {
         // TODO This seems to work fine, but might need to double
         // check if this needs a different approach for regular vs. Digital Products
@@ -60,15 +55,4 @@ class Handles extends Component
         return null;
     }
 
-    /**
-     * The CMS admin can set the OAuth API field handle
-     * to whatever they want. We have already determined
-     * what the selected app handle is in the settings, but
-     * this keeps all the handles in handles.
-     */
-    public function getAppHandle()
-    {
-        $appHandle = Marketplace::$plugin->getSettings()->getAppHandle();
-        return $appHandle;
-    }
 }
