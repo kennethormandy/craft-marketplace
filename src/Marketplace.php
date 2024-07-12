@@ -166,20 +166,21 @@ class Marketplace extends BasePlugin
 
             if ($providerHandle === $marketplaceProviderHandle && $stripeAccountId && $originalUserUid) {
                 $elementUid = $data['elementUid'];
-
-                // Could support passing this along to speed up the query
-                $elementType = null;
-
-                // The field handle for the Marketplace Connect Button
-                $fieldHandle = $this->handles->getButtonHandle($element);
-
+                $elementType = null; // Could support passing this along to speed up the query
                 $element = Craft::$app->elements->getElementByUid($elementUid, $elementType);
 
-                Craft::info('$element', __METHOD__);
-                Craft::info($element, __METHOD__);
-                
-                $element->setFieldValue($fieldHandle, $stripeAccountId);
-                Craft::$app->elements->saveElement($element);
+                if ($element) {
+
+                    // The field handle for the Marketplace Connect Button
+                    $fieldHandle = $this->handles->getButtonHandle($element);
+
+                    Craft::info('$element', __METHOD__);
+                    Craft::info($element, __METHOD__);
+                    
+                    $element->setFieldValue($fieldHandle, $stripeAccountId);
+                    Craft::$app->elements->saveElement($element);
+
+                }
             }
 
         });
