@@ -6,9 +6,8 @@ use Craft;
 use craft\base\Component;
 use craft\helpers\UrlHelper;
 use kennethormandy\marketplace\Marketplace;
-use Stripe\Account as StripeAccount;
-use Stripe\Stripe;
-use Stripe\Exception\PermissionException;
+use Stripe\StripeClient;
+use stripe\exception\InvalidArgumentException;
 
 class Accounts extends Component
 {

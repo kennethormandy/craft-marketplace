@@ -7,9 +7,9 @@ use craft\elements\User;
 use craft\helpers\App;
 use craft\web\Controller;
 use craft\web\Response;
-use Stripe\StripeClient;
 use stripe\exception\PermissionException;
 use stripe\exception\InvalidRequestException;
+use stripe\exception\InvalidArgumentException;
 use kennethormandy\marketplace\Marketplace;
 use verbb\auth\helpers\Session;
 
@@ -17,7 +17,7 @@ class AccountsController extends Controller
 {
     public array|int|bool $allowAnonymous = ['create-logout-link'];
 
-    public function actionCreateLoginLink(): Response
+    public function actionCreateLoginLink(): ?Response
     {
         return $this->_createLink(function ($accountId, $params) {
             return Marketplace::getInstance()->accounts->createLoginLink($accountId, $params);
@@ -34,7 +34,7 @@ class AccountsController extends Controller
         });
     }
 
-    private function _createLink($callback): Response
+    private function _createLink($callback): ?Response
     {
         $this->requirePostRequest();
         $this->requireLogin();
@@ -65,15 +65,8 @@ class AccountsController extends Controller
                 !$currentUser->getIsAdmin() &&
                 (!$currentUserIdentity[$accountIdHandle] || $currentUserIdentity[$accountIdHandle] !== $accountId)
             ) {
-                Marketplace::$plugin->log('[AccountsController] User ' . $currentUserIdentity . ' attempting to create link for account that isn’t their own, without admin access.', [], 'error');
-
-                // TODO Handle translations
-                $errorMessage = 'You do not have permission to access that account';
-
-                Craft::$app->getUrlManager()->setRouteParams([
-                    'variables' => ['errorMessage' => $errorMessage]
-                ]);
-
+                Marketplace::$plugin->log('User ' . $currentUserIdentity . ' attempting to create link for account that isn’t their own, without admin access.', [], 'error');
+                $this->_setError('You do not have permission to access that account');
                 return null;
             }
         }
@@ -89,11 +82,11 @@ class AccountsController extends Controller
 
         try {
             $resp = call_user_func($callback, $accountId, $params);
-        } catch (PermissionException|InvalidRequestException) {
-            // Using Social Login’s flash messages
+        } catch (PermissionException|InvalidRequestException|InvalidArgumentException $e) {
             // This error could occur if the account ID was wrong, revoked, didn’t match between test versus live, etc.
-            Session::setError('social-login', 'Unable to provide access to that account, or the account does not exist.');
-            return;
+            Marketplace::$plugin->log($e->getMessage(), [], 'error');
+            $this->_setError('Unable to provide access to that account, or the account does not exist.');
+            return null;
         }
 
         return $this->redirect($resp->url);
@@ -106,5 +99,24 @@ class AccountsController extends Controller
         $validatedUrl = Craft::$app->security->validateData($redirectParam);
 
         return $this->redirect($validatedUrl);
+    }
+
+    /**
+     * Use Social Login’s flash messages to provide Marketplace- or Stripe-specific errors.
+     */
+    private function _setError(string $message): void
+    {
+        // TODO Handle translations for $message
+        // TODO Decide whether to use Social Login errors, namespaced
+        // errors using Social Login’s session helper, or use `errorMessage`
+        // like before. Leaning towards option 2, which would require a
+        // different Twig helper than Social Login.
+
+        Session::setError('social-login', $message);
+
+        Craft::$app->getUrlManager()->setRouteParams([
+            'variables' => ['errorMessage' => $message]
+        ]);
+
     }
 }
