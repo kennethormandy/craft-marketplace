@@ -7,7 +7,6 @@ use craft\base\Component;
 use craft\helpers\UrlHelper;
 use kennethormandy\marketplace\Marketplace;
 use Stripe\StripeClient;
-use stripe\exception\InvalidArgumentException;
 
 class Accounts extends Component
 {
@@ -41,7 +40,7 @@ class Accounts extends Component
             'return_url' => 'https://example.com/return',
 
             'type' => 'account_onboarding',
-            'collection_options' => ['fields' => 'eventually_due'], 
+            'collection_options' => ['fields' => 'eventually_due'],
         ];
 
         if (isset($params->redirect)) {

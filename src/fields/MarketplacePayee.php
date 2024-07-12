@@ -32,7 +32,6 @@ use Stripe\Stripe;
  * @since     0.1.0
  */
 class MarketplacePayee extends Field
-
 {
     // /**
     //  * @inheritdoc
@@ -125,7 +124,7 @@ class MarketplacePayee extends Field
     {
         if (is_string($value)) {
             // Handles an issue in very early versions of the plugin, it was possible for
-            // the value to be saved as a string of an array, ex. `"["8"]"` 
+            // the value to be saved as a string of an array, ex. `"["8"]"`
             // This is covered by the FieldPayeeTest
             if (str_contains($value, '"[') && $value[0] === '"' && $value[strlen($value) - 1] === '"') {
                 $value = trim($value, '"');
@@ -152,7 +151,6 @@ class MarketplacePayee extends Field
      */
     public function serializeValue(mixed $value, ?ElementInterface $element = null): mixed
     {
-
         if (is_array($value)) {
             $value = $value[0];
         }

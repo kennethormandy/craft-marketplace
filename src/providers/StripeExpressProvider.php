@@ -1,15 +1,14 @@
 <?php
+
 namespace kennethormandy\marketplace\providers;
 
 use Craft;
 use kennethormandy\marketplace\providers\clients\StripeExpressResourceOwner;
 use League\OAuth2\Client\Token\AccessToken;
-use verbb\auth\base\ProviderTrait;
 use verbb\auth\helpers\Provider as ProviderHelper;
 use verbb\auth\providers\Stripe as StripeAuthProvider;
-use verbb\sociallogin\providers\Stripe as StripeSocialLoginProvider;
-use verbb\auth\models\Token;
 use verbb\sociallogin\base\OAuthProvider;
+use verbb\sociallogin\providers\Stripe as StripeSocialLoginProvider;
 
 class StripeExpress extends StripeAuthProvider
 {

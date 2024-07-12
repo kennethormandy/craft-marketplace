@@ -12,22 +12,18 @@ namespace kennethormandy\marketplace;
 
 use Craft;
 use craft\base\Plugin as BasePlugin;
-use craft\commerce\Plugin as Commerce;
-use craft\commerce\events\RefundTransactionEvent;
 use craft\commerce\elements\Order;
+use craft\commerce\events\RefundTransactionEvent;
 use craft\commerce\models\LineItem;
+use craft\commerce\Plugin as Commerce;
 use craft\commerce\services\Payments;
 use craft\commerce\stripe\base\Gateway as StripeGateway;
 use craft\commerce\stripe\events\BuildGatewayRequestEvent;
 use craft\elements\User;
-use craft\errors\InvalidFieldException;
 use craft\events\RegisterComponentTypesEvent;
-use craft\events\RegisterTemplateRootsEvent;
-use craft\events\RegisterUrlRulesEvent;
 use craft\helpers\App;
 use craft\helpers\UrlHelper;
 use craft\services\Fields;
-use craft\web\UrlManager;
 use craft\web\View;
 use kennethormandy\marketplace\fields\MarketplaceConnectButton as MarketplaceConnectButtonField;
 use kennethormandy\marketplace\fields\MarketplacePayee as MarketplacePayeeField;
@@ -37,9 +33,9 @@ use kennethormandy\marketplace\services\Accounts as AccountsService;
 use kennethormandy\marketplace\services\Fees as FeesService;
 use kennethormandy\marketplace\services\Handles as HandlesService;
 use kennethormandy\marketplace\services\Payees as PayeesService;
+use Stripe\BalanceTransaction;
 use Stripe\Stripe;
 use Stripe\Transfer;
-use Stripe\BalanceTransaction;
 use verbb\auth\events\AccessTokenEvent;
 // use verbb\auth\events\AuthorizationUrlEvent;
 use verbb\auth\helpers\Session;
@@ -49,7 +45,7 @@ use yii\base\Event;
 
 class Marketplace extends BasePlugin
 {
-    const EDITION_LITE = 'lite';
+    public const EDITION_LITE = 'lite';
     // NOTE Edition marker doesn’t show, unless there
     //      is more than one edition. https://git.io/JvAIY
     // const EDITION_PRO = 'pro';
@@ -109,7 +105,7 @@ class Marketplace extends BasePlugin
 
     /**
      * Log wrapper
-     * 
+     *
      * @param string $msg
      * @param array $params
      * @param string $level
@@ -119,6 +115,7 @@ class Marketplace extends BasePlugin
         switch ($level) {
             case 'error':
                 Craft::error($msg, 'marketplace');
+                // no break
             case 'warning':
                 Craft::warning($msg, 'marketplace');
                 break;
@@ -130,7 +127,6 @@ class Marketplace extends BasePlugin
 
     private function _attachEventHandlers(): void
     {
-
         Event::on(OAuth::class, OAuth::EVENT_AFTER_FETCH_ACCESS_TOKEN, function(AccessTokenEvent $event) {
             $provider = $event->provider;
             $ownerHandle = $event->ownerHandle;
@@ -179,10 +175,8 @@ class Marketplace extends BasePlugin
                     
                     $element->setFieldValue($fieldHandle, $stripeAccountId);
                     Craft::$app->elements->saveElement($element);
-
                 }
             }
-
         });
 
 
@@ -192,7 +186,7 @@ class Marketplace extends BasePlugin
         Event::on(
             Fields::class,
             Fields::EVENT_REGISTER_FIELD_TYPES,
-            function (RegisterComponentTypesEvent $event) {
+            function(RegisterComponentTypesEvent $event) {
                 $event->types[] = MarketplaceConnectButtonField::class;
                 $event->types[] = MarketplacePayeeField::class;
             }
@@ -258,7 +252,7 @@ class Marketplace extends BasePlugin
 
         //         if ($event->context) {
         //             $this->log('EVENT_BEFORE_AUTHENTICATE context');
-        //             $this->log(json_encode($event->context));    
+        //             $this->log(json_encode($event->context));
         //         }
 
         //         if (
@@ -289,7 +283,7 @@ class Marketplace extends BasePlugin
         Event::on(
             Payments::class,
             Payments::EVENT_BEFORE_REFUND_TRANSACTION,
-            function (RefundTransactionEvent $e) {
+            function(RefundTransactionEvent $e) {
                 $this->log('EVENT_BEFORE_REFUND_TRANSACTION');
 
                 // We are assuming all of these are destination charges,
@@ -442,7 +436,7 @@ class Marketplace extends BasePlugin
                     // Stop at the first successful transaction, can also be failed
                     // TODO Does auth and capture still create this?
                     if ($transaction->type === 'purchase' && $transaction->status === 'success') {
-                        $purchaseTransaction = $transaction;                        
+                        $purchaseTransaction = $transaction;
                         break;
                     }
                 }
@@ -488,7 +482,7 @@ class Marketplace extends BasePlugin
                 try {
                     $balanceTransaction = BalanceTransaction::retrieve($stripeCharge->balance_transaction);
                     $this->log('Balance transaction:');
-                    $this->log(json_encode($balanceTransaction));    
+                    $this->log(json_encode($balanceTransaction));
                 } catch (\Exception $e) {
                     $this->log('Marketplace transfer error', [], 'error');
                     $this->log($e->getTraceAsString(), [], 'error');
@@ -545,13 +539,13 @@ class Marketplace extends BasePlugin
 
                         // Don’t need to create a `transfer_group`, Stripe
                         // does this via the source_transaction
-                        'source_transaction' => $stripeCharge->id
+                        'source_transaction' => $stripeCharge->id,
                     ];
 
                     try {
                         $transferResult = Transfer::create($stripeTransferData);
                         $this->log('Transfer Result');
-                        $this->log(json_encode($transferResult));    
+                        $this->log(json_encode($transferResult));
                     } catch (\Exception $e) {
                         $this->log('Marketplace transfer error', [], 'error');
                         $this->log($e->getTraceAsString(), [], 'error');
@@ -559,7 +553,6 @@ class Marketplace extends BasePlugin
                 }
             }
         );
-
     }
 
     private function _getStripeExchangeRate($stripeBalanceTransaction, $craftCurrencyCountryCode)
@@ -659,7 +652,7 @@ class Marketplace extends BasePlugin
      * https://docs.craftcms.com/v3/extend/template-hooks.html */
     private function _reviseOrderTemplate()
     {
-        Craft::$app->getView()->hook('cp.commerce.order.edit.main-pane', function (array &$context) {
+        Craft::$app->getView()->hook('cp.commerce.order.edit.main-pane', function(array &$context) {
             $payee = $this->_getPayeeFromOrder($context['order']);
             if ($payee) {
                 return Craft::$app->view->renderTemplate(
@@ -672,7 +665,7 @@ class Marketplace extends BasePlugin
             }
         });
 
-        Craft::$app->getView()->hook('cp.commerce.order.edit.main-pane', function (array &$context) {
+        Craft::$app->getView()->hook('cp.commerce.order.edit.main-pane', function(array &$context) {
             $payee = $this->_getPayeeFromOrder($context['order']);
             if ($payee) {
                 return Craft::$app->view->renderTemplate(

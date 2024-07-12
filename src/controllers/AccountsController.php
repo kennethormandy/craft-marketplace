@@ -4,13 +4,12 @@ namespace kennethormandy\marketplace\controllers;
 
 use Craft;
 use craft\elements\User;
-use craft\helpers\App;
 use craft\web\Controller;
 use craft\web\Response;
-use stripe\exception\PermissionException;
-use stripe\exception\InvalidRequestException;
-use stripe\exception\InvalidArgumentException;
 use kennethormandy\marketplace\Marketplace;
+use stripe\exception\InvalidArgumentException;
+use stripe\exception\InvalidRequestException;
+use stripe\exception\PermissionException;
 use verbb\auth\helpers\Session;
 
 class AccountsController extends Controller
@@ -19,18 +18,17 @@ class AccountsController extends Controller
 
     public function actionCreateLoginLink(): ?Response
     {
-        return $this->_createLink(function ($accountId, $params) {
+        return $this->_createLink(function($accountId, $params) {
             return Marketplace::getInstance()->accounts->createLoginLink($accountId, $params);
         });
     }
 
     public function actionCreateAccountLink(): Response
     {
-        return $this->_createLink(function ($accountId, $params) {
+        return $this->_createLink(function($accountId, $params) {
 
             // TODO Pass params like redirect to Accounts service, and then onto Stripe?
             return Marketplace::getInstance()->accounts->createAccountLink($accountId, $params);
-
         });
     }
 
@@ -54,7 +52,6 @@ class AccountsController extends Controller
         // Only do this if the Marketplace Connect Button is set on Users,
         // TODO Do we want some other kind of permissions check for non-User cases? Can edit that element?
         if ($elementType === User::class) {
-
             $currentUser = Craft::$app->getUser();
             $currentUserIdentity = $currentUser->getIdentity();
 
@@ -115,8 +112,7 @@ class AccountsController extends Controller
         Session::setError('social-login', $message);
 
         Craft::$app->getUrlManager()->setRouteParams([
-            'variables' => ['errorMessage' => $message]
+            'variables' => ['errorMessage' => $message],
         ]);
-
     }
 }

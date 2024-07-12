@@ -2,17 +2,10 @@
 
 namespace kennethormandy\marketplace\services;
 
-use Craft;
 use craft\base\Component;
-use craft\db\Query;
 use craft\commerce\elements\Order;
 use craft\commerce\models\LineItem;
-use craft\helpers\App;
-use Exception;
-use kennethormandy\marketplace\models\Fee as FeeModel;
-use kennethormandy\marketplace\records\FeeRecord;
 use kennethormandy\marketplace\events\FeesEvent;
-use kennethormandy\marketplace\Marketplace;
 
 class Fees extends Component
 {
@@ -54,5 +47,4 @@ class Fees extends Component
 
         return $event->amount;
     }
-
 }
