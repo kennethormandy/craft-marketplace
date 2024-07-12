@@ -701,32 +701,10 @@ class Marketplace extends BasePlugin
      */
     protected function settingsHtml(): string
     {
-        // $oauthPlugin = OAuthPlugin::$plugin;
-        // // TODO Might need to only do this if the handle isn’t set
-        // // (ie. if the settings for the related OAuth app are empty)
-        // $apps = $oauthPlugin->apps->getAllApps();
-        // $app = $oauthPlugin->apps->createApp([]);
-        $supportedApps = [];
-
-        // foreach ($apps as $key => $app) {
-        //     if (
-        //     $app &&
-        //     $app->provider &&
-
-        //     // TODO This would check against the list of supported providers
-        //     //      …but right now we are really only supporting this one.
-        //     $app->provider == 'kennethormandy\marketplace\provider\StripeConnectExpressProvider'
-        //   ) {
-        //         $supportedApps[] = $app;
-        //     }
-        // }
-
         return Craft::$app->view->renderTemplate(
             'marketplace/settings',
             [
                 'settings' => $this->getSettings(),
-                'supportedApps' => $supportedApps,
-                // 'app' => $app,
                 'isPro' => $this->isPro(),
                 'providerHandle' => StripeExpressProvider::$handle,
             ]
