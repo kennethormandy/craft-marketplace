@@ -26,7 +26,7 @@
     "craftcms/cms": "^4.0.0",
     "craftcms/commerce": "^4.2.8",
     "stripe/stripe-php": "^7.0",
-    "verbb/social-login": "dev-craft-4#9a3e968"
+    "verbb/social-login": "dev-craft-4#49642bc"
   },
   "autoload": {
     "psr-4": {
