@@ -10,14 +10,10 @@ use kennethormandy\marketplace\Marketplace;
 use Stripe\Account;
 use Stripe\Stripe;
 
-// TODO Investigated extending these Users or
-//      BaseRelationField, but wasn’t clear
-//      if it is intended.
-// use craft\fields\Users;
-// use craft\fields\BaseRelationField;
-// use craft\elements\db\ElementQueryInterface;
-// use craft\db\Table as DbTable;
-
+// Could extend this, but would likely need to write
+// migration from content table to relation table too
+// use craft\fields\Users as UsersField;
+// use craft\base\PreviewableFieldInterface;
 
 /**
  * MarketplacePayee Field.
@@ -33,55 +29,6 @@ use Stripe\Stripe;
  */
 class MarketplacePayee extends Field
 {
-    // /**
-    //  * @inheritdoc
-    //  */
-    // protected static function elementType(): string
-    // {
-    //     return User::class;
-    // }
-
-    // /**
-    //  * @inheritdoc
-    //  */
-    // public static function valueType(): string
-    // {
-    //     return ElementQueryInterface::class;
-    // }
-
-    // public $sortable = false;
-    // public $allowMultipleSources = false;
-    // public $targetSiteId;
-    // public $source;
-    // public $allowLimit = true;
-    // public $limit = 1;
-
-    // public function init()
-    // {
-    //     parent::init();
-    //     // $this->handle = '';
-    //     // $this->handles->getButtonHandle($userObject)
-    // }
-
-    // public function modifyElementIndexQuery(ElementQueryInterface $query)
-    // {
-    //     // if ($this instanceof EagerLoadingFieldInterface && isset($this->handle) && !empty($this->handle)) {
-    //     //     $query->andWithout($this->handle);
-    //     // }
-    // }
-
-    // Public Properties
-    // =========================================================================
-
-    /**
-     * Some attribute.
-     *
-     * @var string
-     */
-    // public $someAttribute = 'Some Default';
-
-    // Static Methods
-    // =========================================================================
 
     /**
      * Returns the display name of this class.
@@ -91,29 +38,6 @@ class MarketplacePayee extends Field
     public static function displayName(): string
     {
         return Craft::t('marketplace', 'Marketplace Payee');
-    }
-
-    // Public Methods
-    // =========================================================================
-
-    /**
-     * Returns the validation rules for attributes.
-     *
-     * Validation rules are used by [[validate()]] to check if attribute values are valid.
-     * Child classes may override this method to declare different validation rules.
-     *
-     * More info: http://www.yiiframework.com/doc-2.0/guide-input-validation.html
-     *
-     * @return array
-     */
-    public function rules(): array
-    {
-        $rules = parent::rules();
-        // $rules = array_merge($rules, [
-        //     ['someAttribute', 'string'],
-        //     ['someAttribute', 'default', 'value' => 'Some Default'],
-        // ]);
-        return $rules;
     }
 
     // Value might have been incorrectly stored as an array as a JSON string in
