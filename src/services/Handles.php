@@ -19,7 +19,7 @@ class Handles extends Component
      */
     public function getButtonHandle(): ?string
     {
-        $fields = Craft::$app->fields->getFieldsWithContent();
+        $fields = Craft::$app->fields->getAllFields();
 
         if ($fields && count($fields) >= 1) {
             foreach ($fields as $key => $value) {
@@ -37,12 +37,7 @@ class Handles extends Component
      */
     public function getPayeeHandle(): ?string
     {
-        // TODO This seems to work fine, but might need to double
-        // check if this needs a different approach for regular vs. Digital Products
-        // Previously used an argument:
-        // $fields = $purchasable->product->getFieldLayout()->getFields();
-
-        $fields = Craft::$app->fields->getFieldsWithContent();
+        $fields = Craft::$app->fields->getAllFields();
 
         if ($fields && count($fields) >= 1) {
             foreach ($fields as $key => $value) {
