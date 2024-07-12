@@ -11,6 +11,7 @@
 namespace kennethormandy\marketplace;
 
 use Craft;
+use craft\base\Model;
 use craft\base\Plugin as BasePlugin;
 use craft\commerce\elements\Order;
 use craft\commerce\events\RefundTransactionEvent;
@@ -632,9 +633,8 @@ class Marketplace extends BasePlugin
      * Whether or not the Pro edition of this plugin is being used.
      *
      * @since 1.4.0
-     * @return bool
      */
-    private function isPro()
+    private function isPro(): bool
     {
         if (isset($this->EDITION_PRO) && $this->is($this->EDITION_PRO)) {
             return true;
@@ -680,15 +680,10 @@ class Marketplace extends BasePlugin
         });
     }
 
-    // Protected Methods
-    // =========================================================================
-
     /**
      * Creates and returns the model used to store the plugin’s settings.
-     *
-     * @return \craft\base\Model|null
      */
-    protected function createSettingsModel(): ?\craft\base\Model
+    protected function createSettingsModel(): ?Model
     {
         return new Settings();
     }
