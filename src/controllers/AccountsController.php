@@ -7,9 +7,9 @@ use craft\elements\User;
 use craft\web\Controller;
 use craft\web\Response;
 use kennethormandy\marketplace\Marketplace;
-use stripe\exception\InvalidArgumentException;
-use stripe\exception\InvalidRequestException;
-use stripe\exception\PermissionException;
+use Stripe\Exception\InvalidArgumentException;
+use Stripe\Exception\InvalidRequestException;
+use Stripe\Exception\PermissionException;
 use verbb\auth\helpers\Session;
 
 class AccountsController extends Controller

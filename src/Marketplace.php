@@ -42,6 +42,7 @@ use verbb\auth\helpers\Session;
 use verbb\auth\services\OAuth;
 use verbb\sociallogin\services\Providers;
 use yii\base\Event;
+use yii\base\NotSupportedException;
 
 class Marketplace extends BasePlugin
 {
