@@ -13,6 +13,7 @@ namespace kennethormandy\marketplace\fields;
 use Craft;
 use craft\base\ElementInterface;
 use craft\base\Field;
+use craft\base\PreviewableFieldInterface;
 use craft\helpers\Json;
 use kennethormandy\marketplace\Marketplace;
 use yii\db\Schema;
@@ -29,7 +30,7 @@ use yii\db\Schema;
  * @author    Kenneth Ormandy
  * @since     0.1.0
  */
-class MarketplaceConnectButton extends Field
+class MarketplaceConnectButton extends Field implements PreviewableFieldInterface
 {
     // Public Properties
     // =========================================================================

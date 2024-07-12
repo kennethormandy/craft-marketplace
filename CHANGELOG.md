@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+## Added
+- Added ability to preview account IDs in element tables
+
 ## Changed
 - Renamed `kennethormandy\marketplace\services\AccountsService` → `kennethormandy\marketplace\services\Accounts`
 - Renamed `kennethormandy\marketplace\services\FeesService` → `kennethormandy\marketplace\services\Fees`
