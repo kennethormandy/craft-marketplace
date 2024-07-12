@@ -40,6 +40,10 @@ use kennethormandy\marketplace\services\Payees as PayeesService;
 use Stripe\Stripe;
 use Stripe\Transfer;
 use Stripe\BalanceTransaction;
+use verbb\auth\events\AccessTokenEvent;
+// use verbb\auth\events\AuthorizationUrlEvent;
+use verbb\auth\helpers\Session;
+use verbb\auth\services\OAuth;
 use verbb\sociallogin\services\Providers;
 use yii\base\Event;
 
@@ -97,16 +101,91 @@ class Marketplace extends BasePlugin
             }
         );
 
-        $this->_reviseOrderTemplate();
+        // Defer most setup tasks until Craft is fully initialized
+        Craft::$app->onInit(function() {
+            $this->_attachEventHandlers();
+        });
+    }
 
-        // Register custom provider
-        // Event::on(
-        //     Providers::class,
-        //     Providers::EVENT_REGISTER_PROVIDER_TYPES,
-        //     function (RegisterComponentTypesEvent $event) {
-        //         $event->types[] = StripeConnectProvider::class;
-        //     }
-        // );
+    /**
+     * Log wrapper
+     * 
+     * @param string $msg
+     * @param array $params
+     * @param string $level
+     */
+    public function log($msg, array $params = [], $level = 'info')
+    {
+        switch ($level) {
+            case 'error':
+                Craft::error($msg, 'marketplace');
+            case 'warning':
+                Craft::warning($msg, 'marketplace');
+                break;
+            default:
+                Craft::info($msg, 'marketplace');
+                break;
+        }
+    }
+
+    private function _attachEventHandlers(): void
+    {
+
+        Event::on(OAuth::class, OAuth::EVENT_AFTER_FETCH_ACCESS_TOKEN, function(AccessTokenEvent $event) {
+            $provider = $event->provider;
+            $ownerHandle = $event->ownerHandle;
+            $accessToken = $event->accessToken;
+            $token = $event->token;
+
+            Craft::info('EVENT_AFTER_FETCH_ACCESS_TOKEN', __METHOD__);
+
+            Craft::info(json_encode($event), __METHOD__);
+            Craft::info(json_encode($provider), __METHOD__);
+            Craft::info(json_encode($ownerHandle), __METHOD__);
+            Craft::info($accessToken, __METHOD__);
+            Craft::info($accessToken->getValues(), __METHOD__);
+            Craft::info($accessToken->jsonSerialize(), __METHOD__);
+            Craft::info(json_encode($token), __METHOD__);
+            Craft::info('Session::get("data")', __METHOD__);
+            Craft::info(Session::get('data'), __METHOD__);
+
+            // This might need to be configurable, too, or the plugin would
+            // come with an explicitly namespaced `marketplaceStripeExpress` provider.
+            $marketplaceProviderHandle = StripeExpressProvider::$handle;
+
+            // The data provided alongisde the original connection form or URL
+            $data = Session::get('data');
+
+            // TODO Decide whether we still support falling back to the current user? I
+            // think that we can, because Social Login checks that the session is the same.
+            $originalUserUid = $data['elementUid'] ?? null;
+
+            $accessTokenJson = $accessToken->jsonSerialize();
+            $stripeAccountId = $accessTokenJson['stripe_user_id'] ?? null;
+            $providerHandle = Session::get('providerHandle');
+
+            if ($providerHandle === $marketplaceProviderHandle && $stripeAccountId && $originalUserUid) {
+                $elementUid = $data['elementUid'];
+
+                // Could support passing this along to speed up the query
+                $elementType = null;
+
+                // The field handle for the Marketplace Connect Button
+                $fieldHandle = $this->handles->getButtonHandle($element);
+
+                $element = Craft::$app->elements->getElementByUid($elementUid, $elementType);
+
+                Craft::info('$element', __METHOD__);
+                Craft::info($element, __METHOD__);
+                
+                $element->setFieldValue($fieldHandle, $stripeAccountId);
+                Craft::$app->elements->saveElement($element);
+            }
+
+        });
+
+
+        $this->_reviseOrderTemplate();
 
         // Register our fields
         Event::on(
@@ -196,78 +275,6 @@ class Marketplace extends BasePlugin
         //             $this->log('Return URL');
         //             $this->log($returnUrl);
         //             $event->returnUrl = $returnUrl;
-        //         }
-        //     }
-        // );
-
-        // // TODO Here, the uid on the token should be the Stripe Account ID
-        // // The uid in the context is the API I’m thinking of using for saying
-        // // “don’t save the Stripe Account ID on the current user, save it on this element”
-        // Event::on(
-        //     AuthorizeController::class,
-        //     AuthorizeController::EVENT_AFTER_AUTHENTICATE,
-        //     function (AuthorizationEvent $event) {
-        //         $this->log('EVENT_AFTER_AUTHENTICATE context');
-        //         $this->log(json_encode($event));
-        //         $this->log(json_encode($event->context));
-
-        //         if (
-        //             is_array($event->context) &&
-        //             isset($event->context['elementUid']) &&
-        //             $event->context['elementUid']
-        //         ) {
-        //             $this->log(json_encode($event->context['elementUid']));
-        //             $elementUid = $event->context['elementUid'];
-    
-        //             // This needs to be a string for the class, not a simple string like “category”
-        //             // https://docs.craftcms.com/api/v3/craft-services-elements.html#public-methods
-        //             $elementType = null;
-        //             // if (isset($event->context['elementType'])) {
-        //             //     $this->log(json_encode($event->context['elementType']));
-        //             //     $elementType = $event->context['elementType'];
-        //             // }
-
-        //             $element = Craft::$app->elements->getElementByUid($elementUid, $elementType);    
-
-        //             $this->log('element');
-        //             $this->log(json_encode($element));
-        //             $this->log(json_encode($element->slug));
-
-        //             $token = $event->token;
-        //             $this->log(json_encode($token));
-
-        //             $stripeConnectHandle = $this->handles->getButtonHandle($element);
-        //             $element->setFieldValue($stripeConnectHandle, $token->uid);
-
-        //             Craft::$app->elements->saveElement($element);
-        //         } else {
-        //             // Didn’t explicitly provide an elementUid to save the
-        //             // Stripe Connect Account ID to, so we assume that
-        //             // it should be saved to the current user, if there is
-        //             // a Marketplace Button Field on the user.
-
-        //             // TODO Could set elementUid to the current user uid when the
-        //             // initial Stripe URL is created, and possibly remove this else
-        //             // conditional entirely. Otherwise hypothetically you can
-        //             // be logged in as a different user to initiate the process, and have the
-        //             // result applied to the wrong user.
-
-        //             $token = $event->token;
-        //             $userId = Craft::$app->user->getId();
-        //             $userObject = Craft::$app->users->getUserById($userId);
-        //             $stripeConnectHandle = $this->handles->getButtonHandle($userObject);
-
-        //             $this->log('Got Marketplace handle ' . $stripeConnectHandle);
-
-        //             if ($stripeConnectHandle && $userObject) {
-        //                 try {
-        //                     $userObject->setFieldValue($stripeConnectHandle, $token->uid);
-        //                     Craft::$app->elements->saveElement($userObject);
-        //                 } catch (InvalidFieldException $error) {
-        //                     $this->log(json_encode($error), [], 'error');
-        //                 }
-        //             }
-
         //         }
         //     }
         // );
@@ -551,27 +558,7 @@ class Marketplace extends BasePlugin
                 }
             }
         );
-    }
 
-    /**
-     * Log wrapper
-     * 
-     * @param string $msg
-     * @param array $params
-     * @param string $level
-     */
-    public function log($msg, array $params = [], $level = 'info')
-    {
-        switch ($level) {
-            case 'error':
-                Craft::error($msg, 'marketplace');
-            case 'warning':
-                Craft::warning($msg, 'marketplace');
-                break;
-            default:
-                Craft::info($msg, 'marketplace');
-                break;
-        }
     }
 
     private function _getStripeExchangeRate($stripeBalanceTransaction, $craftCurrencyCountryCode)
