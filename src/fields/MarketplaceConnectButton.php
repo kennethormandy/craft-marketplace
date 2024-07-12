@@ -362,9 +362,6 @@ class MarketplaceConnectButton extends Field implements PreviewableFieldInterfac
             $accountLoginUrl = Marketplace::$plugin->accounts->createLoginLink($value);
         }
 
-        // This doesn’t exist anymore
-        $appHandle = null;
-
         $payeeHandle = Marketplace::$plugin->handles->getPayeeHandle();
 
         // Render the input template
@@ -382,7 +379,6 @@ class MarketplaceConnectButton extends Field implements PreviewableFieldInterfac
                 // of element right now
                 'element' => $element,
 
-                'appHandle' => $appHandle ? $appHandle : '',
                 'payeeHandle' => $payeeHandle,
 
                 'accountLoginUrl' => $accountLoginUrl,
