@@ -17,52 +17,50 @@ class Accounts extends Component
         parent::init();
     }
 
-    public function createLoginLink($accountId = null, $params = [
+    public function createLoginLink($accountId, $params = [
         'redirect' => null,
         'referrer' => null,
     ])
     {
-        if (empty($accountId) || !$accountId) {
-            return null;
-        }
+        return $this->_getStripe()->accounts->createLoginLink($accountId);
+    }
 
-        $link = null;
-
+    /**
+     * @see https://docs.stripe.com/api/account_links/create
+     */
+    public function createAccountLink($accountId = null, $params = [
+        'redirect' => null,
+        'referrer' => null,
+    ])
+    {
         // NOTE Stripe specific
-        $stripeParams = [];
+        $stripeParams = [
+            'account' => $accountId,
+
+            // TODO These values are used, after you finish in the Stripe modal if you still have requirements
+            'refresh_url' => 'https://example.com/refresh',
+            'return_url' => 'https://example.com/return',
+
+            'type' => 'account_onboarding',
+            'collection_options' => ['fields' => 'eventually_due'], 
+        ];
+
         if (isset($params->redirect)) {
             $redirectUrl = $this->_getRedirectUrl($params->redirect, $params->referrer);
             if ($redirectUrl) {
-                $stripeParams['redirect_url'] = $redirectUrl;
+                $stripeParams['return_url'] = $redirectUrl;
             }
         }
 
-        $secretApiKey = Marketplace::$plugin->getSettings()->getSecretApiKey();
+        return $this->_getStripe()->accountLinks->create($stripeParams);
+    }
 
-        // TODO Should this be done once at the plugin level?
-        try {
-            Stripe::setApiKey($secretApiKey);
-        } catch (Exception $e) {
-            Marketplace::$plugin->log($e->getTraceAsString(), [], 'error');
-            return null;
-        }
+    private function _getStripe(): StripeClient
+    {
+        $stripeSecretKey = Marketplace::$plugin->getSettings()->getSecretApiKey();
+        $stripe = new StripeClient($stripeSecretKey);
 
-        try {
-            $resp = StripeAccount::createLoginLink($accountId, $stripeParams);
-            if (isset($resp->url) && $resp->url) {
-                $link = $resp->url;
-            }
-        } catch (PermissionException $e) {
-            Marketplace::$plugin->log($e->getTraceAsString(), [], 'error');
-
-            // TODO Handle translations
-            // TODO Handle altering of flash message, same as default Contact Form plugin?
-            Craft::$app->session->setError('Could not create login link.');
-
-            return null;
-        }
-
-        return $link;
+        return $stripe;
     }
 
     private function _getRedirectUrl($redirectUrlWithHash = null, $fallback = null)
