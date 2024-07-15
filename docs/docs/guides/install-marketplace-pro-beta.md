@@ -22,7 +22,7 @@ Make the following changes to your `composer.json` file, to allow you to install
 - Set [prefer-stable](https://getcomposer.org/doc/04-schema.md#prefer-stable) to `false`, because you’d prefer this version of Marketplace to the current stable release. (?)
 - Add the repository config.
 
-```json
+```js
 {
   "minimum-stability": "dev",
   "prefer-stable": true,
@@ -37,7 +37,7 @@ Make the following changes to your `composer.json` file, to allow you to install
 
 Then, in your terminal, require the current Marketplace Pro Beta:
 
-```bash
+```sh
 composer require kennethormandy/craft-marketplace:dev-main#f2d5f4eafa4793cf831cc45a65661ae415d9096e
 ```
 
@@ -45,7 +45,7 @@ composer require kennethormandy/craft-marketplace:dev-main#f2d5f4eafa4793cf831cc
 
 Add the following environment variable in all your environments, to enable the Marketplace Pro Beta features:
 
-```bash
+```sh
 MARKETPLACE_PRO_BETA=true
 ```
 
@@ -55,7 +55,7 @@ If you already had Marketplace installed, then you are done: you are now running
 
 If you are installing Marketplace for the first time in your project, you can now install the plugins through the Craft CMS dashboard, or using the command line:
 
-```bash
+```sh
 # Install OAuth Client plugin
 ./craft install/plugin oauthclient
 

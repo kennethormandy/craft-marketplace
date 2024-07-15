@@ -57,7 +57,7 @@ const config = {
       prism: {
         theme: prismThemes.oneLight,
         darkTheme: prismThemes.oneDark,
-        additionalLanguages: ['php', 'twig'],
+        additionalLanguages: ['php', 'twig', 'bash'],
       },
       image: 'images/og-image.png',
       navbar: {
@@ -133,8 +133,10 @@ const config = {
 
 console.log('process.env.FATHOM_SITE_ID)', process.env.FATHOM_SITE_ID)
 
-if (typeof process.env.FATHOM_SITE_ID !== 'undefined' && process.env.FATHOM_SITE_ID !== '') {
-
+if (
+  typeof process.env.FATHOM_SITE_ID !== 'undefined' &&
+  process.env.FATHOM_SITE_ID !== ''
+) {
   config.plugins = config.plugins || []
   config.plugins.push('docusaurus-plugin-fathom')
 

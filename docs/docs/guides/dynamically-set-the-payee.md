@@ -6,7 +6,7 @@ How to dynamically support multiple Payees on a single set of products, or modif
 
 After installing the plugin, add a new module to your Craft site, ex. `modules/CustomPayeeModule.php`:
 
-```php {32,77}
+```php {32,77} title="modules/CustomPayeeModule.php"
 <?php
 namespace modules;
 
@@ -93,7 +93,7 @@ class CustomPayeeModule extends Module
 
 In `app.php`, load your new module, as per usual:
 
-```php {4,7}
+```php {4,7} title="app.php"
 return [
     'modules' => [
         'my-module' => \modules\Module::class,
