@@ -1,125 +1,148 @@
 require('dotenv').config()
 
-/** @type {import('@docusaurus/types').DocusaurusConfig} */
-module.exports = {
-  title: "Marketplace",
+// @ts-check
+// `@type` JSDoc annotations allow editor autocompletion and type checking
+// (when paired with `@ts-check`).
+// There are various equivalent ways to declare your Docusaurus config.
+// See: https://docusaurus.io/docs/api/docusaurus-config
+
+import { themes as prismThemes } from 'prism-react-renderer'
+
+/** @type {import('@docusaurus/types').Config} */
+const config = {
+  title: 'Marketplace',
   tagline:
-    "Make your Craft Commerce site into a Marketplace, using Stripe Connect.",
-  url: "https://craft-marketplace.kennethormandy.com",
-  baseUrl: "/",
-  onBrokenLinks: "throw",
-  onBrokenMarkdownLinks: "warn",
-  favicon: "images/favicon.ico",
-  organizationName: "kennethormandy", // Usually your GitHub org/user name.
-  projectName: "craft-marketplace", // Usually your repo name.
-  plugins: ['docusaurus-plugin-fathom'],
-  themeConfig: {
-    prism: {
-      additionalLanguages: [
-        "php",
-        // This crashes Docusaurus without the modifications in `_temp/prism-twig.js`
-        "twig",
-      ]
-    },
-    fathomAnalytics: {
-      siteId: process.env.FATHOM_SITE_ID,
-      // customDomain: 'https://mycustomdomain.com', // Use a custom domain, see https://usefathom.com/support/custom-domains
-    },
-    image: 'images/og-image.png',
-    colorMode: {
-      defaultMode: "dark",
-      disableSwitch: false,
-      respectPrefersColorScheme: true,
-    },
-    navbar: {
-      title: "Marketplace",
-      logo: {
-        alt: "Marketplace Logo",
-        src: "images/logo.svg",
-      },
-      items: [
-        {
-          to: "docs/",
-          activeBasePath: "docs",
-          label: "Docs",
-          position: "left",
-        },
-        { to: "blog", label: "Blog", position: "left" },
-        {
-          href: "https://github.com/kennethormandy/craft-marketplace",
-          label: "GitHub",
-          position: "right",
-        },
-      ],
-    },
-    footer: {
-      style: "light",
-      links: [
-        {
-          title: "Docs",
-          items: [
-            {
-              label: "Getting Started",
-              to: "docs/",
-            },
-          ],
-        },
-        {
-          title: "Support",
-          items: [
-            {
-              label: "Craft CMS Stack Exchange",
-              href:
-                "https://craftcms.stackexchange.com/questions/tagged/plugin-marketplace",
-            },
-            {
-              label: "GitHub Issues",
-              href:
-                "https://github.com/kennethormandy/craft-marketplace/issues",
-            },
-          ],
-        },
-        {
-          title: "More",
-          items: [
-            {
-              label: "Plugin Store",
-              href: "https://plugins.craftcms.com/marketplace",
-            },
-            {
-              label: "GitHub",
-              href: "https://github.com/kennethormandy/craft-marketplace",
-            },
-            {
-              label: "Blog",
-              to: "blog",
-            },
-          ],
-        },
-      ],
-      copyright: `Copyright © ${new Date().getFullYear()} Kenneth Ormandy Inc.`,
-    },
+    'Make your Craft Commerce site into a Marketplace, using Stripe Connect.',
+  // favicon: 'img/favicon.ico',
+  url: 'https://craft-marketplace.kennethormandy.com',
+  baseUrl: '/',
+  organizationName: 'kennethormandy',
+  projectName: 'craft-marketplace',
+  onBrokenLinks: 'throw',
+  onBrokenMarkdownLinks: 'warn',
+  i18n: {
+    defaultLocale: 'en',
+    locales: ['en'],
   },
+
   presets: [
     [
-      "@docusaurus/preset-classic",
-      {
+      'classic',
+      /** @type {import('@docusaurus/preset-classic').Options} */
+      ({
         docs: {
-          sidebarPath: require.resolve("./sidebars.js"),
-          // Please change this to your repo.
-          editUrl:
-            "https://github.com/kennethormandy/craft-marketplace/edit/master/docs/",
+          sidebarPath: './sidebars.js',
+          // // Please change this to your repo.
+          // // Remove this to remove the "edit this page" links.
+          // editUrl:
+          //   'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
         },
         blog: {
-          showReadingTime: true,
-          // Please change this to your repo.
-          editUrl:
-            "https://github.com/kennethormandy/craft-marketplace/edit/master/docs/blog/",
+          showReadingTime: false,
+          // // Please change this to your repo.
+          // // Remove this to remove the "edit this page" links.
+          // editUrl:
+          //   'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
         },
         theme: {
-          customCss: require.resolve("./src/css/custom.css"),
+          customCss: './src/css/custom.css',
         },
-      },
+      }),
     ],
   ],
-};
+
+  themeConfig:
+    /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
+    ({
+      prism: {
+        theme: prismThemes.oneLight,
+        darkTheme: prismThemes.oneDark,
+        additionalLanguages: ['php', 'twig'],
+      },
+      image: 'images/og-image.png',
+      navbar: {
+        title: 'Marketplace',
+        logo: {
+          alt: 'Marketplace Logo',
+          src: 'images/logo.svg',
+        },
+        items: [
+          {
+            to: 'docs/',
+            activeBasePath: 'docs',
+            label: 'Docs',
+            position: 'left',
+          },
+          { to: 'blog', label: 'Blog', position: 'left' },
+          {
+            href: 'https://github.com/kennethormandy/craft-marketplace',
+            label: 'GitHub',
+            position: 'right',
+          },
+        ],
+      },
+      footer: {
+        style: 'light',
+        links: [
+          {
+            title: 'Docs',
+            items: [
+              {
+                label: 'Getting Started',
+                to: 'docs/',
+              },
+            ],
+          },
+          {
+            title: 'Support',
+            items: [
+              {
+                label: 'Craft CMS Stack Exchange',
+                href:
+                  'https://craftcms.stackexchange.com/questions/tagged/plugin-marketplace',
+              },
+              {
+                label: 'GitHub Issues',
+                href:
+                  'https://github.com/kennethormandy/craft-marketplace/issues',
+              },
+            ],
+          },
+          {
+            title: 'More',
+            items: [
+              {
+                label: 'Plugin Store',
+                href: 'https://plugins.craftcms.com/marketplace',
+              },
+              {
+                label: 'GitHub',
+                href: 'https://github.com/kennethormandy/craft-marketplace',
+              },
+              {
+                label: 'Blog',
+                to: 'blog',
+              },
+            ],
+          },
+        ],
+        copyright: `Copyright © ${new Date().getFullYear()} Kenneth Ormandy Inc.`,
+      },
+    }),
+}
+
+console.log('process.env.FATHOM_SITE_ID)', process.env.FATHOM_SITE_ID)
+
+if (typeof process.env.FATHOM_SITE_ID !== 'undefined' && process.env.FATHOM_SITE_ID !== '') {
+
+  config.plugins = config.plugins || []
+  config.plugins.push('docusaurus-plugin-fathom')
+
+  // Add to theme config
+  config.themeConfig.fathomAnalytics = {
+    siteId: process.env.FATHOM_SITE_ID,
+    // customDomain: 'https://mycustomdomain.com', // Use a custom domain, see https://usefathom.com/support/custom-domains
+  }
+}
+
+export default config

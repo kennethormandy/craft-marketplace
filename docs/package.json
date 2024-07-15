@@ -5,10 +5,7 @@
   "private": true,
   "scripts": {
     "docusaurus": "docusaurus",
-    "fix-prism-twig": "cp _temp/prism-twig.js node_modules/prismjs/components",
-    "prestart": "npm run fix-prism-twig",
     "start": "docusaurus start",
-    "prebuild": "npm run fix-prism-twig",
     "build": "docusaurus build",
     "swizzle": "docusaurus swizzle",
     "predeploy": "npm run build",
@@ -20,13 +17,20 @@
     "write-heading-ids": "docusaurus write-heading-ids"
   },
   "dependencies": {
-    "@docusaurus/core": "^2.0.0",
-    "@docusaurus/preset-classic": "^2.0.0",
-    "@mdx-js/react": "^1.6.21",
-    "clsx": "^1.1.1",
-    "docusaurus-plugin-fathom": "^1.1.0",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1"
+    "@docusaurus/core": "3.4.0",
+    "@docusaurus/preset-classic": "3.4.0",
+    "@mdx-js/react": "^3.0.0",
+    "clsx": "^2.0.0",
+    "docusaurus-plugin-fathom": "^1.2.0",
+    "dotenv": "^16.4.5",
+    "prism-react-renderer": "^2.3.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "surge": "^0.24.0-rc.15"
+  },
+  "devDependencies": {
+    "@docusaurus/module-type-aliases": "3.4.0",
+    "@docusaurus/types": "3.4.0"
   },
   "browserslist": {
     "production": [
@@ -35,13 +39,12 @@
       "not op_mini all"
     ],
     "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
+      "last 3 chrome version",
+      "last 3 firefox version",
+      "last 5 safari version"
     ]
   },
-  "devDependencies": {
-    "dotenv": "^16.0.3",
-    "surge": "^0.24.0-rc.15"
+  "engines": {
+    "node": ">=18.0"
   }
 }
