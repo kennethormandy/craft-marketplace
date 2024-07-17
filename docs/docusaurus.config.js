@@ -61,6 +61,7 @@ const config = {
       },
       image: 'images/og-image.png',
       navbar: {
+        hideOnScroll: true,
         title: 'Marketplace',
         logo: {
           alt: 'Marketplace Logo',
