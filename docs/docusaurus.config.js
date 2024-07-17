@@ -131,8 +131,6 @@ const config = {
     }),
 }
 
-console.log('process.env.FATHOM_SITE_ID)', process.env.FATHOM_SITE_ID)
-
 if (
   typeof process.env.FATHOM_SITE_ID !== 'undefined' &&
   process.env.FATHOM_SITE_ID !== ''
