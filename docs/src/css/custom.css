@@ -4,7 +4,11 @@
  * work well for content-centric websites.
  */
 
-/* You can override the default Infima variables here. */
+/**
+ * You can override the default Infima variables here.
+ * https://github.com/facebookincubator/infima/blob/main/packages/core/styles/common/variables.pcss
+ * https://github.com/facebookincubator/infima/blob/main/packages/core/styles/common/variables-dark.pcss
+ */
 :root {
   /* Only listed here, to override other colour variables. Not used directly. */
   --marketplace-color-primary: #897391;
@@ -19,15 +23,29 @@
   --ifm-color-primary-darkest: #605066;
   --ifm-color-primary-light:  #95829c;
   --ifm-color-primary-lighter: #9b89a2;
-  --ifm-color-primary-lightest :#ae9fb3;
+  --ifm-color-primary-lightest:#ae9fb3;
 
   /* Unchanged defaults */
   --ifm-code-font-size: 95%;
 
   /* Customized */
+  --ifm-spacing-horizontal: calc(var(--ifm-global-spacing) * 1);
   --ifm-link-color: #856f8e; /* Slightly better contrast */
+  --ifm-background-color: hsl(276, 35%, 98%);
+  --ifm-navbar-background-color: var(--ifm-background-color);
+  --ifm-footer-background-color: var(--ifm-background-color);
+  --ifm-hero-background-color: var(--ifm-background-color);
+  --ifm-menu-link-padding-horizontal: 0.75rem;
+  --ifm-toc-border-color: hsl(276, 20%, 90%);
+  --ifm-navbar-shadow: none;
+  --ifm-hover-overlay: var(--ifm-toc-border-color);
+  --ifm-menu-link-padding-vertical: 0.25rem;
+  --ifm-menu-color: var(--ifm-font-color-base);
+  --ifm-menu-color-active: var(--ifm-color-primary-dark);
+  --ifm-menu-color-background-active: var(--ifm-hover-overlay);
+  --ifm-menu-color-background-hover: var(--ifm-hover-overlay);
 
-  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+  --docusaurus-highlighted-code-line-bg: hsl(276, 20%, 90%, 1.0);
 }
 
 /* For readability concerns, you should choose a lighter palette in dark mode. */
@@ -42,4 +60,34 @@
   --ifm-color-primary-lightest: #4fddbf;
   */
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+}
+
+.navbar {
+  border-bottom: 1px solid var(--ifm-toc-border-color);
+}
+
+.menu {
+  font-weight: normal;
+}
+
+.menu__link,
+.menu__caret {
+  border-radius: 0.25rem 0 0 0.25rem;
+}
+
+.pagination-nav__link {
+  border-color: var(--ifm-toc-border-color);
+}
+
+.theme-code-block {
+  border: 1px solid var(--ifm-toc-border-color);
+  box-shadow: none !important;
+}
+
+.theme-code-block > [class^="codeBlockTitle"] {
+  border-bottom: 1px solid var(--ifm-toc-border-color);  
+}
+
+.footer {
+  border-top: 1px solid var(--ifm-toc-border-color);
 }
