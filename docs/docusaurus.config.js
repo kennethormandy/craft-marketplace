@@ -24,6 +24,9 @@ const config = {
     defaultLocale: 'en',
     locales: ['en'],
   },
+  stylesheets: [
+    'https://use.typekit.net/pbb3tpj.css',
+  ],
 
   presets: [
     [
