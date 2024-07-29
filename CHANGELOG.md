@@ -20,6 +20,7 @@
 - Removed internal references to potentially supporting direct charges; Marketplace is only going to support destination changes for the forseeable future.
 - Removed now non-existent app handle from settings, and `getAppHandle()` from handles service. Unlike OAuth Client, Social Login doesn’t have the concept of “apps.”
 - Removed display of orders by a payee on a payee’s user page
+- Removed support for configuring fees visually via the settings in the control panel
 
 ***
 
