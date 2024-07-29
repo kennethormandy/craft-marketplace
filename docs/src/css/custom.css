@@ -26,7 +26,11 @@
   --ifm-color-primary-lightest:#ae9fb3;
 
   /* Unchanged defaults */
-  --ifm-code-font-size: 95%;
+  /* --ifm-code-font-size: 95%; */
+  /* --ifm-font-size-base: 100%; */
+  /* --ifm-line-height-base: 1.4; */
+  /* --ifm-font-family-base: Avenir Next, sans-serif; */
+  /* --ifm-heading-font-family: Avenir Next, sans-serif; */
 
   /* Customized */
   --ifm-spacing-horizontal: calc(var(--ifm-global-spacing) * 1);
@@ -90,4 +94,18 @@
 
 .footer {
   border-top: 1px solid var(--ifm-toc-border-color);
+}
+
+/* Headings */
+
+h1 {
+  font-weight: 200;
+}
+
+h2 {
+  font-weight: 300;
+}
+
+h3 {
+  font-weight: 400;
 }
