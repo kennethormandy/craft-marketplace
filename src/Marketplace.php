@@ -242,35 +242,6 @@ class Marketplace extends BasePlugin
         //     }
         // );
 
-        // Event::on(
-        //     AuthorizeController::class,
-        //     AuthorizeController::EVENT_BEFORE_AUTHENTICATE,
-        //     function (AuthorizationEvent $event) {
-
-        //         if ($event->context) {
-        //             $this->log('EVENT_BEFORE_AUTHENTICATE context');
-        //             $this->log(json_encode($event->context));
-        //         }
-
-        //         if (
-        //         $event->context &&
-        //         isset($event->context['location']) &&
-        //         isset($event->context['location']['pathname']) &&
-        //         $event->context['contextName'] === 'MarketplaceConnectButton') {
-        //             $loc = $event->context['location'];
-        //             $pathname = $loc['pathname'];
-        //             if (isset($loc['hash'])) {
-        //                 $pathname = $pathname . $loc['hash'];
-        //             }
-
-        //             $returnUrl = UrlHelper::cpUrl($pathname, null, null);
-        //             $this->log('Return URL');
-        //             $this->log($returnUrl);
-        //             $event->returnUrl = $returnUrl;
-        //         }
-        //     }
-        // );
-
         // Full and Parial refunds are supported here.
         // TODO Could provide more options around this, ex: Who is responsible
         // for the refund, the platform or connected account? Should the
