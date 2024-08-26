@@ -39,11 +39,11 @@
   --ifm-navbar-background-color: var(--ifm-background-color);
   --ifm-footer-background-color: var(--ifm-background-color);
   --ifm-hero-background-color: var(--ifm-background-color);
-  --ifm-menu-link-padding-horizontal: 0.75rem;
+  --ifm-menu-link-padding-horizontal: 0.75em;
   --ifm-toc-border-color: hsl(276, 20%, 90%);
   --ifm-navbar-shadow: none;
   --ifm-hover-overlay: var(--ifm-toc-border-color);
-  --ifm-menu-link-padding-vertical: 0.25rem;
+  --ifm-menu-link-padding-vertical: 0.3em;
   --ifm-menu-color: var(--ifm-font-color-base);
   --ifm-menu-color-active: var(--ifm-color-primary-dark);
   --ifm-menu-color-background-active: var(--ifm-hover-overlay);
@@ -66,8 +66,28 @@
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }
 
+@media screen and (min-width: 997px) {
+  .container {
+    padding-left: calc(var(--ifm-global-spacing) * 2);
+    padding-right: calc(var(--ifm-global-spacing) * 2);
+  }  
+}
+
 .navbar {
   border-bottom: 1px solid var(--ifm-toc-border-color);
+}
+
+.menu__list-item {
+  font-size: 0.85rem;
+}
+
+.menu__list-item-collapsible {
+  font-weight: bold;
+}
+
+.theme-doc-sidebar-menu > .menu__list-item {
+  margin-bottom: 1.5rem;
+  padding-left: 0;
 }
 
 .menu {
@@ -77,6 +97,11 @@
 .menu__link,
 .menu__caret {
   border-radius: 0.25rem 0 0 0.25rem;
+}
+
+/* Don’t indent nested menus */
+.menu__list .menu__list {
+  padding-left: 0;
 }
 
 .pagination-nav__link {
@@ -98,7 +123,7 @@
 
 /* Headings */
 
-h1 {
+/* h1 {
   font-weight: 200;
 }
 
@@ -108,4 +133,4 @@ h2 {
 
 h3 {
   font-weight: 400;
-}
+} */
