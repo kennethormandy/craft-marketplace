@@ -5,6 +5,7 @@ namespace kennethormandy\marketplace\models;
 use Craft;
 use craft\base\Model;
 use kennethormandy\marketplace\Marketplace;
+use kennethormandy\marketplace\providers\StripeExpressProvider;
 
 /**
  * Settings Model
@@ -22,16 +23,22 @@ class Settings extends Model
     /**
      * @var string
      */
+    public $clientId;
     public $secretApiKey;
 
-    // Pro
-    public $stripePreferSeparateTransfers = true;
+    public string $providerHandle = 'marketplaceStripeExpress';
+
 
     // Public Methods
     // =========================================================================
 
+    public function getClientId(): string
+    {
+        return Craft::parseEnv($this->clientId);
+    }
+
     /**
-     * @return string the parsed Stripe secret key
+     * @return string The parsed Stripe secret key, for use with 
      */
     public function getSecretApiKey(): string
     {
@@ -59,8 +66,8 @@ class Settings extends Model
     {
         return
         [
-            // [['secretApiKey'], 'required'],
-            // ...
+            [['secretApiKey'], 'required'],
+            [['clientId'], 'required'],
         ];
     }
 }

@@ -6,23 +6,47 @@
  */
 #}
 
-{% import "_includes/forms" as forms %}
+{% import '_includes/forms' as forms %}
 {# @var craft \craft\web\twig\variables\CraftVariable #}
 
+<div>
+  {{ 'Instructions [Read more…](#)'|t('marketplace')|md }}
+</div>
+
+{# actionUrl('marketplace/auth/callback', showScriptName=false) #}
+
+{{ forms.textField({
+  readonly: true,
+  label: 'Redirect URI',
+  instructions: 'Use this URI when setting up Stripe Connect within the Stripe Dashboard.',
+  value: provider.getRedirectUri(),
+}) }}
+
+<div>
+  {{ 'Instructions [Read more…](#)'|t('marketplace')|md }}
+</div>
+
 {{ forms.autosuggestField({
-    label: 'Stripe Secret Key',
-    instructions: 'The Stripe secret API key for the parent Stripe account, that other Stripe accounts will be connected to.',
-    id: 'secretApiKey',
-    name: 'secretApiKey',
-    class: 'code',
-    placeholder: 'sk_live_AaAaAaAaAaAaAaAaAaAaAaAa',
-    value: settings.secretApiKey,
-    suggestEnvVars: true
-  })
-}}
+  label: 'Stripe Connect Client ID'|t('marketplace'),
+  instructions: 'Your Client ID for Stripe Connect. Note this is not the same as your Stripe publishable key.'|t('marketplace'),
+  name: 'clientId',
+  class: 'code',
+  placeholder: 'ca_AaAaAaAaAaAaAaAaAaAaAaAaAaAaAaAa',
+  required: true,
+  suggestEnvVars: true,
+  value: settings.clientId,
+  errors: settings.getErrors('clientId'),
+}) }}
 
-{% set socialLoginEditUrl = "social-login/settings/providers/edit/#{providerHandle}" %}
-
-<a href="{{ cpUrl(socialLoginEditUrl) }}" class="btn submit add icon">
-  {{ 'Configure Stripe Express in Social Login'|t }}
-</a>
+{{ forms.autosuggestField({
+  label: 'Stripe Secret Key',
+  instructions: 'The secret API key for the parent Stripe account, that other accounts will be connected to. This should be set to the same value you use in the Stripe for Craft Commerce gateway.',
+  id: 'secretApiKey',
+  name: 'secretApiKey',
+  class: 'code',
+  placeholder: 'sk_live_AaAaAaAaAaAaAaAaAaAaAaAa',
+  value: settings.secretApiKey,
+  suggestEnvVars: true,
+  required: true,
+  errors: settings.getErrors('secretApiKey'),
+}) }}

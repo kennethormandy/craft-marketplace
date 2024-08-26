@@ -99,7 +99,7 @@ class AccountsController extends Controller
     }
 
     /**
-     * Use Social Login’s flash messages to provide Marketplace- or Stripe-specific errors.
+     * Use Auth’s flash messages to provide Marketplace- or Stripe-specific errors.
      */
     private function _setError(string $message): void
     {
@@ -109,7 +109,7 @@ class AccountsController extends Controller
         // like before. Leaning towards option 2, which would require a
         // different Twig helper than Social Login.
 
-        Session::setError('social-login', $message);
+        Session::setError('marketplace', $message);
 
         Craft::$app->getUrlManager()->setRouteParams([
             'variables' => ['errorMessage' => $message],

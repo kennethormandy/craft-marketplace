@@ -7,8 +7,7 @@ use kennethormandy\marketplace\providers\clients\StripeExpressResourceOwner;
 use League\OAuth2\Client\Token\AccessToken;
 use verbb\auth\helpers\Provider as ProviderHelper;
 use verbb\auth\providers\Stripe as StripeAuthProvider;
-use verbb\sociallogin\base\OAuthProvider;
-use verbb\sociallogin\providers\Stripe as StripeSocialLoginProvider;
+use verbb\auth\base\OAuthProvider;
 
 class StripeExpress extends StripeAuthProvider
 {
@@ -30,7 +29,6 @@ class StripeExpress extends StripeAuthProvider
 }
 
 class StripeExpressProvider extends OAuthProvider
-// class StripeExpressProvider extends StripeSocialLoginProvider
 {
     // Static Methods
     // =========================================================================

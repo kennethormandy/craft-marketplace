@@ -4,6 +4,7 @@ namespace kennethormandy\marketplace\migrations;
 
 use Craft;
 use craft\db\Migration;
+use verbb\auth\Auth;
 
 /**
  * Install migration.
@@ -29,6 +30,11 @@ class Install extends Migration
     public function safeUp(): bool
     {
         return true;
+
+        // Ensure that the Auth module kicks off setting up tables
+        Auth::$plugin->migrator->up();
+
+        $this->createTables();
     }
 
     /**

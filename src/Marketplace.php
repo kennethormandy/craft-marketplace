@@ -37,11 +37,12 @@ use kennethormandy\marketplace\services\Payees as PayeesService;
 use Stripe\BalanceTransaction;
 use Stripe\Stripe;
 use Stripe\Transfer;
+use verbb\auth\Auth;
+use verbb\auth\base\OAuthProvider;
 use verbb\auth\events\AccessTokenEvent;
 // use verbb\auth\events\AuthorizationUrlEvent;
 use verbb\auth\helpers\Session;
 use verbb\auth\services\OAuth;
-use verbb\sociallogin\services\Providers;
 use yii\base\Event;
 use yii\base\NotSupportedException;
 
@@ -80,6 +81,9 @@ class Marketplace extends BasePlugin
         parent::init();
         self::$plugin = $this;
 
+        // Initialize the Auth module
+        Auth::registerModule();
+
         // Register services
         $this->setComponents([
             'handles' => HandlesService::class,
@@ -89,15 +93,6 @@ class Marketplace extends BasePlugin
         ]);
 
         Craft::info('Marketplace plugin loaded', __METHOD__);
-
-        // This has to run before `onInit` for some reason
-        Event::on(
-            Providers::class,
-            Providers::EVENT_REGISTER_PROVIDER_TYPES,
-            function(RegisterComponentTypesEvent $event) {
-                $event->types[] = StripeExpressProvider::class;
-            }
-        );
 
         // Defer most setup tasks until Craft is fully initialized
         Craft::$app->onInit(function() {
@@ -144,26 +139,23 @@ class Marketplace extends BasePlugin
             Craft::info($accessToken->getValues(), __METHOD__);
             Craft::info($accessToken->jsonSerialize(), __METHOD__);
             Craft::info(json_encode($token), __METHOD__);
-            Craft::info('Session::get("data")', __METHOD__);
-            Craft::info(Session::get('data'), __METHOD__);
 
-            // This might need to be configurable, too, or the plugin would
-            // come with an explicitly namespaced `marketplaceStripeExpress` provider.
+            // Could provide helper for this, also used in AuthController
+            $elementUid = Session::get('elementUid') ?? null;
+            Craft::info($elementUid, __METHOD__);
+
             $marketplaceProviderHandle = StripeExpressProvider::$handle;
 
-            // The data provided alongisde the original connection form or URL
-            $data = Session::get('data');
-
+            // The element UID provided alongisde the original connection form or URL.
             // TODO Decide whether we still support falling back to the current user? I
-            // think that we can, because Social Login checks that the session is the same.
-            $originalUserUid = $data['elementUid'] ?? null;
+            // think that we can, because we restore the session with Auth.
+            $originalUserUid = $elementUid;
 
             $accessTokenJson = $accessToken->jsonSerialize();
             $stripeAccountId = $accessTokenJson['stripe_user_id'] ?? null;
             $providerHandle = Session::get('providerHandle');
 
             if ($providerHandle === $marketplaceProviderHandle && $stripeAccountId && $originalUserUid) {
-                $elementUid = $data['elementUid'];
                 $elementType = null; // Could support passing this along to speed up the query
                 $element = Craft::$app->elements->getElementByUid($elementUid, $elementType);
 
@@ -328,7 +320,7 @@ class Marketplace extends BasePlugin
         //     StripeGateway::class,
         //     StripeGateway::EVENT_BUILD_GATEWAY_REQUEST,
         //     function (BuildGatewayRequestEvent $e) {
-        //         if ($this->isPro() && $this->getSettings()->stripePreferSeparateTransfers) {
+        //         if ($this->isPro() && $this->preferSeparateTransfers) {
         //             return;
         //         }
 
@@ -643,6 +635,24 @@ class Marketplace extends BasePlugin
         return false;
     }
 
+    /**
+     * Get the Stripe Express OAuth provider.
+     */
+    public function getProvider(): OAuthProvider
+    {
+        $settings = $this->getSettings();
+
+        $provider = new StripeExpressProvider([
+            'clientId' => $settings->clientId,
+            'clientSecret' => $settings->secretApiKey,
+
+            // The redirectUri pointing to our own `actionCallback` method
+            'redirectUri' => UrlHelper::actionUrl('marketplace/auth/callback', null, null, false)
+        ]);
+
+        return $provider;
+    }
+
     /* Adds a quick demo of using template hooks to add the
      * payee to the order editing page. Could use this to try
      * and modify permissions (ex. redirect you away if you aren’t
@@ -696,12 +706,14 @@ class Marketplace extends BasePlugin
      */
     protected function settingsHtml(): string
     {
+        $settings = $this->getSettings();
+
         return Craft::$app->view->renderTemplate(
             'marketplace/settings',
             [
-                'settings' => $this->getSettings(),
+                'settings' => $settings,
                 'isPro' => $this->isPro(),
-                'providerHandle' => StripeExpressProvider::$handle,
+                'provider' => $this->getProvider(),
             ]
         );
     }
