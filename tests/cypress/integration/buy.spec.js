@@ -58,7 +58,7 @@ context('Buy', () => {
           if (!result.application_fee_amount && result.transfer_group) {
             // Pro Beta (separate charges & transfers)
 
-            // This check is for Pro edition, with stripePreferSeparateTransfers (the default)
+            // This check is for Pro edition, with preferSeparateTransfers (the default)
             cy.task('checkTransferGroup', result.transfer_group).then(
               (transferGroupObj) => {
                 console.log(transferGroupObj)

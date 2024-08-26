@@ -63,6 +63,9 @@ class Marketplace extends BasePlugin
      */
     public string $schemaVersion = '0.1.0';
 
+    // Can probably be removed, or otherwise to settings if it actually is configurable.
+    public bool $preferSeparateTransfers = true;
+
     /**
      * @var Plugin
      */
