@@ -94,7 +94,7 @@ class Accounts extends Component
             $isValid = false;
         }
 
-        $accountId = $element[$accountIdHandle];
+        $accountId = $element->getFieldValue($accountIdHandle);
 
         // User must either be:
         // - An admin
