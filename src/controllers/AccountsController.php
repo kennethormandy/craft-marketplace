@@ -23,7 +23,7 @@ class AccountsController extends Controller
         });
     }
 
-    public function actionCreateAccountLink(): Response
+    public function actionCreateAccountLink(): ?Response
     {
         return $this->_createLink(function($accountId, $params) {
 
