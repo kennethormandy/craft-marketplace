@@ -5,6 +5,7 @@
 ## Added
 - Added Client ID setting (final name TBD)
 - Added ability to preview account IDs in element tables
+- Added AccountAccess event, to allow custom verification logic before creating Stripe account links
 
 ## Changed
 - Renamed `kennethormandy\marketplace\services\AccountsService` → `kennethormandy\marketplace\services\Accounts`
