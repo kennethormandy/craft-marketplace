@@ -31,7 +31,12 @@ class Accounts extends Component
     ])
     {
         return $this->_createLink($element, $params, function($accountId, $params) {
-            return $this->_getStripe()->accounts->createLoginLink($accountId, $params);
+
+            // Stripe’s login link has no params
+            // https://docs.stripe.com/api/accounts/login_link/create
+            $stripeParams = [];
+            return $this->_getStripe()->accounts->createLoginLink($accountId, $stripeParams);
+
         });
     }
 
