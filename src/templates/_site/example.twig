@@ -1,0 +1,24 @@
+<form method="POST" accept-charset="UTF-8" {{- attr(themeConfig.form.attributes) -}}>
+  {{ csrfInput() }}
+  {{ actionInput('marketplace/accounts/create-login-link') }}
+
+  {% if elementUid %}
+    {{ hiddenInput('elementUid', elementUid, { type: 'hidden' }) }}
+  {% endif %}
+
+  {# Customize the redirect, when applicable. Otherwise, defaults to the same page. #}
+  {% if params.redirect %}
+    {{ redirectInput(redirect, { type: 'hidden' }) }}
+  {% endif %}
+
+  <button type="submit" data-test="connect" {{- attr(themeConfig.submitButton.attributes) -}}>
+    {{ themeConfig.submitButton.label }}
+  </button>
+
+  {# A single error message, same as the default Craft CMS login form. #}
+  <div data-test="errors">
+    {% if errorMessage is defined %}
+      <p>{{ errorMessage }}</p>
+    {% endif %}
+  </div>
+</form>

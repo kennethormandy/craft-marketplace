@@ -22,9 +22,11 @@ use craft\commerce\stripe\base\Gateway as StripeGateway;
 use craft\commerce\stripe\events\BuildGatewayRequestEvent;
 use craft\elements\User;
 use craft\events\RegisterComponentTypesEvent;
+use craft\events\RegisterTemplateRootsEvent;
 use craft\helpers\App;
 use craft\helpers\UrlHelper;
 use craft\services\Fields;
+use craft\web\twig\variables\CraftVariable;
 use craft\web\View;
 use kennethormandy\marketplace\fields\MarketplaceConnectButton as MarketplaceConnectButtonField;
 use kennethormandy\marketplace\fields\MarketplacePayee as MarketplacePayeeField;
@@ -34,6 +36,7 @@ use kennethormandy\marketplace\services\Accounts as AccountsService;
 use kennethormandy\marketplace\services\Fees as FeesService;
 use kennethormandy\marketplace\services\Handles as HandlesService;
 use kennethormandy\marketplace\services\Payees as PayeesService;
+use kennethormandy\marketplace\variables\MarketplaceVariable;
 use Stripe\BalanceTransaction;
 use Stripe\Stripe;
 use Stripe\Transfer;
@@ -99,6 +102,8 @@ class Marketplace extends BasePlugin
 
         // Defer most setup tasks until Craft is fully initialized
         Craft::$app->onInit(function() {
+            $this->_registerVariables();
+            $this->_registerSiteTemplateRoot();
             $this->_attachEventHandlers();
         });
     }
@@ -123,6 +128,19 @@ class Marketplace extends BasePlugin
                 Craft::info($msg, 'marketplace');
                 break;
         }
+    }
+
+    /**
+     * Register templates for the MarketplaceVariable Twig helper
+     * in a dedicated templates/_site folder.
+     */
+    private function _registerSiteTemplateRoot(): void
+    {
+        Event::on(View::class, View::EVENT_REGISTER_SITE_TEMPLATE_ROOTS, function(RegisterTemplateRootsEvent $event) {
+            if (is_dir($baseDir = $this->getBasePath() . DIRECTORY_SEPARATOR . 'templates/_site')) {
+                $event->roots[$this->id] = $baseDir;
+            }
+        });
     }
 
     private function _attachEventHandlers(): void
@@ -661,6 +679,15 @@ class Marketplace extends BasePlugin
               ]
                 );
             }
+        });
+    }
+
+    private function _registerVariables(): void
+    {
+        Event::on(CraftVariable::class, CraftVariable::EVENT_INIT, static function(Event $event) {
+            /** @var CraftVariable $variable */
+            $variable = $event->sender;
+            $variable->set('marketplace', MarketplaceVariable::class);
         });
     }
 
