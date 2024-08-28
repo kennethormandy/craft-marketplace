@@ -73,32 +73,59 @@ class Accounts extends Component
         });
     }
 
+    /**
+     * Get an element with a MarketplaceConnectButton field, which holds the gateway account ID.
+     * 
+     * @param $elementRef - An element or element UID that could be used as an account, falling back to the current user.
+     * @return Element - An element with an account ID on the field, if valid (ie. it exists, and has the field with a value).
+     * @since 2.0.0
+     */
+    private function _getAccount(Element|string|null $elementRef)
+    {
+        $element = $elementRef;
+        $currentUser = Craft::$app->getUser();
+        $currentUserIdentity = $currentUser->getIdentity();
+        $accountIdHandle = Marketplace::$plugin->handles->getButtonHandle();
+
+        if ($elementRef) {
+            if (gettype($elementRef) === 'string') {
+                // It’s an element UID only
+                $element = Craft::$app->elements->getElementByUid($elementRef) ?? $currentUserIdentity;
+            }
+        } else {
+            $element = $currentUserIdentity;
+        }
+
+        if (!$element || !$element[$accountIdHandle]) {
+            return null;
+        }
+
+        $accountId = $element->getFieldValue($accountIdHandle);
+
+        if (!$accountId) {
+            return null;
+        }
+
+        return $element;
+    }
+
     private function _createLink(Element|string|null $element, $params, $callback)
     {
         $isValid = true;
-        $accountIdHandle = Marketplace::$plugin->handles->getButtonHandle();
 
         // Use a provided element, query an element via the provided UID, or fallback to the current user.
         $currentUser = Craft::$app->getUser();
         $currentUserIdentity = $currentUser->getIdentity();
         $elementType = null;
 
-        if ($element) {
-            if (gettype($element) === 'string') {
-                // It’s an element UID only
-                $element = Craft::$app->elements->getElementByUid($element) ?? $currentUserIdentity;
-            }
-        } else {
-            $element = $currentUserIdentity;
-        }
-
+        $element = $this->_getAccount($element);
         $elementType = $element->className();
 
-        // Check if the User or other element has the field, and that the value matches.
-        if (!$element || !$element[$accountIdHandle]) {
+        if (!$element) {
             $isValid = false;
         }
 
+        $accountIdHandle = Marketplace::$plugin->handles->getButtonHandle();
         $accountId = $element->getFieldValue($accountIdHandle);
 
         // User must either be:
