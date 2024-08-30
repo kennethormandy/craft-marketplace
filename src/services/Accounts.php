@@ -88,7 +88,7 @@ class Accounts extends Component
      * @return Element - An element with an account ID on the field, if valid (ie. it exists, and has the field with a value).
      * @since 2.0.0
      */
-    private function _getAccount(Element|string|null $elementRef)
+    public function getAccount(Element|string|null $elementRef)
     {
         $element = $elementRef;
         $currentUser = Craft::$app->getUser();
