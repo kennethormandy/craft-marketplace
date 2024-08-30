@@ -71,12 +71,9 @@ class AuthController extends Controller
             return $this->redirect($origin);
         }
 
-        // Record a reference. This can be anything—we store a JSON object with the user ID (so you know who
-        // created the token), and the element UID, if provided.
-        $token->reference = json_encode([
-            'userId' => $user->id,
-            'elementUid' => $elementUid,
-        ]);
+        // Record a reference. We use the element UID, which should already be the
+        // user UID if they’re using the user instead of making things org-like.
+        $token->reference = $elementUid ?? $user->uid;
 
         // Save it to the database
         $success = Auth::$plugin->getTokens()->upsertToken($token);
