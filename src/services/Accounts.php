@@ -276,14 +276,8 @@ class Accounts extends Component
      */
     private function _setError(string $message): void
     {
-        // TODO Handle translations for $message
-        // TODO Decide whether to use Social Login errors, namespaced
-        // errors using Social Login’s session helper, or use `errorMessage`
-        // like before. Leaning towards option 2, which would require a
-        // different Twig helper than Social Login.
-
+        $message = Craft::t('marketplace', $message);
         Session::setError('marketplace', $message);
-
         Craft::$app->getUrlManager()->setRouteParams([
             'variables' => ['errorMessage' => $message],
         ]);
