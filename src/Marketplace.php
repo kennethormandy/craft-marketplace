@@ -629,6 +629,8 @@ class Marketplace extends BasePlugin
 
     /**
      * Get the Stripe Express OAuth provider.
+     * 
+     * @since 2.0.0
      */
     public function getProvider(): OAuthProvider
     {
