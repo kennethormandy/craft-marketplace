@@ -1,6 +1,6 @@
 <form method="POST" accept-charset="UTF-8" {{- attr(themeConfig.form.attributes) -}}>
   {{ csrfInput() }}
-  {{ actionInput('marketplace/accounts/create-login-link') }}
+  {{ actionInput('marketplace/auth/connect') }}
 
   {% if elementUid %}
     {{ hiddenInput('elementUid', elementUid, { type: 'hidden' }) }}
@@ -12,7 +12,7 @@
   {% endif %}
 
   <button type="submit" data-test="connect" {{- attr(themeConfig.submitButton.attributes) -}}>
-    {{ 'Open Dashboard'|t('marketplace') }}
+    {{ 'Connect'|t('marketplace') }}
   </button>
 
   {# A single error message, same as the default Craft CMS login form. #}
