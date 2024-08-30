@@ -35,10 +35,10 @@ class AuthController extends Controller
         $providerHandle = $provider::$handle;
         Session::set('providerHandle', $providerHandle);
 
-        // Allow users to store data to be saved for later
+        // Store the element UID for use in the callback, like Auth already does
+        // with `redirect`, `state`, and `origin`.
         Session::set('elementUid', $this->request->getParam('elementUid'));
 
-        
         // Redirect to the provider platform to login and authorize
         return Auth::$plugin->getOAuth()->connect('marketplace', $provider);
     }
