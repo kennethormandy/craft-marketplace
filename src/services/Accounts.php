@@ -85,14 +85,15 @@ class Accounts extends Component
      * Get an element with a MarketplaceConnectButton field, which holds the gateway account ID.
      * 
      * @param $elementRef - An element or element UID that could be used as an account, falling back to the current user.
+     * @param $fallbackToCurrentUser - Whether or not the current user should be returned when no valid account is found. Defaults to `true`.
      * @return Element - An element with an account ID on the field, if valid (ie. it exists, and has the field with a value).
      * @since 2.0.0
      */
-    public function getAccount(Element|string|null $elementRef)
+    public function getAccount(Element|string|null $elementRef, bool $fallbackToCurrentUser = true): ?Element
     {
         $element = $elementRef;
-        $currentUser = Craft::$app->getUser();
-        $currentUserIdentity = $currentUser->getIdentity();
+        $currentUser = $fallbackToCurrentUser ? Craft::$app->getUser() : null;
+        $currentUserIdentity = $fallbackToCurrentUser ? $currentUser->getIdentity() : null;
         $accountIdHandle = Marketplace::$plugin->handles->getButtonHandle();
 
         if ($elementRef) {
