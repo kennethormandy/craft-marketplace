@@ -54,13 +54,21 @@ class Accounts extends Component
             $stripeParams = [
                 'account' => $accountId,
 
-                // TODO These values are used, after you finish in the Stripe modal if you still have requirements
-                'refresh_url' => 'https://example.com/refresh',
-                'return_url' => 'https://example.com/return',
+                'refresh_url' => null,
+                'return_url' => null,
 
                 'type' => 'account_onboarding',
+
+                // TODO Also need to let you customize the `collection_options`—right now we default to `eventually_due` only
+                // @see https://docs.stripe.com/connect/hosted-onboarding#info-to-collect
                 'collection_options' => ['fields' => 'eventually_due'],
             ];
+
+            // It won’t actaully work without these, so maybe we should throw if they’re missing?
+            if (isset($params->referrer)) {
+                $stripeParams['refresh_url'] = UrlHelper::url($params->referrer);
+                $stripeParams['return_url'] = UrlHelper::url($params->referrer);
+            }
 
             if (isset($params->redirect)) {
                 $redirectUrl = $this->_getRedirectUrl($params->redirect, $params->referrer);
