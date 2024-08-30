@@ -6,6 +6,12 @@
 - Added Client ID setting (final name TBD)
 - Added ability to preview account IDs in element tables
 - Added AccountAccess event, to allow custom verification logic before creating Stripe account links
+- Added `craft.marketplace` Twig helpers
+- Added `craft.marketplace.renderHostedOnboarding()` Twig helper
+- Added `craft.marketplace.renderHostedDashboard()` Twig helper
+- Added combined `craft.marketplace.renderConnector()` Twig helper
+- Added `getAccount()` and `isConnected()` to Accounts service
+- Added `getAccountId()` and `isConnected()` to elements with a Marketplace field
 
 ## Changed
 - Renamed `kennethormandy\marketplace\services\AccountsService` → `kennethormandy\marketplace\services\Accounts`
