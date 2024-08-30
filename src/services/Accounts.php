@@ -130,7 +130,7 @@ class Accounts extends Component
         $currentUserIdentity = $currentUser->getIdentity();
         $elementType = null;
 
-        $element = $this->_getAccount($element);
+        $element = $this->getAccount($element);
         $elementType = $element->className();
 
         if (!$element) {
