@@ -122,6 +122,9 @@ class Accounts extends Component
     {
         $isValid = true;
 
+        $paramsDefault = [ 'redirect' => null, 'referrer' => null, ];
+        $params = ArrayHelper::merge($paramsDefault, $params);
+
         // Use a provided element, query an element via the provided UID, or fallback to the current user.
         $currentUser = Craft::$app->getUser();
         $currentUserIdentity = $currentUser->getIdentity();
