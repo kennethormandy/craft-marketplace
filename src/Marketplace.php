@@ -11,6 +11,7 @@
 namespace kennethormandy\marketplace;
 
 use Craft;
+use craft\base\Element;
 use craft\base\Model;
 use craft\base\Plugin as BasePlugin;
 use craft\commerce\elements\Order;
@@ -21,6 +22,8 @@ use craft\commerce\services\Payments;
 use craft\commerce\stripe\base\Gateway as StripeGateway;
 use craft\commerce\stripe\events\BuildGatewayRequestEvent;
 use craft\elements\User;
+use craft\errors\InvalidFieldException;
+use craft\events\DefineBehaviorsEvent;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterTemplateRootsEvent;
 use craft\helpers\App;
@@ -28,6 +31,7 @@ use craft\helpers\UrlHelper;
 use craft\services\Fields;
 use craft\web\twig\variables\CraftVariable;
 use craft\web\View;
+use kennethormandy\marketplace\behaviors\MarketplaceAccount as MarketplaceAccountBehavior;
 use kennethormandy\marketplace\fields\MarketplaceConnectButton as MarketplaceConnectButtonField;
 use kennethormandy\marketplace\fields\MarketplacePayee as MarketplacePayeeField;
 use kennethormandy\marketplace\models\Settings;
@@ -102,6 +106,7 @@ class Marketplace extends BasePlugin
 
         // Defer most setup tasks until Craft is fully initialized
         Craft::$app->onInit(function() {
+            $this->_defineBehaviors();
             $this->_registerVariables();
             $this->_registerSiteTemplateRoot();
             $this->_attachEventHandlers();
@@ -140,6 +145,33 @@ class Marketplace extends BasePlugin
             if (is_dir($baseDir = $this->getBasePath() . DIRECTORY_SEPARATOR . 'templates/_site')) {
                 $event->roots[$this->id] = $baseDir;
             }
+        });
+    }
+
+    private function _defineBehaviors(): void
+    {
+        Event::on(Element::class, Element::EVENT_DEFINE_BEHAVIORS, function(DefineBehaviorsEvent $event)
+        {
+            $accountIdHandle = self::$plugin->handles->getButtonHandle();
+            $elementOrUser = $event->sender;
+
+            if (!$elementOrUser) {
+                return;
+            }
+
+            $field = null;
+            try {
+                $field = $elementOrUser->getFieldLayout()->getFieldByHandle($accountIdHandle);
+            } catch (\Exception $e) {
+            }
+
+            // It doesn’t have this field, so it shouldn’t get the behavour.
+            if (!$field) {
+                return;
+            }
+    
+            // Can we use just account here, or is that going to be a conflict?
+            $event->behaviors['marketplaceAccount'] = MarketplaceAccountBehavior::class;
         });
     }
 
