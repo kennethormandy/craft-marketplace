@@ -6,6 +6,7 @@ use Craft;
 use craft\base\Element;
 use craft\base\Component;
 use craft\elements\User;
+use craft\helpers\ArrayHelper;
 use craft\helpers\UrlHelper;
 use kennethormandy\marketplace\Marketplace;
 use kennethormandy\marketplace\events\AccountAccessEvent;
@@ -14,6 +15,7 @@ use Stripe\Exception\InvalidRequestException;
 use Stripe\Exception\PermissionException;
 use Stripe\StripeClient;
 use verbb\auth\helpers\Session;
+use verbb\auth\Auth;
 
 class Accounts extends Component
 {
@@ -116,6 +118,32 @@ class Accounts extends Component
         }
 
         return $element;
+    }
+
+
+    /**
+     * Determine whether or not an element is connected to the gateway (ie. Stripe).
+     * 
+     * @param $elementRef - An element or element UID that could be used as an account, falling back to the current user.
+     * @since 2.0.0
+     */
+    public function isConnected(Element|string|null $elementRef)
+    {
+        $account = null;
+        $token = null;
+
+        if ($elementRef) {
+            $elementUid = $elementRef->uid ?? $elementRef;
+            $token = Auth::$plugin->getTokens()->getTokenByOwnerReference('marketplace', $elementUid);
+        }
+
+        if (!$elementRef || !$token) {
+            $account = Marketplace::$plugin->accounts->getAccount($elementRef);
+        }
+
+        $isConnected = $token || $account;
+
+        return $isConnected;
     }
 
     private function _createLink(Element|string|null $element, $params, $callback)
