@@ -12,7 +12,7 @@ use kennethormandy\marketplace\Marketplace;
 class Payees extends Component
 {
     public const EVENT_BEFORE_DETERMINE_PAYEE = 'beforeDeterminePayee';
-    public const EVENT_AFTER_ACCOUNT_ACCESS = 'afterDeterminePayee';
+    public const EVENT_AFTER_DETERMINE_PAYEE = 'afterDeterminePayee';
 
     public function init(): void
     {
