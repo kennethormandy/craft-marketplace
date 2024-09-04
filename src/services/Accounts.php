@@ -67,13 +67,13 @@ class Accounts extends Component
             ];
 
             // It won’t actaully work without these, so maybe we should throw if they’re missing?
-            if (isset($params->referrer)) {
-                $stripeParams['refresh_url'] = UrlHelper::url($params->referrer);
-                $stripeParams['return_url'] = UrlHelper::url($params->referrer);
+            if (isset($params['referrer'])) {
+                $stripeParams['refresh_url'] = UrlHelper::url($params['referrer']);
+                $stripeParams['return_url'] = UrlHelper::url($params['referrer']);
             }
 
-            if (isset($params->redirect)) {
-                $redirectUrl = $this->_getRedirectUrl($params->redirect, $params->referrer);
+            if (isset($params['redirect'])) {
+                $redirectUrl = $this->_getRedirectUrl($params['redirect'], $params['referrer']);
                 if ($redirectUrl) {
                     $stripeParams['return_url'] = $redirectUrl;
                 }
