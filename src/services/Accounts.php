@@ -93,19 +93,8 @@ class Accounts extends Component
      */
     public function getAccount(Element|string|null $elementRef, bool $fallbackToCurrentUser = true): ?Element
     {
-        $element = $elementRef;
-        $currentUser = $fallbackToCurrentUser ? Craft::$app->getUser() : null;
-        $currentUserIdentity = $fallbackToCurrentUser ? $currentUser->getIdentity() : null;
         $accountIdHandle = Marketplace::$plugin->handles->getButtonHandle();
-
-        if ($elementRef) {
-            if (gettype($elementRef) === 'string') {
-                // It’s an element UID only
-                $element = Craft::$app->elements->getElementByUid($elementRef) ?? $currentUserIdentity;
-            }
-        } else {
-            $element = $currentUserIdentity;
-        }
+        $element = $this->_getElementByRef($elementRef, $fallbackToCurrentUser);
 
         if (!$element || !$element[$accountIdHandle]) {
             return null;
@@ -119,7 +108,6 @@ class Accounts extends Component
 
         return $element;
     }
-
 
     /**
      * Determine whether or not an element is connected to the gateway (ie. Stripe).
@@ -173,6 +161,33 @@ class Accounts extends Component
 
         return $isConnected;
     }
+
+    /**
+     * Get an account-like element, which may or may not be an active account yet.
+     * 
+     * @param $elementRef - An element or element UID that could be used as an account, falling back to the current user.
+     * @param $fallbackToCurrentUser - Whether or not the current user should be returned when no valid account is found. Defaults to `true`.
+     * @return Element
+     */
+    private function _getElementByRef(Element|string|null $elementRef, bool $fallbackToCurrentUser = true): ?Element
+    {
+        $element = $elementRef;
+        $currentUser = $fallbackToCurrentUser ? Craft::$app->getUser() : null;
+        $currentUserIdentity = $fallbackToCurrentUser ? $currentUser->getIdentity() : null;
+
+        if ($elementRef) {
+            if (gettype($elementRef) === 'string') {
+                // It’s an element UID only
+                $element = Craft::$app->elements->getElementByUid($elementRef) ?? $currentUserIdentity;
+            }
+        } else {
+            $element = $currentUserIdentity;
+        }
+
+        return $element;
+    }
+
+
 
     private function _createLink(Element|string|null $element, $params, $callback)
     {
