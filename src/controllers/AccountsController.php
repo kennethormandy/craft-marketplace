@@ -34,6 +34,13 @@ class AccountsController extends Controller
         // Note `accountLinks->create` gets you an account link to refresh/finish your onboarding?
         $request = Craft::$app->getRequest();
 
+        // We allow GET requests in the CP, where everything is already a form
+        if (!$request->getIsCpRequest()) {
+            $this->requirePostRequest();            
+        }
+
+        $this->requireLogin();
+
         $elementUid = $request->getParam('elementUid') ?? null;
 
         $params = [
