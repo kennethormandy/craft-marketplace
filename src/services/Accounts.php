@@ -129,19 +129,47 @@ class Accounts extends Component
      */
     public function isConnected(Element|string|null $elementRef)
     {
-        $account = null;
         $token = null;
+        $isConnected = false;
+        $stripeAccountId = null;
 
-        if ($elementRef) {
-            $elementUid = $elementRef->uid ?? $elementRef;
-            $token = Auth::$plugin->getTokens()->getTokenByOwnerReference('marketplace', $elementUid);
+        // if ($elementRef) {
+        //     $elementUid = $elementRef->uid ?? $elementRef;
+        //     $token = Auth::$plugin->getTokens()->getTokenByOwnerReference('marketplace', $elementUid);
+        //     $accountId = $token->values['stripe_user_id'] ?? null;
+        // }
+        
+        $account = Marketplace::$plugin->accounts->getAccount($elementRef);
+
+        Marketplace::$plugin->log('$account');
+        Marketplace::$plugin->log($account);
+
+        // TOOD Have to go to Stripe, get the account, and make sure it has no pending requirements
+        // https://stackoverflow.com/q/66254017/864799
+        // For now, this is just “is it connected or not,” not a status, but with the new approach
+        // to account onboarding, you can have an account ID without being connected (you get the account ID
+        // first up front, so that isn’t sufficient).
+        if ($account) {
+            $accountId = $account->getAccountId();
         }
 
-        if (!$elementRef || !$token) {
-            $account = Marketplace::$plugin->accounts->getAccount($elementRef);
-        }
+        // Actually check with Stripe
+        if ($accountId) {
+            $stripeAccount = $this->_getStripe()->accounts->retrieve($accountId);
 
-        $isConnected = $token || $account;
+            Marketplace::$plugin->log('$stripeAccount');
+            Marketplace::$plugin->log($stripeAccount);
+
+            if (
+                $stripeAccount &&
+                (
+                    ($stripeAccount['verification'] && !$stripeAccount['verification']['disabled_reason']) ||
+                    ($stripeAccount['requirements'] && !$stripeAccount['requirements']['disabled_reason'])
+                ) 
+            ) {
+                $isConnected = true;
+            }
+        }
 
         return $isConnected;
     }
