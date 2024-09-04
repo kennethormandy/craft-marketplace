@@ -136,6 +136,20 @@ class Marketplace extends BasePlugin
     }
 
     /**
+     * Set an error using Auth’s flash messages, to provide Marketplace- or Stripe-specific errors.
+     * @param $message - The translation string for the message.
+     */
+    public static function setError(string $message): void
+    {
+        $message = Craft::t('marketplace', $message);
+        Session::setError('marketplace', $message);
+        Craft::$app->getUrlManager()->setRouteParams([
+            'variables' => ['errorMessage' => $message],
+        ]);
+    }
+
+
+    /**
      * Register templates for the MarketplaceVariable Twig helper
      * in a dedicated templates/_site folder.
      */

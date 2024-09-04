@@ -205,7 +205,7 @@ class Accounts extends Component
 
         if (!$event->isValid) {
             Marketplace::$plugin->log('User ' . $currentUserIdentity . ' attempting to create link for account that isn’t their own, without admin access.', [], 'error');
-            $this->_setError('You do not have permission to access that account.');
+            Marketplace::$plugin->setError('You do not have permission to access that account.');
             return null;
         }
 
@@ -225,7 +225,7 @@ class Accounts extends Component
         }
 
         if (!$event->isValid) {
-            $this->_setError('Unable to provide access to that account, or the account does not exist.');
+            Marketplace::$plugin->setError('Unable to provide access to that account, or the account does not exist.');
             return null;
         }
 
@@ -302,15 +302,5 @@ class Accounts extends Component
         return $validUrl;
     }
 
-    /**
-     * Use Auth’s flash messages to provide Marketplace- or Stripe-specific errors.
-     */
-    private function _setError(string $message): void
-    {
-        $message = Craft::t('marketplace', $message);
-        Session::setError('marketplace', $message);
-        Craft::$app->getUrlManager()->setRouteParams([
-            'variables' => ['errorMessage' => $message],
-        ]);
-    }
+
 }
