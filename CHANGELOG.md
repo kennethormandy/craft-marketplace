@@ -3,6 +3,7 @@
 ## Unreleased
 
 ## Added
+- Added support for new Stripe account creation, without OAuth
 - Added Client ID setting (final name TBD)
 - Added ability to preview account IDs in element tables
 - Added AccountAccess event, to allow custom verification logic before creating Stripe account links

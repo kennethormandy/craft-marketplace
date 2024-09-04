@@ -25,6 +25,11 @@ class AccountsController extends Controller
             return Marketplace::getInstance()->accounts->createAccountLink($elementUid, $params);
         });
     }
+
+    public function actionCreate(): mixed
+    {
+        return $this->_createLink(function($elementUid, $params) {
+            return Marketplace::getInstance()->accounts->createAccount($elementUid, $params);
         });
     }
 

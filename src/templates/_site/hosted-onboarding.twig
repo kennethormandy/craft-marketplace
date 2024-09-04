@@ -1,6 +1,10 @@
 <form method="POST" accept-charset="UTF-8" {{- attr(themeConfig.form.attributes) -}}>
   {{ csrfInput() }}
-  {{ actionInput('marketplace/auth/connect') }}
+  {% if old|default(false) %}
+    {{ actionInput('marketplace/auth/connect') }}
+  {% else %}
+    {{ actionInput('marketplace/accounts/create') }}
+  {% endif %}
 
   {% if elementUid %}
     {{ hiddenInput('elementUid', elementUid, { type: 'hidden' }) }}

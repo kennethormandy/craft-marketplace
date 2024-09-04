@@ -83,6 +83,75 @@ class Accounts extends Component
         });
     }
 
+    public function createAccount(Element|string|null $elementRef = null, $params = [])
+    {
+        $accountLinkParams = [
+            'redirect' => $params['redirect'] ?? null,
+            'referrer' => $params['referrer'] ?? null,
+        ];
+
+        Marketplace::$plugin->log('Creating an account…');
+
+        // We only support Express accounts right now
+        $paramsDefault = [ 'type' => 'express' ];
+        $paramsForced = [ 'type' => 'express' ];
+        $params = ArrayHelper::merge($paramsDefault, $params, $paramsForced);
+        unset($params['redirect']);
+        unset($params['referrer']);
+
+        $element = $this->_getElementByRef($elementRef);
+        $elementType = $element->className();
+
+        // Return early: account ID exists, so we either need
+        // to finish onoarding, or we want an account link anyway.
+        if ($element->getAccountId()) {
+            Marketplace::$plugin->log('Has existing account ID: ' . $element->getAccountId());
+            return $this->createAccountLink($elementRef, $accountLinkParams);
+        }
+
+        if ($element->getIsConnected()) {
+            Marketplace::$plugin->setError('Account already exists.');
+            return;
+        }
+
+        // If the element is a user, pre-fill their email in the hosted onboarding.
+        // Beyond that, we make no assumptions about what should be pre-filled.
+        if ($elementType === User::class) {
+            $params['email'] = $element->email;
+        }
+        
+        $accountCreateResp = $this->_getStripe()->accounts->create($params);
+        $newAccount = $accountCreateResp ?? null;
+        $newAccountId = $newAccount->id ?? null;
+
+        if (!$newAccount || !$newAccountId) {
+            Marketplace::$plugin->log('Unable to create new account: ' . $newAccountId, [], 'error');
+            Marketplace::$plugin->log($accountCreateResp, [], 'error');
+            throw new \Exception('Unable to create new account.', 1);
+        }
+
+        Marketplace::$plugin->log('Created new account: ' . $newAccountId);
+
+        $accountIdHandle = Marketplace::$plugin->handles->getButtonHandle();
+
+        $element->setFieldValue($accountIdHandle, $newAccountId);
+        $success = Craft::$app->elements->saveElement($element);
+
+        if (!$success) {
+
+            Marketplace::$plugin->setError('Unable to create account.');
+
+            Marketplace::$plugin->log($element->id, [], 'error');
+            Marketplace::$plugin->log($element->uid, [], 'error');
+
+            return;
+        }
+
+        $resp = $this->createAccountLink($element, $accountLinkParams);
+
+        return $resp;
+    }
+
     /**
      * Get an element with a MarketplaceConnectButton field, which holds the gateway account ID.
      * 
