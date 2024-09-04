@@ -20,11 +20,8 @@ class Settings extends Model
     // Public Properties
     // =========================================================================
 
-    /**
-     * @var string
-     */
-    public $clientId;
-    public $secretApiKey;
+    public string $secretApiKey;
+    public ?string $clientId = null;
 
     public string $providerHandle = 'marketplaceStripeExpress';
 
@@ -67,7 +64,7 @@ class Settings extends Model
         return
         [
             [['secretApiKey'], 'required'],
-            [['clientId'], 'required'],
+            // [['clientId'], 'required'],
         ];
     }
 }
