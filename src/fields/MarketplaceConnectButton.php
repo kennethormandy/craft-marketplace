@@ -350,18 +350,6 @@ class MarketplaceConnectButton extends Field implements PreviewableFieldInterfac
         // $jsonVars = Json::encode($jsonVars);
         // Craft::$app->getView()->registerJs("$('#{$namespacedId}-field').MarketplaceConnectButton(" . $jsonVars . ");");
 
-        // TODO Change this to a remote documentation page or
-        // local plugin page, or give an error that something went wrong
-        // if URL and value aren’t set.
-        $accountLoginUrl = 'https://example.com';
-
-        if (isset($value)) {
-            // TODO Ideally would only do this when the user hits a button
-            // to request it, so we aren’t generating a profile link
-            // on every request, but in the meantime, this works fine.
-            $accountLoginUrl = Marketplace::$plugin->accounts->createLoginLink($value);
-        }
-
         $payeeHandle = Marketplace::$plugin->handles->getPayeeHandle();
 
         // Render the input template
@@ -380,8 +368,6 @@ class MarketplaceConnectButton extends Field implements PreviewableFieldInterfac
                 'element' => $element,
 
                 'payeeHandle' => $payeeHandle,
-
-                'accountLoginUrl' => $accountLoginUrl,
             ]
         );
     }
