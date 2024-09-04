@@ -14,15 +14,17 @@ class AccountsController extends Controller
 
     public function actionCreateLoginLink(): ?Response
     {
-        return $this->_createLink(function($accountId, $params) {
-            return Marketplace::getInstance()->accounts->createLoginLink($accountId, $params);
+        return $this->_createLink(function($elementUid, $params) {
+            return Marketplace::getInstance()->accounts->createLoginLink($elementUid, $params);
         });
     }
 
     public function actionCreateAccountLink(): ?Response
     {
-        return $this->_createLink(function($accountId, $params) {
-            return Marketplace::getInstance()->accounts->createAccountLink($accountId, $params);
+        return $this->_createLink(function($elementUid, $params) {
+            return Marketplace::getInstance()->accounts->createAccountLink($elementUid, $params);
+        });
+    }
         });
     }
 
