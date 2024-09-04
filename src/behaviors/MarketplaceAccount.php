@@ -13,7 +13,7 @@ class MarketplaceAccount extends Behavior
 {
     public bool $isConnected = false;
 
-    public function getAccountId()
+    public function getAccountId(): ?string
     {
         $accountId = null;
         $accountIdHandle = Marketplace::$plugin->handles->getButtonHandle();
