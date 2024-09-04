@@ -20,8 +20,8 @@ use verbb\auth\Auth;
 
 class Accounts extends Component
 {
-    public const BEFORE_ACCOUNT_ACCESS = 'BEFORE_ACCOUNT_ACCESS';
-    public const AFTER_ACCOUNT_ACCESS = 'AFTER_ACCOUNT_ACCESS';
+    public const EVENT_BEFORE_ACCOUNT_ACCESS = 'beforeAccountAccess';
+    public const EVENT_AFTER_ACCOUNT_ACCESS = 'afterAccountAccess';
 
     public function init(): void
     {
@@ -326,8 +326,8 @@ class Accounts extends Component
         $event->sender = $element;
         $event->isValid = $isValid;
 
-        if ($this->hasEventHandlers(self::BEFORE_ACCOUNT_ACCESS)) {
-            $this->trigger(self::BEFORE_ACCOUNT_ACCESS, $event);
+        if ($this->hasEventHandlers(self::EVENT_BEFORE_ACCOUNT_ACCESS)) {
+            $this->trigger(self::EVENT_BEFORE_ACCOUNT_ACCESS, $event);
         }
 
         if (!$event->isValid) {
