@@ -1,7 +1,0 @@
-{% block content %}
-  {# This seems to work as expected, even if
-   # the type of permission doesn’t exist. #}
-   {% if currentUser.id != payee.id %}
-     {% requirePermission 'stayUpLate' %}     
-   {% endif %}
-{% endblock %}

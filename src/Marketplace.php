@@ -640,43 +640,6 @@ class Marketplace extends BasePlugin
         return $provider;
     }
 
-    /* Adds a quick demo of using template hooks to add the
-     * payee to the order editing page. Could use this to try
-     * and modify permissions (ex. redirect you away if you aren’t
-     * supposed to be able to view this order), but might also might
-     * still work better to add a whole new Marketplace tab that shows you
-     * the same default order views as Commerce, but filtered down to only
-     * show your orders.
-     * https://docs.craftcms.com/v3/extend/template-hooks.html */
-    private function _reviseOrderTemplate()
-    {
-        Craft::$app->getView()->hook('cp.commerce.order.edit.main-pane', function(array &$context) {
-            $payee = $this->_getPayeeFromOrder($context['order']);
-            if ($payee) {
-                return Craft::$app->view->renderTemplate(
-                    'marketplace/order-edit',
-                    [
-                  'order' => $context['order'],
-                  'payee' => $payee,
-              ]
-                );
-            }
-        });
-
-        Craft::$app->getView()->hook('cp.commerce.order.edit.main-pane', function(array &$context) {
-            $payee = $this->_getPayeeFromOrder($context['order']);
-            if ($payee) {
-                return Craft::$app->view->renderTemplate(
-                    'marketplace/order-edit-main-pane',
-                    [
-                  'order' => $context['order'],
-                  'payee' => $payee,
-              ]
-                );
-            }
-        });
-    }
-
     private function _registerVariables(): void
     {
         Event::on(CraftVariable::class, CraftVariable::EVENT_INIT, static function(Event $event) {
