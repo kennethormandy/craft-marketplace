@@ -15,6 +15,7 @@ use craft\base\ElementInterface;
 use craft\base\Field;
 use craft\base\PreviewableFieldInterface;
 use craft\helpers\Json;
+use craft\helpers\UrlHelper;
 use kennethormandy\marketplace\Marketplace;
 use yii\db\Schema;
 
@@ -363,6 +364,7 @@ class MarketplaceConnectButton extends Field implements PreviewableFieldInterfac
                 'namespacedId' => $namespacedId,
                 'element' => $element,
                 'payeeHandle' => $payeeHandle,
+                'baseCpUrl' => UrlHelper::baseCpUrl(),
             ]
         );
     }

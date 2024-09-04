@@ -46,11 +46,16 @@
       id: "#{id}-button",
     }) }}
 
-    {# Get current page and hash for redirect #}
+    {# Get current page and hash (tab) for redirect #}
     <script>
-      var elAuthorize = document.getElementById('{{ namespacedId }}-authorize');
-      if (elAuthorize) {
-        var loc = {
+      const elAuthorize = document.getElementById('{{ namespacedId }}-button')
+
+      function _updatedRedirectUrl(el) {
+        if (!el) {
+          return
+        }
+
+        let loc = {
           pathname: '/admin',
           hash: ''
         }
@@ -60,9 +65,14 @@
         }
 
         if (encodeURIComponent) {
-          elAuthorize.href = `${elAuthorize.href}&redirect=${encodeURIComponent(loc.pathname)}#${encodeURIComponent(loc.hash)}`
+          el.href = `${el.href}&redirect={{ baseCpUrl }}${encodeURIComponent(loc.pathname)}${encodeURIComponent(loc.hash)}`
         }
       }
+
+      window.setTimeout(() => {
+        _updatedRedirectUrl(elAuthorize)
+      }, 100)
+
     </script>
 
   </div>
