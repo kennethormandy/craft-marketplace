@@ -17,8 +17,7 @@
 
 {% set user = element.className() == 'craft\\elements\\User' ? element : null %}
 {% set isConnected = element.getIsConnected() %}
-
-{% set currentUserViewing = currentUser and user and currentUser.id == user.id %}
+{% set isCurrentUserViewing = currentUser and user and currentUser.id == user.id %}
 
 <div class="field">
   <div class="value flex">
@@ -28,7 +27,7 @@
   </div>
 </div>
 
-{% if not currentUserViewing %}
+{% if not isCurrentUserViewing %}
   <p>Only the logged in user may authorize their account.</p>
 {% else %}
 
