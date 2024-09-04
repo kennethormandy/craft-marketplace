@@ -9,8 +9,8 @@ use kennethormandy\marketplace\events\FeesEvent;
 
 class Fees extends Component
 {
-    public const EVENT_BEFORE_CALCULATE_FEES_AMOUNT = 'EVENT_BEFORE_CALCULATE_FEES_AMOUNT';
-    public const EVENT_AFTER_CALCULATE_FEES_AMOUNT = 'EVENT_AFTER_CALCULATE_FEES_AMOUNT';
+    public const EVENT_BEFORE_CALCULATE_FEES_AMOUNT = 'beforeCalculateFeesAmount';
+    public const EVENT_AFTER_CALCULATE_FEES_AMOUNT = 'afterCalculateFeesAmount';
 
     public function init(): void
     {
