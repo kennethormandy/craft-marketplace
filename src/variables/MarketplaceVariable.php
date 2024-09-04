@@ -6,6 +6,7 @@ use Craft;
 use craft\base\Element;
 use craft\helpers\ArrayHelper;
 use craft\helpers\Template as TemplateHelper;
+use craft\web\View;
 use kennethormandy\marketplace\Marketplace;
 use Twig\Markup;
 use verbb\auth\Auth;
@@ -38,16 +39,14 @@ class MarketplaceVariable
         $elementUid = $elementRef->uid ?? $elementRef;
         $errorMessage = Session::getError('marketplace');
         $themeConfig = $this->_getThemeConfig($themeConfig);
+        $path = $this->_getTemplateBasePath() . 'hosted-onboarding';
 
-        $html = Craft::$app->view->renderTemplate(
-            'marketplace/hosted-onboarding',
-            [
-                'elementUid' => $elementUid,
-                'params' => $params,
-                'themeConfig' => $themeConfig,
-                'errorMessage' => $errorMessage,
-            ]
-        );
+        $html = Craft::$app->view->renderTemplate($path, [
+            'elementUid' => $elementUid,
+            'params' => $params,
+            'themeConfig' => $themeConfig,
+            'errorMessage' => $errorMessage,
+        ]);
 
         return TemplateHelper::raw($html); 
     }
@@ -65,18 +64,26 @@ class MarketplaceVariable
         $elementUid = $elementRef->uid ?? $elementRef;
         $errorMessage = Session::getError('marketplace');
         $themeConfig = $this->_getThemeConfig($themeConfig);
+        $path = $this->_getTemplateBasePath() . 'hosted-dashboard';
 
-        $html = Craft::$app->view->renderTemplate(
-            'marketplace/hosted-dashboard',
-            [
-                'elementUid' => $elementUid,
-                'params' => $params,
-                'themeConfig' => $themeConfig,
-                'errorMessage' => $errorMessage,
-            ]
-        );
+        $html = Craft::$app->view->renderTemplate($path, [
+            'elementUid' => $elementUid,
+            'params' => $params,
+            'themeConfig' => $themeConfig,
+            'errorMessage' => $errorMessage,
+        ]);
 
         return TemplateHelper::raw($html);
+    }
+
+    /**
+     * Determine whether to use the plugin’s site template root, defined in the main plugin
+     * file, or the plugin default template root for control panel templates like fields.
+     */
+    private function _getTemplateBasePath(): string
+    {
+        $isCp = Craft::$app->view->getTemplateMode() === 'cp';
+        return $isCp ? 'marketplace/_site/' : 'marketplace/';
     }
 
     private function _getThemeConfig(array $themeConfig = []): array
