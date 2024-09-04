@@ -10,8 +10,6 @@ use kennethormandy\marketplace\Marketplace;
 
 class AccountsController extends Controller
 {
-    public array|int|bool $allowAnonymous = ['create-logout-link'];
-
     public function actionCreateLoginLink(): ?Response
     {
         return $this->_createLink(function($elementUid, $params) {
@@ -65,14 +63,5 @@ class AccountsController extends Controller
         }
 
         return $this->redirect($resp->url);
-    }
-
-    public function actionCreateLogoutLink(): Response
-    {
-        $request = Craft::$app->getRequest();
-        $redirectParam = $request->getParam('redirect');
-        $validatedUrl = Craft::$app->security->validateData($redirectParam);
-
-        return $this->redirect($validatedUrl);
     }
 }
