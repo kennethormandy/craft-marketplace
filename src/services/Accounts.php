@@ -244,7 +244,9 @@ class Accounts extends Component
             $resp = call_user_func($callback, $accountId, $params);
         } catch (PermissionException|InvalidRequestException|InvalidArgumentException $e) {
             // This error could occur if the account ID was wrong, revoked, didn’t match between test versus live, etc.
-            Marketplace::$plugin->log($e->getMessage(), [], 'error');
+            $errorMessage = $e->getMessage();
+            Marketplace::$plugin->log($errorMessage, [], 'error');
+            Marketplace::setError($errorMessage);
             $event->isValid = false;
         }
 
