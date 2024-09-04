@@ -361,12 +361,7 @@ class MarketplaceConnectButton extends Field implements PreviewableFieldInterfac
                 'field' => $this,
                 'id' => $id,
                 'namespacedId' => $namespacedId,
-
-                // TODO Not doing any validation to actually check if the
-                // field was attached to a user versus some other kind
-                // of element right now
                 'element' => $element,
-
                 'payeeHandle' => $payeeHandle,
             ]
         );
