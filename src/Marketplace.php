@@ -239,59 +239,6 @@ class Marketplace extends BasePlugin
             }
         );
 
-        // Event::on(
-        //     AppsService::class,
-        //     AppsService::EVENT_GET_URL_OPTIONS,
-        //     function (AuthorizationUrlEvent $e) {
-        //         $this->log('EVENT_GET_URL_OPTIONS');
-        //         $this->log(json_encode($e));
-        //         $appHandle = self::$plugin->getSettings()->getAppHandle();
-
-        //         $this->log('Get App handle ' . $appHandle . ' ' . $e->app->handle);
-
-        //         // TODO We want to check the handle matches, and the type
-        //         // of provider is our Stripe provider, as you could in theory
-        //         // have an app wit hthe handle `stripe` that matches that is
-        //         // actually the Google provider (or whatever)
-        //         if ($e->app->handle === $appHandle) {
-        //             if ($e->context && isset($e->context['user'])) {
-        //                 $user = $e->context['user'];
-        //                 $userId = $user['id'];
-
-        //                 // Set user id that oauth plugin will use to the
-        //                 // profile page’s userId, rather than the logged in
-        //                 // person’s userId
-        //                 // This didn’t actually work
-        //                 // $e->app->userId = $userId;
-
-        //                 // So we have this when the request comes back
-        //                 $e->options['craft_user_id'] = $userId;
-        //                 $e->options['craft_user_uid'] = $user['uid'];
-
-        //                 // Add other options to the base url, ex. existing profile into to prefill
-        //                 // https://stripe.com/docs/connect/express-accounts#prefill-form-fields
-        //                 if (isset($user['email'])) {
-        //                     $e->options['stripe_user[email]'] = $user['email'];
-        //                 }
-
-        //                 if (isset($user['url'])) {
-        //                     $e->options['stripe_user[url]'] = $user['url'];
-        //                 }
-
-        //                 if (isset($user['firstName'])) {
-        //                     $e->options['stripe_user[first_name]'] = $user['firstName'];
-        //                 }
-
-        //                 if (isset($user['lastName'])) {
-        //                     $e->options['stripe_user[last_name]'] = $user['lastName'];
-        //                 }
-        //             }
-        //         }
-
-        //         return $e;
-        //     }
-        // );
-
         // Full and Parial refunds are supported here.
         // TODO Could provide more options around this, ex: Who is responsible
         // for the refund, the platform or connected account? Should the
