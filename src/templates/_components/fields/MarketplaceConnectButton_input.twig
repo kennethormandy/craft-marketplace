@@ -13,110 +13,71 @@
  */
 #}
 
-{#
-{% set title = 'Your Orders' %}
-{% set elementType = 'craft\\commerce\\elements\\Order' %}
-{% set showSiteMenu = false %}
-{% set sources = craft.orders().all() %}
-{% extends "_layouts/elementindex" %}
-#}
-
 {% import "_includes/forms" as forms %}
 
-{# TODO Not doing any validation to actually check if the
-   field was attached to a user versus some other kind
-   of element right now #}
-{% set user = element %}
+{% set user = element.className() == 'craft\\elements\\User' ? element : null %}
+{% set isConnected = element.getIsConnected() %}
 
-<code>{{ value }}</code>
+{% set currentUserViewing = currentUser and user and currentUser.id == user.id %}
 
-{% if craft.oauth.getAppByHandle is defined %}
-{% set app = null %}
+<div class="field">
+  <div class="value flex">
+    <div class="flex-grow">
+      <span class="status {{ isConnected ? 'active' : 'inactive' }}">
+      </span> {{ isConnected ? 'Connected' : 'Not connected' }}</div>
+  </div>
+</div>
 
-{# TODO Alternatively, could only send along userId in context,
- # and then query user in event. #}
-{# Pathname and Hash are added via JS. #}
-{% set context = {
-  contextName: 'MarketplaceConnectButton',
-  user: user,
-} %}
+{% if not currentUserViewing %}
+  <p>Only the logged in user may authorize their account.</p>
+{% else %}
 
-{% if app %}
-    {% set tokens = app.getValidTokensForUser(user) %}
-    {% set active = tokens|length and value %}
-    {% set currentUserViewing = currentUser and user and currentUser.id == user.id %}
+  <div class="field">
+    {% if isConnected %}
 
-    <div class="field">
-      <div class="value flex">
-        <div class="flex-grow">
-          <span class="status {{ active ? 'active' : 'inactive' }}">
-          </span> {{ active ? 'Connected' : 'Not connected' }} to {{ app.name }}</div>
-      </div>
-    </div>
-
-    {% if active and currentUserViewing %}
-      {# Working but messy approach of getting Stripe Express Dashboard login URL #}
-      {# Not possible to use a form here, because you’re in a form. #}
-      <div class="field">
-        <a class="btn" target="_blank" href="{{ accountLoginUrl }}">Login to {{ app.name }} Dashboard</a>
-      </div>
+      {# Like `hosted-dashboard.twig`, but with GET requests. Not possible to use a form, because you’re in a form. #}
+      <a class="btn" target="_blank" href="{{ actionUrl('marketplace/accounts/create-login-link', {
+        elementUid: element.uid,
+      }) }}">{{ 'Open Dashboard'|t('marketplace') }}</a>
 
     {% else %}
-      {# Show the connect button #}
-      <div class="field">
-        <div class="heading">
-          <label>Authorize</label>
-        </div>
-        <div class="input">
-          {% if not currentUser or not user or currentUser.id != user.id %}
-            <p>Only the logged in user may authorize their account.</p>
-          {% else %}
-            <a class="btn"
-               target="_blank"
-               id="{{ id }}-authorize"
-               href="{{ app.getRedirectUrl(context) }}">
-              Authorize with {{ app.name }}
-            </a>
 
-            {# Get current page and hash for redirect #}
-            <script>
-                var elAuthorize = document.getElementById('{{ namespacedId }}-authorize');
-                if (elAuthorize) {
-                  var loc = {
-                    pathname: '/admin',
-                    hash: ''
-                  }
+      {# Like `hosted-onboarding.twig`, but with GET reqeusts #}
+      <a class="btn" target="_blank" href="{{ actionUrl('marketplace/accounts/create', {
+        elementUid: element.uid,
+      }) }}">{{ 'Connect'|t('marketplace') }}</a>
 
-                  if (window && window.location && typeof window.location === 'object') {
-                    loc = window.location
-                  }
-
-                  if (encodeURIComponent) {
-                    elAuthorize.href = `${elAuthorize.href}&context[location][pathname]=${encodeURIComponent(loc.pathname)}&context[location][hash]=${encodeURIComponent(loc.hash)}`
-                  }
-                }
-            </script>
-          {% endif %}
-        </div>
-      </div>
     {% endif %}
-      
-    {% if value %}
-      <div class="field">
-        <div class="heading">
-          <label for="{{ name }}">{{ app.name }} ID</label>
-        </div>
-        <div class="input">
-          {{ forms.text({
-            id: id,
-            name: name,
-            value: value,
-            disabled: true,
-          }) }}
-        </div>
-      </div>
-    {% endif %}
-{% else %}
-    Could not find app to authorize with.
+
+    {# Get current page and hash for redirect #}
+    <script>
+      var elAuthorize = document.getElementById('{{ namespacedId }}-authorize');
+      if (elAuthorize) {
+        var loc = {
+          pathname: '/admin',
+          hash: ''
+        }
+
+        if (window && window.location && typeof window.location === 'object') {
+          loc = window.location
+        }
+
+        if (encodeURIComponent) {
+          elAuthorize.href = `${elAuthorize.href}&redirect=${encodeURIComponent(loc.pathname)}#${encodeURIComponent(loc.hash)}`
+        }
+      }
+    </script>
+
+  </div>
 {% endif %}
+      
+{% if value %}
+  <div class="field">
+    {{ forms.text({
+      id: id,
+      name: name,
+      value: value,
+      disabled: true,
+    }) }}
+  </div>
 {% endif %}
