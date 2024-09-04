@@ -28,11 +28,8 @@ class AccountsController extends Controller
         });
     }
 
-    private function _createLink($callback): ?Response
+    private function _createLink($callback): Response
     {
-        $this->requirePostRequest();
-        $this->requireLogin();
-
         // Note `accounts->createLoginLink` gets you the express dashboard and is what we’ve always used
         // Note `accountLinks->create` gets you an account link to refresh/finish your onboarding?
         $request = Craft::$app->getRequest();
@@ -51,7 +48,8 @@ class AccountsController extends Controller
         $resp = call_user_func($callback, $elementUid, $params);
 
         if (!$resp || !$resp->url) {
-            return null;
+            Marketplace::$plugin->log('Unable to create account.');
+            return $this->redirect($this->request->referrer);
         }
 
         return $this->redirect($resp->url);
