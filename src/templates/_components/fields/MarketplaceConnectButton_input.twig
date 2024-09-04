@@ -32,21 +32,19 @@
 {% else %}
 
   <div class="field">
-    {% if isConnected %}
-
-      {# Like `hosted-dashboard.twig`, but with GET requests. Not possible to use a form, because you’re in a form. #}
-      <a class="btn" target="_blank" href="{{ actionUrl('marketplace/accounts/create-login-link', {
+    {#
+      Like `hosted-dashboard.twig` and `hosted-onboarding.twig`, but with GET requests.
+      Not possible to use a form, because you’re in a form.
+    #}
+    {{ tag('a', {
+      text: isConnected ? 'Open Dashboard'|t('marketplace') : 'Connect'|t('marketplace'),
+      href: actionUrl(isConnected ? 'marketplace/accounts/create-login-link' : 'marketplace/accounts/create', {
         elementUid: element.uid,
-      }) }}">{{ 'Open Dashboard'|t('marketplace') }}</a>
-
-    {% else %}
-
-      {# Like `hosted-onboarding.twig`, but with GET reqeusts #}
-      <a class="btn" target="_blank" href="{{ actionUrl('marketplace/accounts/create', {
-        elementUid: element.uid,
-      }) }}">{{ 'Connect'|t('marketplace') }}</a>
-
-    {% endif %}
+      }),
+      class: 'btn',
+      target: '_blank',
+      id: "#{id}-button",
+    }) }}
 
     {# Get current page and hash for redirect #}
     <script>
