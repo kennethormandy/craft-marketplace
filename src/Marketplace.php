@@ -240,9 +240,6 @@ class Marketplace extends BasePlugin
             }
         });
 
-
-        $this->_reviseOrderTemplate();
-
         // Register our fields
         Event::on(
             Fields::class,
