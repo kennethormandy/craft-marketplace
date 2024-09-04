@@ -12,7 +12,7 @@ use yii\web\Response;
 
 class AuthController extends Controller
 {
-    protected array|int|bool $allowAnonymous = ['login', 'callback'];
+    protected array|int|bool $allowAnonymous = ['callback'];
 
     public function beforeAction($action): bool
     {
