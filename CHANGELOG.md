@@ -11,7 +11,7 @@
 - Added `craft.marketplace.renderHostedDashboard()` Twig helper
 - Added combined `craft.marketplace.renderConnector()` Twig helper
 - Added `getAccount()` and `isConnected()` to Accounts service
-- Added `getAccountId()` and `isConnected()` to elements with a Marketplace field
+- Added `getAccountId()` and `getIsConnected()` to elements with a Marketplace field
 
 ## Changed
 - Renamed `kennethormandy\marketplace\services\AccountsService` → `kennethormandy\marketplace\services\Accounts`
