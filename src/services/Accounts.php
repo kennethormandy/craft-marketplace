@@ -73,7 +73,8 @@ class Accounts extends Component
             }
 
             if (isset($params['redirect'])) {
-                $redirectUrl = $this->_getRedirectUrl($params['redirect'], $params['referrer']);
+                $redirectUrl = $this->_getRedirectUrl($params['redirect']);
+
                 if ($redirectUrl) {
                     $stripeParams['return_url'] = $redirectUrl;
                 }
@@ -357,64 +358,29 @@ class Accounts extends Component
         return $stripe;
     }
 
-    private function _getRedirectUrl($redirectUrlWithHash = null, $fallback = null)
+    /**
+     * @param $redirectUrl - URL, which might be hashed (POST from input) or not (GET param)
+     * @return string|null - A valid, hashed URL to redirect to, or null if there is no valid URL (with the expectation you’ll fallback to the referrer).
+     */
+    private function _getRedirectUrl($redirectUrl = null): ?string
     {
-        $logoutLink = null;
+        $result = null;
 
-        if ($redirectUrlWithHash === null) {
-            // redirectInput wasn’t set
-            // $redirectUrl = $request->referrer;
-            $redirectUrl = $fallback;
-        } else {
-            // redirectInput was set, but but also be blank or invalid
-            $redirectUrl = $this->_getRedirectInputUrl($redirectUrlWithHash);
+        // Wasn’t set, calling function can use default (ie. referrer)
+        if (!$redirectUrl || $redirectUrl === '') {
+            return $result;
+        }
+        
+        $unhashedUrl = Craft::$app->security->validateData($redirectUrl);
+
+        if ($unhashedUrl) {
+            $result = $unhashedUrl;
+        } elseif (Craft::$app->request->getIsCpRequest()) {
+            // GET requests from the Accounts controller are allowed from the CP only,
+            // otherwise we probably wouldn’t be able to assume that we can hash this URL
+            $result = UrlHelper::url($redirectUrl);
         }
 
-        if ($redirectUrl === '') {
-            // redirectInput was blank, restore default Stripe behaviour with no params
-            return $logoutLink;
-        }
-
-        if ($redirectUrl === null) {
-            // Didn’t get a valid URL from _getRedirectInputUrl, so it might have been modified
-            // Replace it with the referrer as a fallback
-            // $redirectUrl = $request->referrer;
-            $redirectUrl = $fallback;
-
-            // The redirectInput value might have been modified, we couldn’t validate it
-            $redirectUrlWithHash = null;
-        }
-
-        if ($redirectUrlWithHash === null && isset($redirectUrl)) {
-            // Hash the referrer so we can validate it when we redirect
-            // back from the Dashboard. The $redirectUrlWithHash result would have
-            // already been hashed, but the referrer isn’t yet.
-            $redirectUrlWithHash = Craft::$app->getSecurity()->hashData(UrlHelper::url($redirectUrl));
-        }
-
-        if (isset($redirectUrl)) {
-            $logoutLink = UrlHelper::actionUrl('marketplace/accounts/create-logout-link', [
-                'redirect' => $redirectUrlWithHash,
-            ]);
-            $logoutLink = UrlHelper::url($logoutLink);
-        }
-
-        return $logoutLink;
+        return $result;
     }
-
-    private function _getRedirectInputUrl($redirectInputUrl)
-    {
-        $validUrl = Craft::$app->security->validateData($redirectInputUrl);
-
-        if ($validUrl === false) {
-            // If the URL from the redirectInput isn’t valid,
-            // this is the same result as if the input hadn’t been set,
-            // ie. will return the referrer.
-            return null;
-        }
-
-        return $validUrl;
-    }
-
-
 }
