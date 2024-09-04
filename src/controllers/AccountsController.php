@@ -39,13 +39,13 @@ class AccountsController extends Controller
 
         $elementUid = $request->getParam('elementUid') ?? null;
 
-        $params = (object) [
-            'redirect' => null,
+        $params = [
+            'redirect' => $request->referrer,
             'referrer' => $request->referrer,
         ];
 
-        if ($request->getParam('redirect') !== null) {
-            $params->redirect = $request->getParam('redirect');
+        if ($request->getParam('redirect') !== null && $request->getParam('redirect') !== '') {
+            $params['redirect'] = $request->getParam('redirect');
         }
 
         $resp = call_user_func($callback, $elementUid, $params);
