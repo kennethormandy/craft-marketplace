@@ -203,7 +203,8 @@ class Accounts extends Component
      */
     public function isConnected(Element|string|null $elementRef)
     {
-        $token = null;
+        // $token = null;
+        $accountId = null;
         $isConnected = false;
         $stripeAccountId = null;
 
