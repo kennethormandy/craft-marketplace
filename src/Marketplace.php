@@ -175,7 +175,10 @@ class Marketplace extends BasePlugin
 
             $field = null;
             try {
-                $field = $elementOrUser->getFieldLayout()->getFieldByHandle($accountIdHandle);
+                $layout = $elementOrUser->getFieldLayout();
+                if ($layout) {
+                    $field = $layout->getFieldByHandle($accountIdHandle);
+                }
             } catch (\Exception $e) {
             }
 
