@@ -229,11 +229,11 @@ Event::on(
     function (Event $event) {
         $lineItem = $event->lineItem;
 
-        // Ex. Manually override the Stripe Account ID, based on
-        // a specific case for your marketplace
-        $event->gatewayAccountId = "acct_abc123";
+        // Manually override the Stripe Account ID used to determine the
+        // payee, based on a specific case for your marketplace.
+        $event->accountId = 'acct_abc123';
 
-        Craft::info("Handle EVENT_AFTER_DETERMINE_PAYEE event here", __METHOD__);
+        Craft::info('Handled the EVENT_AFTER_DETERMINE_PAYEE event here', __METHOD__);
     }
 );
 ```

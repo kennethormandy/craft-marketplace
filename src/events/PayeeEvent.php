@@ -11,12 +11,12 @@ use craft\events\ModelEvent;
 class PayeeEvent extends ModelEvent
 {
     /**
-     * @var LineItem
+     * @var LineItem $lineItem - The line item to be used to determine the account ID.
      */
-    public $lineItem;
+    public LineItem $lineItem;
 
     /**
-     * @var string
+     * @var string|null $accountId - The gateway account ID.
      */
-    public $gatewayAccountId = null;
+    public ?string $accountId = null;
 }

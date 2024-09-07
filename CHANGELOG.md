@@ -23,6 +23,7 @@
 - `Marketplace::getInstance()->accounts->createLoginLink($accountId, $params)` requires a Stripe account ID as the first argument, which was effectively already the case.
 - `Marketplace::getInstance()->accounts->createAccountLink($accountId, $params)` has been added, which may be what you’d prefer if you were using `createLoginLink()`
 - When creating an account link for a non-User element, the User will now need to be related to the element. This behaviour can be overridden in the AccountAccess event
+- Changed `$gatewayAccountId` to just `$accountId` in the `PayeeEvent`
 
 ## Removed
 - OAuth Client removed as a dependency
