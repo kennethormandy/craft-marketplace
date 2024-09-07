@@ -10,14 +10,14 @@
 
 {{ forms.textField({
   readonly: true,
-  label: 'Redirect URI',
-  instructions: 'Copy this URI into the Stripe Dashboard when setting up Stripe Connect.',
+  label: 'Redirect URI'|t('marketplace'),
+  instructions: 'Copy this URI into the Stripe Dashboard when setting up Stripe Connect.'|t('marketplace'),
   value: provider.getRedirectUri(),
 }) }}
 
 {{ forms.autosuggestField({
-  label: 'Stripe Secret Key',
-  instructions: 'The secret API key for the parent Stripe account, where other Stripe accounts will be connected. This is the same value you use in the Stripe for Craft Commerce gateway.',
+  label: 'Stripe Secret Key'|t('Stripe Secret Key'),
+  instructions: 'The secret API key for the parent Stripe account, where other Stripe accounts will be connected. This is the same value you use in the Stripe for Craft Commerce gateway.'|t('marketplace'),
   id: 'secretApiKey',
   name: 'secretApiKey',
   class: 'code',
