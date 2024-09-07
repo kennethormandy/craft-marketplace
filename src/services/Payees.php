@@ -9,6 +9,11 @@ use craft\elements\User;
 use kennethormandy\marketplace\events\PayeeEvent;
 use kennethormandy\marketplace\Marketplace;
 
+/**
+ * The Payee service is distinct from the Accounts service, because the Accounts service
+ * does not necessarily have anything to do with ecommerce yet. All Payees are Accounts,
+ * but not all accounts are Payees (incomplete accounts, disabled accounts, etc.)
+ */
 class Payees extends Component
 {
     public const EVENT_BEFORE_DETERMINE_PAYEE = 'beforeDeterminePayee';
@@ -19,7 +24,13 @@ class Payees extends Component
         parent::init();
     }
 
-    public function getGatewayAccountId(LineItem $lineItem)
+    /**
+     * Determine and return the payee’s account ID, based on a Commerce LineItem.
+     * 
+     * @return - The gateway account ID. If this is null, there is effectively no payee, so this line item will be treated like a typical Commerce order and not use Marketplace.
+     * @since 1.1.0
+     */
+    public function getAccountId(LineItem $lineItem): ?string
     {
         $purchasable = $lineItem->purchasable;
         $event = new PayeeEvent();

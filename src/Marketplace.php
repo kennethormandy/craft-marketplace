@@ -332,7 +332,7 @@ class Marketplace extends BasePlugin
 
         //         // By default only supports one line item, to match Commerce Lite
         //         $lineItemOnly = $order->lineItems[0];
-        //         $payeeStripeAccountId = $this->payees->getGatewayAccountId($lineItemOnly);
+        //         $payeeStripeAccountId = $this->payees->getAccountId($lineItemOnly);
 
         //         if (!$payeeStripeAccountId) {
         //             $this->log(
@@ -470,7 +470,7 @@ class Marketplace extends BasePlugin
                 $exchangeRate = $this->_getStripeExchangeRate($balanceTransaction, $currencyCountryCode);
 
                 foreach ($order->lineItems as $key => $lineItem) {
-                    $payeeCurrent = $this->payees->getGatewayAccountId($lineItem);
+                    $payeeCurrent = $this->payees->getAccountId($lineItem);
 
                     $this->log('lineItem');
                     $this->log(json_encode($lineItem));
