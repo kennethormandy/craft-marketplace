@@ -21,7 +21,10 @@ class Settings extends Model
     // =========================================================================
 
     public string $secretApiKey;
+
     public ?string $clientId = null;
+
+    public ?float $defaultFeeMultiplier = null;
 
     public string $providerHandle = 'marketplaceStripeExpress';
 
@@ -49,6 +52,7 @@ class Settings extends Model
         return Craft::parseEnv($this->secretApiKey);
     }
 
+
     // Public Methods
     // =========================================================================
 
@@ -63,6 +67,10 @@ class Settings extends Model
     {
         return
         [
+            [['defaultFeeMultiplier'], 'default', 'value' => null],
+            [['defaultFeeMultiplier'], 'number', 'min' => 0],
+            [['defaultFeeMultiplier'], 'number', 'max' => 1],
+
             [['secretApiKey'], 'required'],
             // [['clientId'], 'required'],
         ];

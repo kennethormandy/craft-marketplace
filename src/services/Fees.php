@@ -36,14 +36,20 @@ class Fees extends Component
         if ($this->hasEventHandlers(self::EVENT_BEFORE_CALCULATE_FEES_AMOUNT)) {
             $this->trigger(self::EVENT_BEFORE_CALCULATE_FEES_AMOUNT, $event);
         }
-        
-        // This will get consolidated with calculateFeesAmount, once global
-        // fees are changed to all work at the LineItem level, instead
-        // of a the Order level.
+
+        $defaultFeeMultiplier = Marketplace::$plugin->settings->getdefaultFeeMultiplier();
+
+        if ($defaultFeeMultiplier && $event) {
+            $event->amount = $event->sender->total * $defaultFeeMultiplier;
+
+            Marketplace::$plugin->log('Calculated fee amount: ' . $event->amount);
+        }
 
         if ($this->hasEventHandlers(self::EVENT_AFTER_CALCULATE_FEES_AMOUNT)) {
             $this->trigger(self::EVENT_AFTER_CALCULATE_FEES_AMOUNT, $event);
         }
+
+        Marketplace::$plugin->log('Final calculated fee amount: ' . $event->amount);
 
         return $event->amount;
     }

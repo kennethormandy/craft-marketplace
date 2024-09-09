@@ -17,6 +17,8 @@ return [
     'Stripe Secret Key' => 'Stripe Secret Key',
     'The secret API key for the parent Stripe account, where other Stripe accounts will be connected. This is the same value you use in the Stripe for Craft Commerce gateway.' => 'The secret API key for the parent Stripe account, where other Stripe accounts will be connected. This is the same value you use in the Stripe for Craft Commerce gateway.',
 
+    'Default Fee Multiplier' => 'Default Fee Multiplier',
+    'The portion of each line item that should be kept by the platform. This can be left blank, and [fully customized using events]({url}).' => 'The portion of each line item that should be kept by the platform. This can be left blank, and [fully customized using events]({url}).',
 
     // Site & CP error messages
     'Account already exists.' => 'Account already exists.',

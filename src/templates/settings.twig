@@ -28,6 +28,25 @@
   errors: settings.getErrors('secretApiKey'),
 }) }}
 
+{{ forms.textField({
+  type: 'number',
+  label: 'Default Fee Multiplier',
+  instructions: 'The portion of each line item that should be kept by the platform. This can be left blank, and [fully customized using events]({url}).'|t('marketplace', {
+    url: 'https://example.com',
+  })|md,
+  id: 'defaultFeeMultiplier',
+  name: 'defaultFeeMultiplier',
+  value: settings.defaultFeeMultiplier,
+  min: 0,
+  max: 1,
+  step: 0.01,
+  unit: '/1',
+  width: 5,
+  errors: settings.getErrors('defaultFeeMultiplier'),
+}) }}
+
+({{ settings.defaultFeeMultiplier|percentage  }})
+
 <hr>
 
 <a class="fieldtoggle" data-target="advanced">{{ 'Advanced'|t('app') }}</a>
