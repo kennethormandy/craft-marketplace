@@ -24,9 +24,7 @@ const config = {
     defaultLocale: 'en',
     locales: ['en'],
   },
-  stylesheets: [
-    'https://use.typekit.net/pbb3tpj.css',
-  ],
+  stylesheets: ['https://use.typekit.net/pbb3tpj.css'],
 
   presets: [
     [
@@ -36,17 +34,23 @@ const config = {
         docs: {
           breadcrumbs: false,
           sidebarPath: './sidebars.js',
-          // // Please change this to your repo.
-          // // Remove this to remove the "edit this page" links.
-          // editUrl:
-          //   'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
+
+          // Handle the current version, “2nd use case”
+          // https://docusaurus.io/docs/versioning#configuring-versioning-behavior
+          lastVersion: 'current',
+          versions: {
+            current: {
+              label: '4.x',
+              path: '',
+              banner: 'none',
+              badge: false,
+            },
+          },
+          editUrl:
+            'https://github.com/kennethormandy/craft-marketplace/tree/main/docs',
         },
         blog: {
           showReadingTime: false,
-          // // Please change this to your repo.
-          // // Remove this to remove the "edit this page" links.
-          // editUrl:
-          //   'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
         },
         theme: {
           customCss: './src/css/custom.css',
@@ -79,6 +83,10 @@ const config = {
             position: 'left',
           },
           { to: 'blog', label: 'Blog', position: 'left' },
+          {
+            type: 'docsVersionDropdown',
+            position: 'right',
+          },
           {
             href: 'https://github.com/kennethormandy/craft-marketplace',
             label: 'GitHub',
