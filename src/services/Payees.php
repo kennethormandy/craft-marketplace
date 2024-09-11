@@ -35,7 +35,7 @@ class Payees extends Component
         $purchasable = $lineItem->purchasable;
         $event = new PayeeEvent();
         $event->lineItem = $lineItem;
-        $event->gatewayAccountId = null;
+        $event->accountId = null;
         $purchasablePayeeUser = null;
 
         if ($this->hasEventHandlers(self::EVENT_BEFORE_DETERMINE_PAYEE)) {
@@ -88,7 +88,7 @@ class Payees extends Component
             $payeeStripeAccountId = $purchasablePayeeUser[$stripeConnectHandle];
         }
 
-        $event->gatewayAccountId = $payeeStripeAccountId;
+        $event->accountId = $payeeStripeAccountId;
 
         if ($this->hasEventHandlers(self::EVENT_AFTER_DETERMINE_PAYEE)) {
             $this->trigger(self::EVENT_AFTER_DETERMINE_PAYEE, $event);
@@ -99,6 +99,6 @@ class Payees extends Component
         // should that live in the service instead?
 
         // We use the event here so an end user can override this
-        return $event->gatewayAccountId;
+        return $event->accountId;
     }
 }
