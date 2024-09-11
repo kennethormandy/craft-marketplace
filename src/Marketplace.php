@@ -166,18 +166,20 @@ class Marketplace extends BasePlugin
     {
         Event::on(Element::class, Element::EVENT_DEFINE_BEHAVIORS, function(DefineBehaviorsEvent $event)
         {
-            $accountIdHandle = self::$plugin->handles->getButtonHandle();
-            $elementOrUser = $event->sender;
+            $field = null;
 
-            if (!$elementOrUser) {
+            /** @var Element - The element, incl. users, to look for the Marketplace Connect Button field */
+            $element = $event->sender ?? null;
+
+            if (!$element) {
                 return;
             }
 
-            $field = null;
             try {
-                $layout = $elementOrUser->getFieldLayout();
-                if ($layout) {
-                    $field = $layout->getFieldByHandle($accountIdHandle);
+                $accountIdHandle = self::$plugin->handles->getButtonHandle();
+                $fieldLayout = $element->getFieldLayout() ?? null;
+                if ($fieldLayout) {
+                    $field = $fieldLayout->getFieldByHandle($accountIdHandle);
                 }
             } catch (\Exception $e) {
             }
