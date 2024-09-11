@@ -345,8 +345,8 @@ class Accounts extends Component
             $event->isValid = false;
         }
 
-        if ($this->hasEventHandlers(self::AFTER_ACCOUNT_ACCESS)) {
-            $this->trigger(self::AFTER_ACCOUNT_ACCESS, $event);
+        if ($this->hasEventHandlers(self::EVENT_AFTER_ACCOUNT_ACCESS)) {
+            $this->trigger(self::EVENT_AFTER_ACCOUNT_ACCESS, $event);
         }
 
         if (!$event->isValid) {
