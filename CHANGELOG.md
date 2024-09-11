@@ -15,6 +15,7 @@
 - Added `getAccountId()` and `getIsConnected()` to elements with a Marketplace field
 
 ## Changed
+- Updates Stripe from v7.x to v10.x to match the Commerce Stripe gateway
 - Renamed `kennethormandy\marketplace\services\AccountsService` → `kennethormandy\marketplace\services\Accounts`
 - Renamed `kennethormandy\marketplace\services\FeesService` → `kennethormandy\marketplace\services\Fees`
 - Renamed `kennethormandy\marketplace\services\HandlesService` → `kennethormandy\marketplace\services\Handles`
