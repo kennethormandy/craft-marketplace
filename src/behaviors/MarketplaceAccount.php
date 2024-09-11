@@ -2,7 +2,6 @@
 
 namespace kennethormandy\marketplace\behaviors;
 
-use craft\helpers\UrlHelper;
 use kennethormandy\marketplace\Marketplace;
 use yii\base\Behavior;
 

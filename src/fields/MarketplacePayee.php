@@ -29,7 +29,6 @@ use Stripe\Stripe;
  */
 class MarketplacePayee extends Field
 {
-
     /**
      * Returns the display name of this class.
      *

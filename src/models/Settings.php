@@ -5,7 +5,6 @@ namespace kennethormandy\marketplace\models;
 use Craft;
 use craft\base\Model;
 use kennethormandy\marketplace\Marketplace;
-use kennethormandy\marketplace\providers\StripeExpressProvider;
 
 /**
  * Settings Model
@@ -38,7 +37,7 @@ class Settings extends Model
     }
 
     /**
-     * @return string The parsed Stripe secret key, for use with 
+     * @return string The parsed Stripe secret key, for use with
      */
     public function getSecretApiKey(): string
     {

@@ -23,11 +23,9 @@ use craft\commerce\stripe\base\Gateway as StripeGateway;
 use craft\commerce\stripe\events\BuildGatewayRequestEvent;
 use craft\elements\Entry;
 use craft\elements\User;
-use craft\errors\InvalidFieldException;
 use craft\events\DefineBehaviorsEvent;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterTemplateRootsEvent;
-use craft\helpers\App;
 use craft\helpers\UrlHelper;
 use craft\services\Fields;
 use craft\web\twig\variables\CraftVariable;
@@ -48,7 +46,6 @@ use Stripe\Transfer;
 use verbb\auth\Auth;
 use verbb\auth\base\OAuthProvider;
 use verbb\auth\events\AccessTokenEvent;
-// use verbb\auth\events\AuthorizationUrlEvent;
 use verbb\auth\helpers\Session;
 use verbb\auth\services\OAuth;
 use yii\base\Event;
@@ -165,8 +162,7 @@ class Marketplace extends BasePlugin
 
     private function _defineBehaviors(): void
     {
-        Event::on(Element::class, Element::EVENT_DEFINE_BEHAVIORS, function(DefineBehaviorsEvent $event)
-        {
+        Event::on(Element::class, Element::EVENT_DEFINE_BEHAVIORS, function(DefineBehaviorsEvent $event) {
             $this->_defineBehaviorsAccount($event);
         });
     }
@@ -189,7 +185,7 @@ class Marketplace extends BasePlugin
         $isEntry = $element->className() === Entry::class;
         $fieldLayoutId = $isEntry ? $element->getType()->fieldLayoutId : $element->fieldLayoutId;
         $fieldByLayoutIds = Craft::$app->getFields()->getFieldIdsByLayoutIds([$fieldLayoutId]);
-        $field = $fieldByLayoutIds[$fieldLayoutId] ?? null; 
+        $field = $fieldByLayoutIds[$fieldLayoutId] ?? null;
 
         // It doesn’t have this field, so it shouldn’t get the behavour.
         if (!$field) {
@@ -631,7 +627,7 @@ class Marketplace extends BasePlugin
 
     /**
      * Get the Stripe Express OAuth provider.
-     * 
+     *
      * @since 2.0.0
      */
     public function getProvider(): OAuthProvider
@@ -643,7 +639,7 @@ class Marketplace extends BasePlugin
             'clientSecret' => $settings->secretApiKey,
 
             // The redirectUri pointing to our own `actionCallback` method
-            'redirectUri' => UrlHelper::actionUrl('marketplace/auth/callback', null, null, false)
+            'redirectUri' => UrlHelper::actionUrl('marketplace/auth/callback', null, null, false),
         ]);
 
         return $provider;

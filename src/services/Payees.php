@@ -26,7 +26,7 @@ class Payees extends Component
 
     /**
      * Determine and return the payee’s account ID, based on a Commerce LineItem.
-     * 
+     *
      * @return - The gateway account ID. If this is null, there is effectively no payee, so this line item will be treated like a typical Commerce order and not use Marketplace.
      * @since 1.1.0
      */

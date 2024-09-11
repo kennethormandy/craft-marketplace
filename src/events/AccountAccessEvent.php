@@ -1,6 +1,7 @@
 <?php
 
 namespace kennethormandy\marketplace\events;
+
 use craft\base\Element;
 use craft\events\CancelableEvent;
 
@@ -9,7 +10,6 @@ use craft\events\CancelableEvent;
  */
 class AccountAccessEvent extends CancelableEvent
 {
-
     /** @var Element - The element, typically a user, that is connected to the gateway (ie. Stripe) via a MarketplaceConnectButton field   */
     public $sender;
 
@@ -17,5 +17,4 @@ class AccountAccessEvent extends CancelableEvent
      * @var null|string - The account ID from the gateway (ie. Stripe)
      */
     public ?string $accountId = null;
-
 }

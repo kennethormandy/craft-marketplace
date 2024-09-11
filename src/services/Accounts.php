@@ -3,19 +3,18 @@
 namespace kennethormandy\marketplace\services;
 
 use Craft;
-use craft\base\Element;
 use craft\base\Component;
+use craft\base\Element;
 use craft\elements\User;
 use craft\helpers\ArrayHelper;
 use craft\helpers\UrlHelper;
 use craft\web\Response;
-use kennethormandy\marketplace\Marketplace;
 use kennethormandy\marketplace\events\AccountAccessEvent;
+use kennethormandy\marketplace\Marketplace;
 use Stripe\Exception\InvalidArgumentException;
 use Stripe\Exception\InvalidRequestException;
 use Stripe\Exception\PermissionException;
 use Stripe\StripeClient;
-use verbb\auth\helpers\Session;
 use verbb\auth\Auth;
 
 class Accounts extends Component
@@ -45,7 +44,6 @@ class Accounts extends Component
             // https://docs.stripe.com/api/accounts/login_link/create
             $stripeParams = [];
             return $this->_getStripe()->accounts->createLoginLink($accountId, $stripeParams);
-
         });
     }
 
@@ -155,7 +153,6 @@ class Accounts extends Component
         $success = Craft::$app->elements->saveElement($element);
 
         if (!$success) {
-
             Marketplace::$plugin->setError('Unable to create account.');
 
             Marketplace::$plugin->log($element->id, [], 'error');
@@ -171,7 +168,7 @@ class Accounts extends Component
 
     /**
      * Get an element with a MarketplaceConnectButton field, which holds the gateway account ID.
-     * 
+     *
      * @param $elementRef - An element or element UID that could be used as an account, falling back to the current user.
      * @param $fallbackToCurrentUser - Whether or not the current user should be returned when no valid account is found. Defaults to `true`.
      * @return Element - An element with an account ID on the field, if valid (ie. it exists, and has the field with a value).
@@ -197,7 +194,7 @@ class Accounts extends Component
 
     /**
      * Determine whether or not an element is connected to the gateway (ie. Stripe).
-     * 
+     *
      * @param $elementRef - An element or element UID that could be used as an account, falling back to the current user.
      * @since 2.0.0
      */
@@ -240,7 +237,7 @@ class Accounts extends Component
                 (
                     ($stripeAccount['verification'] && !$stripeAccount['verification']['disabled_reason']) ||
                     ($stripeAccount['requirements'] && !$stripeAccount['requirements']['disabled_reason'])
-                ) 
+                )
             ) {
                 $isConnected = true;
             }
@@ -251,7 +248,7 @@ class Accounts extends Component
 
     /**
      * Get an account-like element, which may or may not be an active account yet.
-     * 
+     *
      * @param $elementRef - An element or element UID that could be used as an account, falling back to the current user.
      * @param $fallbackToCurrentUser - Whether or not the current user should be returned when no valid account is found. Defaults to `true`.
      * @return Element
@@ -302,22 +299,20 @@ class Accounts extends Component
         // - Requesting a link for another type of element, which they are related to
         // - Approved by the custom logic from the AccountAccessEvent, which may override the prev. conditions
         // if (!$currentUser->getIsAdmin()) {
-            if ($elementType === User::class) {
+        if ($elementType === User::class) {
 
                 // The custom element is a user, but it’s not the current user
-                if ($element->uid !== $currentUserIdentity->uid) {
-                    $isValid = false;
-                }
-
-            } else {
+            if ($element->uid !== $currentUserIdentity->uid) {
+                $isValid = false;
+            }
+        } else {
 
                 // The custom element is org-like, and by default should be related to the custom element
-                $orgLike = User::find()->id($currentUser->id)->relatedTo($element)->count();
-                if (!$orgLike) {
-                    $isValid = false;
-                }
-
+            $orgLike = User::find()->id($currentUser->id)->relatedTo($element)->count();
+            if (!$orgLike) {
+                $isValid = false;
             }
+        }
         // }
 
         // Verify the end user can access this Stripe account—this allows developers to relax the default

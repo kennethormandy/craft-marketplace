@@ -3,7 +3,6 @@
 namespace kennethormandy\marketplace\controllers;
 
 use Craft;
-use craft\elements\User;
 use craft\web\Controller;
 use craft\web\Response;
 use kennethormandy\marketplace\Marketplace;
@@ -39,7 +38,7 @@ class AccountsController extends Controller
 
         // We allow GET requests in the CP, where everything is already a form
         if (!$request->getIsCpRequest()) {
-            $this->requirePostRequest();            
+            $this->requirePostRequest();
         }
 
         $this->requireLogin();

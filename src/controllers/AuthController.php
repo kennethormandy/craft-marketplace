@@ -5,7 +5,6 @@ namespace kennethormandy\marketplace\controllers;
 use Craft;
 use craft\web\Controller;
 use kennethormandy\marketplace\Marketplace;
-use kennethormandy\marketplace\providers\StripeExpressProvider;
 use verbb\auth\Auth;
 use verbb\auth\helpers\Session;
 use yii\web\Response;

@@ -6,10 +6,8 @@ use Craft;
 use craft\base\Element;
 use craft\helpers\ArrayHelper;
 use craft\helpers\Template as TemplateHelper;
-use craft\web\View;
 use kennethormandy\marketplace\Marketplace;
 use Twig\Markup;
-use verbb\auth\Auth;
 use verbb\auth\helpers\Session;
 
 class MarketplaceVariable
@@ -48,7 +46,7 @@ class MarketplaceVariable
             'errorMessage' => $errorMessage,
         ]);
 
-        return TemplateHelper::raw($html); 
+        return TemplateHelper::raw($html);
     }
 
     // This is pretty much what the example is, but thinking it should become
@@ -97,7 +95,7 @@ class MarketplaceVariable
             'submitButton' => [
                 'attributes' => [
                     'class' => '',
-                ]
+                ],
             ],
         ];
 
