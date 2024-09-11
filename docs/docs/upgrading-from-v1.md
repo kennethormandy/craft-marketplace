@@ -57,13 +57,11 @@ Similarly, in the `Payees` service, the `getGatewayAccountId()` function is now 
 
 Before upgrading, note what your global fee is currently set to (if anything).
 
-Marketplace Lite v1 supported a single flat-rate or percentage fee. Marketplace v2 supports a single fee multiple, so any percentage fee can be ported to this new global setting. For example, if your fee was previously 10%, you would fill in `0.10` as your new fee.
+Marketplace Lite v1 supported a single flat-rate or percentage fee. Marketplace v4 supports a single fee multiple, so any percentage fee can be ported to this new global setting. For example, if your fee was previously 10%, you would fill in `0.10` as your new fee.
 
-Fees are no longer stored in the database. A beta feature of Marketplace Pro allowed more comlpex layering of fees, but in practice it is much easier and more clear to do this in code.
+A beta feature of **Marketplace Pro** v1 allowed more comlpex layering of fees, but in practice it is much easier and more clear to do this in code. Fees are no longer stored in the database. Instead, you can entirely customize the platform fee per line item, which makes it possible to charge a different platform fee for different products, different payees, etc.
 
-Instead, you can entirely customize the platform fee per line item, which makes it possible to charge a different platform fee for different products, different payees, etc.
-
-If you were using **Marketplace Lite** with a fee in the database, you can migrate it by checking what the fee was set to. It would either be a single flat fee or a percentage fee.
+If you were using **Marketplace Lite** v1 with a fee in the database, you can migrate it by checking what the fee was set to. It would either be a single flat fee or a percentage fee.
 
 For example, for a 5% percentage fee on all line items:
 
@@ -112,7 +110,7 @@ Event::on(
 );
 ```
 
-If you need help migrating your old fee, feel free to [send me an email](mailto:hello@kennethormandy.com).
+If you need help migrating your old fee, feel free to [send me an email](mailto:hello+marketplace@kennethormandy.com).
 
 ## Settings
 
