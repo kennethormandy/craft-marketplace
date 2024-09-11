@@ -6,6 +6,7 @@ use craft\base\Component;
 use craft\commerce\elements\Order;
 use craft\commerce\models\LineItem;
 use kennethormandy\marketplace\events\FeesEvent;
+use kennethormandy\marketplace\Marketplace;
 
 class Fees extends Component
 {
