@@ -33,6 +33,9 @@
   /* --ifm-heading-font-family: Avenir Next, sans-serif; */
 
   /* Customized */
+  --doc-sidebar-width: 250px !important;
+  --ifm-container-width: 800px;
+  --ifm-container-width-xl: 1052px;
   --ifm-spacing-horizontal: calc(var(--ifm-global-spacing) * 1);
   --ifm-link-color: #856f8e; /* Slightly better contrast */
   --ifm-background-color: hsl(276, 35%, 98%);
