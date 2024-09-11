@@ -8,13 +8,6 @@
 
 {% import '_includes/forms' as forms %}
 
-{{ forms.textField({
-  readonly: true,
-  label: 'Redirect URI'|t('marketplace'),
-  instructions: 'Copy this URI into the Stripe Dashboard when setting up Stripe Connect.'|t('marketplace'),
-  value: provider.getRedirectUri(),
-}) }}
-
 {{ forms.autosuggestField({
   label: 'Stripe Secret Key'|t('Stripe Secret Key'),
   instructions: 'The secret API key for the parent Stripe account, where other Stripe accounts will be connected. This is the same value you use in the Stripe for Craft Commerce gateway.'|t('marketplace'),
@@ -52,6 +45,15 @@
 <a class="fieldtoggle" data-target="advanced">{{ 'Advanced'|t('app') }}</a>
 <div id="advanced" class="hidden">
 
+  <h2>OAuth</h2>
+
+  {{ forms.textField({
+    readonly: true,
+    label: 'Redirect URI'|t('marketplace'),
+    instructions: 'Copy this URI into the Stripe Dashboard when setting up Stripe Connect using OAuth.'|t('marketplace'),
+    value: provider.getRedirectUri(),
+  }) }}
+  
   {{ forms.autosuggestField({
     label: 'Stripe Connect Client ID'|t('marketplace'),
     instructions: 'Your Client ID for Stripe Connect, for Stripe accounts using OAuth. Note this is not the same as your Stripe publishable key.'|t('marketplace'),
