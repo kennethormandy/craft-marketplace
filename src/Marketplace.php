@@ -21,6 +21,7 @@ use craft\commerce\Plugin as Commerce;
 use craft\commerce\services\Payments;
 use craft\commerce\stripe\base\Gateway as StripeGateway;
 use craft\commerce\stripe\events\BuildGatewayRequestEvent;
+use craft\elements\Entry;
 use craft\elements\User;
 use craft\errors\InvalidFieldException;
 use craft\events\DefineBehaviorsEvent;
@@ -166,32 +167,38 @@ class Marketplace extends BasePlugin
     {
         Event::on(Element::class, Element::EVENT_DEFINE_BEHAVIORS, function(DefineBehaviorsEvent $event)
         {
-            $field = null;
-
-            /** @var Element - The element, incl. users, to look for the Marketplace Connect Button field */
-            $element = $event->sender ?? null;
-
-            if (!$element) {
-                return;
-            }
-
-            try {
-                $accountIdHandle = self::$plugin->handles->getButtonHandle();
-                $fieldLayout = $element->getFieldLayout() ?? null;
-                if ($fieldLayout) {
-                    $field = $fieldLayout->getFieldByHandle($accountIdHandle);
-                }
-            } catch (\Exception $e) {
-            }
-
-            // It doesn’t have this field, so it shouldn’t get the behavour.
-            if (!$field) {
-                return;
-            }
-    
-            // Can we use just account here, or is that going to be a conflict?
-            $event->behaviors['marketplaceAccount'] = MarketplaceAccountBehavior::class;
+            $this->_defineBehaviorsAccount($event);
         });
+    }
+
+    /**
+     * Define the [[\MarketplaceAccount]] behaviour on all elements that have the [[\MarketplaceConnectButtonField]].
+     */
+    private function _defineBehaviorsAccount(DefineBehaviorsEvent $event): void
+    {
+        $field = null;
+        $accountIdHandle = self::$plugin->handles->getButtonHandle();
+        
+        /** @var Element - The element, incl. users, to look for the Marketplace Connect Button field */
+        $element = $event->sender;
+
+        if (!$element || !$element->id || !$accountIdHandle) {
+            return;
+        }
+
+        $isEntry = $element->className() === Entry::class;
+        $fieldLayoutId = $isEntry ? $element->getType()->fieldLayoutId : $element->fieldLayoutId;
+        $fieldByLayoutIds = Craft::$app->getFields()->getFieldIdsByLayoutIds([$fieldLayoutId]);
+        $field = $fieldByLayoutIds[$fieldLayoutId] ?? null; 
+
+        // It doesn’t have this field, so it shouldn’t get the behavour.
+        if (!$field) {
+            return;
+        }
+
+        // We are namespacing the behaviour here, as there could easily be other “account” behaviours,
+        // but this is only really to directly look up the behaviour and not really for end developers.
+        $event->behaviors['marketplaceAccount'] = MarketplaceAccountBehavior::class;
     }
 
     private function _attachEventHandlers(): void
