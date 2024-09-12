@@ -13,7 +13,7 @@ const config = {
   title: 'Marketplace',
   tagline:
     'Make your Craft Commerce site into a Marketplace, using Stripe Connect.',
-  // favicon: 'img/favicon.ico',
+  favicon: 'favicon.ico',
   url: 'https://craft-marketplace.kennethormandy.com',
   baseUrl: '/',
   organizationName: 'kennethormandy',
