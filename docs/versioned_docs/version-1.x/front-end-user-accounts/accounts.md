@@ -21,7 +21,6 @@ Once a Payee has their account connected, you can display a button that will giv
 
   <button type="submit" data-test="connect">Open Dashboard</button>
 
-  {# TODO This nessage to change to use Social Login #}
   {% if errorMessage is defined %}
     <p>{{ errorMessage }}</p>
   {% endif %}
@@ -44,7 +43,13 @@ If you’d like to customise this link, you can add a [Craft CMS `redirectInput`
 
 ### Error Message
 
-In Marketplace for Craft 3, error messages had to be included in your template manually. In Marketplace for Craft 4+, error messages are handled via Social Login.
+If there’s an error when creating the login link, a Flash message will be shown, if these are set up in your templates. An error message can also be provided to the form by using:
+
+```twig
+{% if errorMessage is defined %}
+  <p>{{ errorMessage }}</p>
+{% endif %}
+```
 
 An error could occur if:
 

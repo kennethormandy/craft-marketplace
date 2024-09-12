@@ -2,9 +2,13 @@
 title: "Install Marketplace Pro Beta"
 ---
 
-This guide will help you install Marketplace Pro Beta.
+:::warning
 
-Marketplace Pro has not been published to the Craft Plugin Store yet, but it has been running in production for over 6 months, and will likely be published as stable in the near future.
+All features of the Marketplace Pro v1 Beta have been ported to the next version, Marketplace v4. Please [upgrade to Marketplace v4](../../../docs/upgrading-from-v1.md) rather than following this old guide.
+
+:::
+
+This guide will help you install Marketplace Pro Beta.
 
 This process will be familiar if you have ever instaled a Composer package from a GitHub repository, or loaded a custom plugin into your Craft project, [per the Craft docs](https://craftcms.com/docs/3.x/extend/plugin-guide.html#loading-your-plugin-into-a-craft-project).
 

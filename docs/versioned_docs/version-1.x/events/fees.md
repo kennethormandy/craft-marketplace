@@ -1,5 +1,5 @@
 ---
-title: Fees Events
+title: FeesService Events
 ---
 
 ## Before Calculate Fees
@@ -8,8 +8,8 @@ title: Fees Events
 
 ```php
 Event::on(
-    Fees::class,
-    Fees::EVENT_AFTER_CALCULATE_FEES_AMOUNT,
+    FeesService::class,
+    FeesService::EVENT_AFTER_CALCULATE_FEES_AMOUNT,
     function (FeesEvent $event) {
         $order = $event->order;
         $lineItems = $order->lineItems;
