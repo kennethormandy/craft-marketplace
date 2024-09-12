@@ -34,6 +34,8 @@ const config = {
         docs: {
           breadcrumbs: false,
           sidebarPath: './sidebars.js',
+          sidebarCollapsed: false,
+          sidebarCollapsible: true,
 
           // Handle the current version, “2nd use case”
           // https://docusaurus.io/docs/versioning#configuring-versioning-behavior
