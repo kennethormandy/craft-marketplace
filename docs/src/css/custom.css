@@ -137,3 +137,16 @@ h2 {
 h3 {
   font-weight: 400;
 } */
+
+/* Table of Contents */
+
+.table-of-contents__link--active {
+}
+
+/* API Sidebar */
+
+.theme-doc-sidebar-item-hidden,
+.theme-doc-sidebar-item-label-hidden > .menu__list-item-collapsible:first-of-type {
+  display: none;
+  visibility: hidden;
+}
