@@ -5,9 +5,13 @@ node_modules
 composer.lock
 tests/**/.env
 .php_cs.cache
+.phpdoc
 
 # Cypress
 cypress.env.json
 tests/cypress/screenshots
 tests/cypress/videos
 tests/cypress/downloads
+
+# API Docs
+docs/docs/api
