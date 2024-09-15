@@ -14,5 +14,5 @@ tests/cypress/videos
 tests/cypress/downloads
 
 # API Docs
-docs/docs/api/classes
+docs/docs/api/classes/**/*.md
 docs/docs/api/Home.md
