@@ -84,6 +84,7 @@ const config = {
             label: 'Docs',
             position: 'left',
           },
+          { to: '/docs/api', label: 'API', position: 'left' },
           { to: 'blog', label: 'Blog', position: 'left' },
           {
             type: 'docsVersionDropdown',
