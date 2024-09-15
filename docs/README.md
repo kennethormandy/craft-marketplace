@@ -4,8 +4,10 @@ This website is built using [Docusaurus](https://docusaurus.io/), a modern stati
 
 ### Installation
 
+To install without updating:
+
 ```sh
-npm
+npm clean-install
 ```
 
 ### Local Development
@@ -15,6 +17,14 @@ npm start
 ```
 
 This command starts a local development server and opens up a browser window. Most changes are reflected live without having to restart the server.
+
+### Generate
+
+To generate the API docs:
+
+```sh
+ddev php phpDocumentor.phar --directory=./plugins/craft-marketplace/src --target=./plugins/craft-marketplace/docs/docs/api --template=vendor/saggre/phpdocumentor-markdown/themes/markdown --visibility=public
+```
 
 ### Build
 
@@ -26,16 +36,14 @@ This command generates static content into the `build` directory and can be serv
 
 ### Deployment
 
-Using SSH:
+To build and deploy:
 
-```
-$ USE_SSH=true npm deploy
-```
-
-Not using SSH:
-
-```
-$ GIT_USER=<Your GitHub username> npm deploy
+```sh
+npm run deploy
 ```
 
-If you are using GitHub pages for hosting, this command is a convenient way to build the website and push to the `gh-pages` branch.
+Or to deploy only, for use in CI services:
+
+```sh
+npm run deploy:ci
+```
