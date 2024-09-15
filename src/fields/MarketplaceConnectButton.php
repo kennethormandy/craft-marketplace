@@ -33,24 +33,8 @@ use yii\db\Schema;
  */
 class MarketplaceConnectButton extends Field implements PreviewableFieldInterface
 {
-    // Public Properties
-    // =========================================================================
 
-    /**
-     * Some attribute.
-     *
-     * @var string
-     */
-    // public $someAttribute = 'Some Default';
-
-    // Static Methods
-    // =========================================================================
-
-    /**
-     * Returns the display name of this class.
-     *
-     * @return string The display name of this class.
-     */
+    /** @inheritdoc */
     public static function displayName(): string
     {
         return Craft::t('marketplace', 'Marketplace Connect Button');
@@ -60,14 +44,14 @@ class MarketplaceConnectButton extends Field implements PreviewableFieldInterfac
     // =========================================================================
 
     /**
-     * Returns the validation rules for attributes.
+     * Returns the validation rules for attributes. 2
      *
      * Validation rules are used by [[validate()]] to check if attribute values are valid.
      * Child classes may override this method to declare different validation rules.
      *
      * More info: http://www.yiiframework.com/doc-2.0/guide-input-validation.html
      *
-     * @return array
+     * @return array This and that
      */
     public function rules(): array
     {

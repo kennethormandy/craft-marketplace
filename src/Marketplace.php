@@ -168,7 +168,8 @@ class Marketplace extends BasePlugin
     }
 
     /**
-     * Define the [[\MarketplaceAccount]] behaviour on all elements that have the [[\MarketplaceConnectButtonField]].
+     * Define the [MarketplaceAccount](../behavior/MarketplaceAccount) behaviour on all elements
+     * that have the [MarketplaceConnectButton](../field/MarketplaceConnectButton) field.
      */
     private function _defineBehaviorsAccount(DefineBehaviorsEvent $event): void
     {
