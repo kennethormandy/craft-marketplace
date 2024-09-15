@@ -18,8 +18,11 @@ const config = {
   baseUrl: '/',
   organizationName: 'kennethormandy',
   projectName: 'craft-marketplace',
-  onBrokenLinks: 'throw',
+
+  // We have broken links from API docs generation, which should be pointing to Yii and Craft docs
+  onBrokenLinks: 'warn', 
   onBrokenMarkdownLinks: 'warn',
+
   i18n: {
     defaultLocale: 'en',
     locales: ['en'],
