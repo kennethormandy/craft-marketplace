@@ -38,7 +38,7 @@ class Fees extends Component
             $this->trigger(self::EVENT_BEFORE_CALCULATE_FEES_AMOUNT, $event);
         }
 
-        $defaultFeeMultiplier = Marketplace::$plugin->settings->getdefaultFeeMultiplier();
+        $defaultFeeMultiplier = Marketplace::$plugin->settings->getDefaultFeeMultiplier();
 
         if ($defaultFeeMultiplier && $event) {
             $event->amount = $event->sender->total * $defaultFeeMultiplier;
