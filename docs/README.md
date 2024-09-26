@@ -23,7 +23,7 @@ This command starts a local development server and opens up a browser window. Mo
 To generate the API docs:
 
 ```sh
-ddev php phpDocumentor.phar --directory=./plugins/craft-marketplace/src --target=./plugins/craft-marketplace/docs/docs/api --template=vendor/saggre/phpdocumentor-markdown/themes/markdown --visibility=public
+ddev php phpDocumentor.phar --directory=./plugins/craft-marketplace/src --target=./plugins/craft-marketplace/docs/docs/api --template=vendor/saggre/phpdocumentor-markdown/themes/markdown --visibility=public --defaultpackagename=Marketplace --title=Marketplace
 ```
 
 ### Build
