@@ -11,9 +11,10 @@ use craft\events\CancelableEvent;
 class AccountAccessEvent extends CancelableEvent
 {
     /**
-     * The element, typically a user, that is connected to the gateway (ie. Stripe) via a [MarketplaceConnectButton](../fields/MarketplaceConnectButton) field
+     * The element, typically a user, that is connected to the gateway (ie. Stripe)
+     * via a [MarketplaceConnectButton](../fields/MarketplaceConnectButton) field
      */
-    public Element $sender;
+    public $sender;
 
     /**
      * The account ID from the gateway (ie. Stripe)
