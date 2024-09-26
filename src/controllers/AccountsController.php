@@ -4,7 +4,6 @@ namespace kennethormandy\marketplace\controllers;
 
 use Craft;
 use craft\web\Controller;
-use craft\web\Response;
 use kennethormandy\marketplace\Marketplace;
 
 class AccountsController extends Controller
