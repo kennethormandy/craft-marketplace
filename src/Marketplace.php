@@ -198,9 +198,14 @@ class Marketplace extends BasePlugin
         }
 
         $isEntry = $element->className() === Entry::class;
-        $fieldLayoutId = $isEntry ? $element->getType()->fieldLayoutId : $element->fieldLayoutId;
-        $fieldByLayoutIds = Craft::$app->getFields()->getFieldIdsByLayoutIds([$fieldLayoutId]);
-        $field = $fieldByLayoutIds[$fieldLayoutId] ?? null;
+        $fieldLayout = $isEntry ? $element->getType()->getFieldLayout() : $element->getFieldLayout();
+
+        if ($fieldLayout) {
+            try {
+                $field = $fieldLayout->getFieldByHandle($accountIdHandle);
+            } catch (\Exception $e) {
+            }
+        }
 
         // It doesn’t have this field, so it shouldn’t get the behavour.
         if (!$field) {
