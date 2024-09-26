@@ -30,8 +30,8 @@ class Accounts extends Component
     /**
      * @param $elementRef - An element or element UID that could be used as an account, falling back to the current user.
      * @param $params - Parameters to pass along to the gateway, namely `redirect` and `referrer`.
-     * @return - A redirect to the gateway’s hosted dashboard.
-     * @see https://docs.stripe.com/api/accounts/login_link/create
+     * @return null|Response - A redirect to the gateway’s hosted dashboard.
+     * @see https://docs.stripe.com/api/accounts/login_link/create Stripe documentation
      */
     public function createLoginLink(Element|string|null $elementRef = null, array $params = [
         'redirect' => null,
@@ -48,9 +48,9 @@ class Accounts extends Component
     }
 
     /**
-     * @param $elementRef - An element or element UID that could be used as an account, falling back to the current user.
-     * @param $params - Parameters to pass along to the gateway, namely `redirect` and `referrer`.
-     * @return - A redirect to the gateway’s hosted onboarding.
+     * @param $elementRef An element or element UID that could be used as an account, falling back to the current user.
+     * @param $params Parameters to pass along to the gateway, namely `redirect` and `referrer`.
+     * @return null|Response A redirect to the gateway’s hosted onboarding.
      * @see https://docs.stripe.com/api/account_links/create
      */
     public function createAccountLink(Element|string|null $elementRef = null, array $params = [
@@ -93,9 +93,9 @@ class Accounts extends Component
     }
 
     /**
-     * @param $elementRef - An element or element UID that could be used as an account, falling back to the current user.
-     * @param $params - Parameters to pass along to the gateway, namely `redirect` and `referrer`.
-     * @return - Redirect to gateway to start or continue the onboarding process.
+     * @param $elementRef An element or element UID that could be used as an account, falling back to the current user.
+     * @param $params Parameters to pass along to the gateway, namely `redirect` and `referrer`.
+     * @return null|Response Redirect to gateway to start or continue the onboarding process.
      * @since 2.0.0
      */
     public function createAccount(Element|string|null $elementRef = null, array $params = []): ?Response

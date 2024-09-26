@@ -15,12 +15,6 @@ class FeeRecord extends ActiveRecord
 {
     use SoftDeleteTrait;
 
-    // Public Static Methods
-    // =========================================================================
-
-    /**
-     * @inheritdoc
-     */
     public static function tableName()
     {
         return '{{%marketplace_fees}}';

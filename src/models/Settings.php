@@ -7,37 +7,51 @@ use craft\base\Model;
 use kennethormandy\marketplace\Marketplace;
 
 /**
- * Settings Model
- * https://craftcms.com/docs/plugins/models.
+ * The Settings Model.
+ * 
+ * This model defines the settings for Marketplace. All settings are currently available to set
+ * in the Craft control panel, and saved to your project config.
  *
  * @author    Kenneth Ormandy
- * @link      https://github.com/kennethormandy/craft-marketplace
  * @since     0.1.0
  */
 class Settings extends Model
 {
-    // Public Properties
-    // =========================================================================
 
+    /**
+     * The secret Stripe API key.
+     */
     public string $secretApiKey;
 
-    public ?string $clientId = null;
-
+    /**
+     * A simple, Marketplace-wide default fee to use. This can be left as `null`, and
+     * all fees can be determined during the [FeesEvent](../events/FeesEvent) instead.
+     */
     public ?float $defaultFeeMultiplier = null;
 
+    /**
+     * When using OAuth, this should be set to the OAuth Client ID for Stripe Connect, 
+     * from the Stripe dashboard.
+     */
+    public ?string $clientId = null;
+
+    /**
+     * When using OAuth, this should be set tot the handle of the OAuth provider to use.
+     * 
+     * The default is the handle for Marketplace’s own [StripeExpressProvider](../providers/StripeExpressProvider).
+     */
     public string $providerHandle = 'marketplaceStripeExpress';
 
-
-    // Public Methods
-    // =========================================================================
-
+    /**
+     * Returns the Client ID setting.
+     */
     public function getClientId(): string
     {
         return Craft::parseEnv($this->clientId);
     }
 
     /**
-     * @return string The parsed Stripe secret key, for use with
+     * Returns the secret Stripe API key.
      */
     public function getSecretApiKey(): string
     {
@@ -51,15 +65,10 @@ class Settings extends Model
         return Craft::parseEnv($this->secretApiKey);
     }
 
-
-    // Public Methods
-    // =========================================================================
-
     /**
      * Returns the validation rules for attributes.
      *
-     * More info: http://www.yiiframework.com/doc-2.0/guide-input-validation.html
-     *
+     * @see http://www.yiiframework.com/doc-2.0/guide-input-validation.html Validating Input
      * @return array
      */
     public function rules(): array

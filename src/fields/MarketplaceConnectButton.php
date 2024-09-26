@@ -1,12 +1,4 @@
 <?php
-/**
- * Marketplace plugin for Craft CMS 3.x.
- *
- * Marketplace
- *
- * @link      https://kennethormandy.com
- * @copyright Copyright (c) 2019 Kenneth Ormandy
- */
 
 namespace kennethormandy\marketplace\fields;
 
@@ -34,7 +26,6 @@ use yii\db\Schema;
 class MarketplaceConnectButton extends Field implements PreviewableFieldInterface
 {
 
-    /** @inheritdoc */
     public static function displayName(): string
     {
         return Craft::t('marketplace', 'Marketplace Connect Button');

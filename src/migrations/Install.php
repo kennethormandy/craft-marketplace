@@ -3,30 +3,17 @@
 namespace kennethormandy\marketplace\migrations;
 
 use Craft;
-use craft\db\Migration;
+use yii\db\Migration;
 use verbb\auth\Auth;
 
-/**
- * Install migration.
- *
- * @since 0.6.0
- */
 class Install extends Migration
 {
-    // Public Properties
-    // =========================================================================
 
     /**
-     * @var string The database driver to use
+     * The database driver to use.
      */
-    public $driver;
+    public string $driver;
 
-    // Public Methods
-    // =========================================================================
-
-    /**
-     * @inheritdoc
-     */
     public function safeUp(): bool
     {
         return true;
@@ -50,10 +37,11 @@ class Install extends Migration
 
     /**
      * Removes the tables needed for the Records used by the plugin.
+     * 
+     * If necessary, removes the `marketplace_fees` table created in Marketplace v1.
      */
     protected function removeTables(): void
     {
-        // marketplace_fees table
         $this->dropTableIfExists('{{%marketplace_fees}}');
     }
 }

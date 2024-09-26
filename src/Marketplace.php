@@ -1,11 +1,11 @@
 <?php
 /**
- * Marketplace plugin for Craft CMS 3.x.
+ * Marketplace plugin for Craft CMS.
  *
  * Marketplace
  *
  * @link      https://kennethormandy.com
- * @copyright Copyright © 2019–2020 Kenneth Ormandy
+ * @copyright Copyright © 2019–2024 Kenneth Ormandy
  */
 
 namespace kennethormandy\marketplace;
@@ -69,6 +69,14 @@ class Marketplace extends BasePlugin
     public string $schemaVersion = '0.1.0';
 
     // Can probably be removed, or otherwise to settings if it actually is configurable.
+
+    /**
+     * Prefer Separate Transfers
+     * 
+     * Whether or not to prefer that Stripe use “separate charges and transfers,” rather than
+     * the “short hand” `application_fee_amount` approach. This is only possible on carts
+     * with a single payee, so by default Marketplace prefers separate transfers on all transactions.
+     */
     public bool $preferSeparateTransfers = true;
 
     /**
@@ -76,6 +84,9 @@ class Marketplace extends BasePlugin
      */
     public static $plugin;
 
+    /**
+     * @inheritDoc
+     */
     public static function editions(): array
     {
         return [
@@ -84,6 +95,9 @@ class Marketplace extends BasePlugin
         ];
     }
 
+    /**
+     * @inheritDoc
+     */
     public function init()
     {
         parent::init();
@@ -175,7 +189,7 @@ class Marketplace extends BasePlugin
     {
         $field = null;
         $accountIdHandle = self::$plugin->handles->getButtonHandle();
-        
+
         /** @var Element - The element, incl. users, to look for the Marketplace Connect Button field */
         $element = $event->sender;
 
