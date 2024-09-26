@@ -72,7 +72,7 @@ class Marketplace extends BasePlugin
 
     /**
      * Prefer Separate Transfers
-     * 
+     *
      * Whether or not to prefer that Stripe use “separate charges and transfers,” rather than
      * the “short hand” `application_fee_amount` approach. This is only possible on carts
      * with a single payee, so by default Marketplace prefers separate transfers on all transactions.

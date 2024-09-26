@@ -8,7 +8,7 @@ use kennethormandy\marketplace\Marketplace;
 
 /**
  * The Settings Model.
- * 
+ *
  * This model defines the settings for Marketplace. All settings are currently available to set
  * in the Craft control panel, and saved to your project config.
  *
@@ -17,7 +17,6 @@ use kennethormandy\marketplace\Marketplace;
  */
 class Settings extends Model
 {
-
     /**
      * The secret Stripe API key.
      */
@@ -30,14 +29,14 @@ class Settings extends Model
     public ?float $defaultFeeMultiplier = null;
 
     /**
-     * When using OAuth, this should be set to the OAuth Client ID for Stripe Connect, 
+     * When using OAuth, this should be set to the OAuth Client ID for Stripe Connect,
      * from the Stripe dashboard.
      */
     public ?string $clientId = null;
 
     /**
      * When using OAuth, this should be set tot the handle of the OAuth provider to use.
-     * 
+     *
      * The default is the handle for Marketplace’s own [StripeExpressProvider](../providers/StripeExpressProvider).
      */
     public string $providerHandle = 'marketplaceStripeExpress';

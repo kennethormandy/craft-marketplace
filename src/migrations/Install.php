@@ -3,12 +3,11 @@
 namespace kennethormandy\marketplace\migrations;
 
 use Craft;
-use yii\db\Migration;
 use verbb\auth\Auth;
+use yii\db\Migration;
 
 class Install extends Migration
 {
-
     /**
      * The database driver to use.
      */
@@ -37,7 +36,7 @@ class Install extends Migration
 
     /**
      * Removes the tables needed for the Records used by the plugin.
-     * 
+     *
      * If necessary, removes the `marketplace_fees` table created in Marketplace v1.
      */
     protected function removeTables(): void

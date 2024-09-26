@@ -25,7 +25,6 @@ use yii\db\Schema;
  */
 class MarketplaceConnectButton extends Field implements PreviewableFieldInterface
 {
-
     public static function displayName(): string
     {
         return Craft::t('marketplace', 'Marketplace Connect Button');
