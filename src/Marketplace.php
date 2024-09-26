@@ -193,7 +193,7 @@ class Marketplace extends BasePlugin
         /** @var Element - The element, incl. users, to look for the Marketplace Connect Button field */
         $element = $event->sender;
 
-        if (!$element || !$element->id || !$accountIdHandle) {
+        if (!$element || ($element->id && !$element->isNewForSite) || !$accountIdHandle) {
             return;
         }
 
