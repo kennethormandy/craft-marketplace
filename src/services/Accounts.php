@@ -322,6 +322,7 @@ class Accounts extends Component
         $event = new AccountAccessEvent();
         $event->accountId = $accountId;
         $event->sender = $element;
+        $event->user = $currentUserIdentity;
         $event->isValid = $isValid;
 
         if ($this->hasEventHandlers(self::EVENT_BEFORE_ACCOUNT_ACCESS)) {
