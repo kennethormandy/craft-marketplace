@@ -65,6 +65,14 @@ class Settings extends Model
     }
 
     /**
+     * Returns the default fee multiplier.
+     */
+    public function getDefaultFeeMultiplier(): ?float
+    {
+        return $this->defaultFeeMultiplier;
+    }
+
+    /**
      * Returns the validation rules for attributes.
      *
      * @see http://www.yiiframework.com/doc-2.0/guide-input-validation.html Validating Input
