@@ -201,7 +201,23 @@ class Marketplace extends BasePlugin
 
         // Attempt to get a field layout on an element
         try {
-            $fieldLayout = $element->getFieldLayout();
+
+            if ($element instanceof \craft\elements\GlobalSet) {
+
+                // We should just be able to do: `$element->getFieldLayout();` but
+                // for some reason, the global set behavior is null at this stage.
+                $elementFieldLayoutBehavior = $element->getBehavior('fieldLayout');
+                if ($elementFieldLayoutBehavior) {
+                    $fieldLayout = $elementFieldLayoutBehavior->getFieldLayout();
+                }
+
+            } else {
+
+                // Typical case
+                $fieldLayout = $element->getFieldLayout();
+
+            }            
+
         } catch (\yii\base\InvalidConfigException) {
         }
 
