@@ -189,6 +189,7 @@ class Marketplace extends BasePlugin
     private function _defineBehaviorsAccount(DefineBehaviorsEvent $event): void
     {
         $field = null;
+        $fieldLayout = null;
         $accountIdHandle = self::$plugin->handles->getButtonHandle();
 
         /** @var Element - The element, incl. users, to look for the Marketplace Connect Button field */
@@ -198,13 +199,20 @@ class Marketplace extends BasePlugin
             return;
         }
 
-        $fieldLayout = $element->getFieldLayout();
+        // Attempt to get a field layout on an element
+        try {
+            $fieldLayout = $element->getFieldLayout();
+        } catch (\yii\base\InvalidConfigException) {
+        }
 
-        if ($fieldLayout) {
-            try {
-                $field = $fieldLayout->getFieldByHandle($accountIdHandle);
-            } catch (\Exception $e) {
-            }
+        if (!$fieldLayout) {
+            return;
+        }
+
+        // Attempt to get the field from the field layout
+        try {
+            $field = $fieldLayout->getFieldByHandle($accountIdHandle);
+        } catch (\Exception $e) {
         }
 
         // It doesn’t have this field, so it shouldn’t get the behavour.
