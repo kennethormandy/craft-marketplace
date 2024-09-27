@@ -197,8 +197,7 @@ class Marketplace extends BasePlugin
             return;
         }
 
-        $isEntry = $element->className() === Entry::class;
-        $fieldLayout = $isEntry ? $element->getType()->getFieldLayout() : $element->getFieldLayout();
+        $fieldLayout = $element->getFieldLayout();
 
         if ($fieldLayout) {
             try {
