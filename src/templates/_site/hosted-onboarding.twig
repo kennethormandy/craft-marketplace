@@ -1,4 +1,4 @@
-<form method="POST" accept-charset="UTF-8" {{- attr(themeConfig.form.attributes) -}}>
+<form method="POST" accept-charset="UTF-8" target="_blank" {{- attr(themeConfig.form.attributes) -}}>
   {{ csrfInput() }}
   {% if old|default(false) %}
     {{ actionInput('marketplace/auth/connect') }}
