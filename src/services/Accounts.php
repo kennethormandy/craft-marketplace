@@ -11,6 +11,8 @@ use craft\helpers\UrlHelper;
 use craft\web\Response;
 use kennethormandy\marketplace\events\AccountAccessEvent;
 use kennethormandy\marketplace\Marketplace;
+use Stripe\AccountLink;
+use Stripe\LoginLink;
 use Stripe\Exception\InvalidArgumentException;
 use Stripe\Exception\InvalidRequestException;
 use Stripe\Exception\PermissionException;
@@ -28,15 +30,15 @@ class Accounts extends Component
     }
 
     /**
-     * @param $elementRef - An element or element UID that could be used as an account, falling back to the current user.
-     * @param $params - Parameters to pass along to the gateway, namely `redirect` and `referrer`.
-     * @return null|Response - A redirect to the gateway’s hosted dashboard.
+     * @param $elementRef An element or element UID that could be used as an account, falling back to the current user.
+     * @param $params Parameters to pass along to the gateway, namely `redirect` and `referrer`.
+     * @return null|LoginLink A Stripe login link
      * @see https://docs.stripe.com/api/accounts/login_link/create Stripe documentation
      */
     public function createLoginLink(Element|string|null $elementRef = null, array $params = [
         'redirect' => null,
         'referrer' => null,
-    ]): ?Response
+    ]): ?LoginLink
     {
         return $this->_createLink($elementRef, $params, function($accountId, $params) {
 
@@ -50,13 +52,13 @@ class Accounts extends Component
     /**
      * @param $elementRef An element or element UID that could be used as an account, falling back to the current user.
      * @param $params Parameters to pass along to the gateway, namely `redirect` and `referrer`.
-     * @return null|Response A redirect to the gateway’s hosted onboarding.
+     * @return null|AccountLink A Stripe account link
      * @see https://docs.stripe.com/api/account_links/create
      */
     public function createAccountLink(Element|string|null $elementRef = null, array $params = [
         'redirect' => null,
         'referrer' => null,
-    ]): ?Response
+    ]): ?AccountLink
     {
         return $this->_createLink($elementRef, $params, function($accountId, $params) {
 
@@ -95,10 +97,10 @@ class Accounts extends Component
     /**
      * @param $elementRef An element or element UID that could be used as an account, falling back to the current user.
      * @param $params Parameters to pass along to the gateway, namely `redirect` and `referrer`.
-     * @return null|Response Redirect to gateway to start or continue the onboarding process.
+     * @return null|AccountLink A Stripe account link
      * @since 2.0.0
      */
-    public function createAccount(Element|string|null $elementRef = null, array $params = []): ?Response
+    public function createAccount(Element|string|null $elementRef = null, array $params = []): ?AccountLink
     {
         $accountLinkParams = [
             'redirect' => $params['redirect'] ?? null,
@@ -271,7 +273,7 @@ class Accounts extends Component
         return $element;
     }
 
-    private function _createLink(Element|string|null $element, $params, $callback)
+    private function _createLink(Element|string|null $element, $params, $callback): mixed
     {
         $isValid = true;
 
