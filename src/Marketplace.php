@@ -42,6 +42,7 @@ use kennethormandy\marketplace\services\Payees as PayeesService;
 use kennethormandy\marketplace\variables\MarketplaceVariable;
 use Stripe\BalanceTransaction;
 use Stripe\Stripe;
+use Stripe\StripeClient;
 use Stripe\Transfer;
 use verbb\auth\Auth;
 use verbb\auth\base\OAuthProvider;
@@ -439,8 +440,11 @@ class Marketplace extends BasePlugin
                     // Stop at the first successful transaction, can also be failed
                     // TODO Does auth and capture still create this?
                     if ($transaction->type === 'purchase' && $transaction->status === 'success') {
+
+                        /** @var craft\commerce\models\Transaction $purchaseTransaction */
                         $purchaseTransaction = $transaction;
                         break;
+
                     }
                 }
 
@@ -459,20 +463,29 @@ class Marketplace extends BasePlugin
 
                 $stripeCharge = null;
 
-                // Get the first captured transaction
-                if (
-                    isset($stripeResp->charges) && $stripeResp->charges &&
-                    isset($stripeResp->charges->data) && $stripeResp->charges->data &&
-                    count($stripeResp->charges->data) >= 1
-                ) {
-                    foreach ($stripeResp->charges->data as $charge) {
-                        $this->log(json_encode($charge));
-                        if ($charge && $charge->captured && $charge->status === 'succeeded') {
-                            $stripeCharge = $charge;
-                            break;
-                        }
-                    }
+                if ($stripeResp->latest_charge) {
+                    $stripe = $this->_getStripe();
+                    $stripeCharge = $stripe->charges->retrieve($stripeResp->latest_charge);
                 }
+
+                // TODO If we don’t have it, get all Stripe charges using:
+                // https://docs.stripe.com/api/charges/list
+                // Providing the payment intent
+
+                // // Get the first captured transaction
+                // if (
+                //     isset($stripeResp->charges) && $stripeResp->charges &&
+                //     isset($stripeResp->charges->data) && $stripeResp->charges->data &&
+                //     count($stripeResp->charges->data) >= 1
+                // ) {
+                //     foreach ($stripeResp->charges->data as $charge) {
+                //         $this->log(json_encode($charge));
+                //         if ($charge && $charge->captured && $charge->status === 'succeeded') {
+                //             $stripeCharge = $charge;
+                //             break;
+                //         }
+                //     }
+                // }
 
                 if (!$stripeCharge) {
                     $this->log('No successful charge found on Order ' . $order->id, [], 'error');
@@ -556,6 +569,14 @@ class Marketplace extends BasePlugin
                 }
             }
         );
+    }
+
+    private function _getStripe(): StripeClient
+    {
+        $stripeSecretKey = $this->getSettings()->getSecretApiKey();
+        $stripe = new StripeClient($stripeSecretKey);
+
+        return $stripe;
     }
 
     private function _getStripeExchangeRate($stripeBalanceTransaction, $craftCurrencyCountryCode)
