@@ -16,7 +16,6 @@
 {% import "_includes/forms" as forms %}
 
 {% set user = element.className() == 'craft\\elements\\User' ? element : null %}
-{% set isConnected = element.getIsConnected() %}
 {% set isCurrentUserViewing = currentUser and user and currentUser.id == user.id %}
 
 <div class="field">

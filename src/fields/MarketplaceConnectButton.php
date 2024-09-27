@@ -339,6 +339,7 @@ class MarketplaceConnectButton extends Field implements PreviewableFieldInterfac
                 'element' => $element,
                 'payeeHandle' => $payeeHandle,
                 'baseCpUrl' => UrlHelper::baseCpUrl(),
+                'isConnected' => Marketplace::$plugin->accounts->isConnected($element),
             ]
         );
     }
