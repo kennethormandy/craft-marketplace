@@ -16,7 +16,7 @@
   </button>
 
   {# A single error message, same as the default Craft CMS login form. #}
-  <div data-test="errors">
+  <div {{- attr(themeConfig.errors.attributes) -}}>
     {% if errorMessage is defined %}
       <p>{{ errorMessage }}</p>
     {% endif %}

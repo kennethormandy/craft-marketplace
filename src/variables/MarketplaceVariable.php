@@ -97,6 +97,11 @@ class MarketplaceVariable
                     'class' => '',
                 ],
             ],
+            'errors' => [
+                'attributes' => [
+                    'class' => '',
+                ],
+            ],
         ];
 
         return ArrayHelper::merge($themeConfigDefault, $themeConfig);
