@@ -10,8 +10,6 @@ use yii\base\Behavior;
  */
 class MarketplaceAccount extends Behavior
 {
-    public bool $isConnected = false;
-
     public function getAccountId(): ?string
     {
         $accountId = null;
@@ -25,17 +23,13 @@ class MarketplaceAccount extends Behavior
         return $accountId;
     }
 
-    public function setIsConnected(): void
+    public function getIsConnected(): bool
     {
         // Get the account without falling back to the current user,
         // because the owner is already the element we need.
         $account = Marketplace::$plugin->accounts->getAccount($this->owner, false);
         $isConnected = Marketplace::$plugin->accounts->isConnected($account);
-        $this->isConnected = $isConnected;
-    }
 
-    public function getIsConnected(): bool
-    {
-        return $this->isConnected;
+        return $isConnected;
     }
 }
