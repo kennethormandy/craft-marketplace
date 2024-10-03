@@ -57,6 +57,22 @@ class AccountsController extends Controller
      * This is intended to be used in staging and development environments,
      * where you’ll likely need to replace production account IDs (ex. from
      * Stripe Live mode) with test account IDs (ie. from Stripe Test mode).
+     * 
+     * Example:
+     * 
+     * ```sh
+     * php craft marketplace/accounts/replace --element-id 123 --account-id acct_aAbBcCdDEeFfGgHh
+     * ```
+     * 
+     * …where `123` is an account, ie. an element with a Marketplace Connect Button field, and
+     * `acct_aAbBcCdDEeFfGgHh` is the new account ID you want it to contain.
+     * 
+     * :::warning
+     * 
+     * Currently, this isn’t validated using Stripe, ie. it is possible to give this command an invalid
+     * account ID that doesn’t exist on your Stripe account.
+     * 
+     * :::
      */
     public function actionReplace(): int
     {
