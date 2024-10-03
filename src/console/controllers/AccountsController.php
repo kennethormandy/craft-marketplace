@@ -36,6 +36,9 @@ class AccountsController extends Controller
                 $options[] = 'elementId';
                 $options[] = 'accountId';
                 break;
+            case 'remove':
+                $options[] = 'elementId';
+                break;
         }
         return $options;
     }
@@ -62,32 +65,14 @@ class AccountsController extends Controller
             return ExitCode::USAGE;
         }
 
-        $element = Craft::$app->elements->getElementById($this->elementId);
+        $account = $this->_getAccount();
 
-        if (!$element) {
-            ConsoleHelper::output('No element exists with an ID of “' . $this->elementId . '”');
+        if (!$account) {
+            ConsoleHelper::output('No account could be found via an element ID of “' . $this->elementId . '”');
             return ExitCode::UNSPECIFIED_ERROR;
         }
 
-        $fallbackToCurrentUser = false;
-        $account = Marketplace::$plugin->accounts->getAccount($element, $fallbackToCurrentUser);
         $newAccountId = $this->accountId;
-
-        if (!$account) {
-            $accountIdHandle = Marketplace::$plugin->handles->getButtonHandle();
-
-            // TODO Could be replaced with more comprehensive checks when adding behaviours
-            $hasMarketplaceButton = $element->getFieldLayout()->getFieldByHandle($accountIdHandle);
-
-            if ($hasMarketplaceButton) {
-                // It’s an account-like element with no field value yet
-                $account = $element;
-            } else {
-                ConsoleHelper::output('No account found via an element ID of “' . $this->elementId . '”');
-                return ExitCode::UNSPECIFIED_ERROR;    
-            }
-        }
-
         $oldAccountId = $account ? $account->getAccountId() : '';
         // $oldIsConnected = $account->getIsConnected();
 
@@ -106,9 +91,70 @@ class AccountsController extends Controller
     }
 
     /**
+     * Manually remove an account ID, so a new one can be created.
+     *
+     * Note this doesn’t disconnect the account from the platform—it simply
+     * removes the ID, ex. if you wanted to run through the account onboarding
+     * process again in a different environment.
+     */
+    public function actionRemove(): int
+    {
+        if (!$this->elementId) {
+            ConsoleHelper::output('The `--element-id` flag is required.');
+            return ExitCode::USAGE;
+        }
+
+        $account = $this->_getAccount();
+
+        if (!$account) {
+            ConsoleHelper::output('No account could be found via an element ID of “' . $this->elementId . '”');
+            return ExitCode::UNSPECIFIED_ERROR;
+        }
+
+        $newAccountId = $this->accountId;
+        $oldAccountId = $account ? $account->getAccountId() : '';
+
+        if ($oldAccountId === $newAccountId) {
+            ConsoleHelper::output('The account ID is already empty, or this isn’t a valid account element.');
+            return ExitCode::OK;
+        }
+
+        ConsoleHelper::output('Removing account ID “' . $oldAccountId . '”…');
+        return $this->_setAccountIdAndDone($account, $newAccountId);
+    }
+
+    private function _getAccount(): ?Element
+    {
+        $element = Craft::$app->elements->getElementById($this->elementId);
+
+        if (!$element) {
+            return null;
+        }
+
+        $fallbackToCurrentUser = false;
+        $account = Marketplace::$plugin->accounts->getAccount($element, $fallbackToCurrentUser);
+
+        if (!$account) {
+            $accountIdHandle = Marketplace::$plugin->handles->getButtonHandle();
+
+            // TODO Could be replaced with more comprehensive checks when adding behaviours
+            $hasMarketplaceButton = $element->getFieldLayout()->getFieldByHandle($accountIdHandle);
+
+            if ($hasMarketplaceButton) {
+                // It’s an account-like element with no field value yet
+                $account = $element;
+            } else {
+                return null;
+            }
+        }
+
+        return $account;
+    }
+
+    /**
      * Save the account element with a new ID, with appropriate console output.
      */
-    private function _setAccountIdAndDone(Element $account, string $newAccountId): int|Element
+    private function _setAccountIdAndDone(Element $account, ?string $newAccountId): int
     {
         $accountIdHandle = Marketplace::$plugin->handles->getButtonHandle();
         $account->setFieldValue($accountIdHandle, $newAccountId);
