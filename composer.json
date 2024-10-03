@@ -44,13 +44,13 @@
     "codeception/module-yii2": "^1.1.5",
     "craftcms/commerce-stripe": "^3.0.0",
     "craftcms/ecs": "dev-main",
+    "craftcms/generator": "^1.8.0",
     "craftcms/phpstan": "dev-main",
     "craftcms/rector": "dev-main",
     "vlucas/phpdotenv": "^5.4",
     "codeception/module-phpbrowser": "^1.0",
     "codeception/module-webdriver": "^1.1",
     "yiisoft/yii2-dev": "^2.0.38"
-
   },
   "scripts": {
     "test": "vendor/bin/codecept run --debug",
