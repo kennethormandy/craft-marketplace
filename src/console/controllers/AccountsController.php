@@ -3,6 +3,7 @@
 namespace kennethormandy\marketplace\console\controllers;
 
 use Craft;
+use craft\base\Element;
 use craft\helpers\Console as ConsoleHelper;
 use craft\console\Controller;
 use kennethormandy\marketplace\Marketplace;
@@ -70,24 +71,48 @@ class AccountsController extends Controller
 
         $fallbackToCurrentUser = false;
         $account = Marketplace::$plugin->accounts->getAccount($element, $fallbackToCurrentUser);
+        $newAccountId = $this->accountId;
 
         if (!$account) {
-            ConsoleHelper::output('No account found via an element ID of “' . $this->elementId . '”');
-            return ExitCode::UNSPECIFIED_ERROR;
+            $accountIdHandle = Marketplace::$plugin->handles->getButtonHandle();
+
+            // TODO Could be replaced with more comprehensive checks when adding behaviours
+            $hasMarketplaceButton = $element->getFieldLayout()->getFieldByHandle($accountIdHandle);
+
+            if ($hasMarketplaceButton) {
+                // It’s an account-like element with no field value yet
+                $account = $element;
+            } else {
+                ConsoleHelper::output('No account found via an element ID of “' . $this->elementId . '”');
+                return ExitCode::UNSPECIFIED_ERROR;    
+            }
         }
 
-        $oldAccountId = $account->getAccountId();
-
+        $oldAccountId = $account ? $account->getAccountId() : '';
         // $oldIsConnected = $account->getIsConnected();
+
+        if ($oldAccountId === $newAccountId) {
+            ConsoleHelper::output('The account ID is already ' . $oldAccountId);
+            return ExitCode::OK;
+        }
+
+        ConsoleHelper::output('Replacing account ID “' . $oldAccountId . '” with new account ID “' . $newAccountId . '”…');
 
         // TODO Could use Stripe API to validate the new account ID with a
         // `--validate` flag too, ie. throw if the new account ID isn’t actually
         // an account ID on Stripe. Similar to `getIsConnected()`.
 
-        ConsoleHelper::output('Replacing account ID “' . $oldAccountId . '” with new account ID “' . $this->accountId . '”…');
+        return $this->_setAccountIdAndDone($account, $newAccountId);
+    }
 
+    /**
+     * Save the account element with a new ID, with appropriate console output.
+     */
+    private function _setAccountIdAndDone(Element $account, string $newAccountId): int|Element
+    {
         $accountIdHandle = Marketplace::$plugin->handles->getButtonHandle();
-        $account->setFieldValue($accountIdHandle, $this->accountId);
+        $account->setFieldValue($accountIdHandle, $newAccountId);
+
         $saved = Craft::$app->elements->saveElement($account);
 
         if (!$saved) {
