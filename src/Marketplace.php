@@ -104,6 +104,11 @@ class Marketplace extends BasePlugin
         parent::init();
         self::$plugin = $this;
 
+        // Handle console commands
+        if (Craft::$app->request->getIsConsoleRequest()) {
+            $this->controllerNamespace = 'kennethormandy\\marketplace\\console\\controllers';
+        }
+
         // Initialize the Auth module
         Auth::registerModule();
 

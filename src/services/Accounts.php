@@ -229,7 +229,14 @@ class Accounts extends Component
 
         // Actually check with Stripe
         if ($accountId) {
-            $stripeAccount = $this->_getStripe()->accounts->retrieve($accountId);
+            try {
+                $stripeAccount = $this->_getStripe()->accounts->retrieve($accountId);
+            } catch (PermissionException $e) {
+                // Catch the permission exception, ex. the account ID doesn’t
+                // exist on the account, and therefore isn’t connected.
+                $isConnected = false;
+                return $isConnected;
+            }
 
             Marketplace::$plugin->log('$stripeAccount');
             Marketplace::$plugin->log($stripeAccount);

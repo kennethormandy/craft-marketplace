@@ -16,6 +16,7 @@
 - Added combined `craft.marketplace.renderConnector()` Twig helper
 - Added `getAccount()` and `isConnected()` to Accounts service
 - Added `getAccountId()` and `getIsConnected()` to elements with a Marketplace field
+- Added new a `marketplace/accounts/replace` console command for, ex. moving from Stripe Live mode in production to Test mode locally
 
 ## Changed
 - Updates Stripe from v7.x to v10.x to match the Commerce Stripe gateway
