@@ -194,6 +194,42 @@ class Accounts extends Component
         return $element;
     }
 
+    public function getAllAccounts()
+    {
+        $handle = Marketplace::$plugin->handles->getButtonHandle();
+        $field = Craft::$app->fields->getFieldByHandle($handle);
+        $entryTypes = $this->_getEntryTypesFromField($field);
+
+        $entryAccounts = Entry::find()->type($entryTypes)->all();
+
+        $accounts = [];
+
+        return $accounts;
+    }
+
+    /**
+     * Find all the entry types a field is attached to.
+     * 
+     * @see https://craftcms.stackexchange.com/a/35319
+     * @todo This won’t be sufficient, because accounts can be any element,
+     * but we could do this + users + categories, and then you could also have
+     * get all accounts by type.
+     */
+    private function _getEntryTypesFromField($field)
+    {
+        $fieldId = $field->id;
+
+        // Find all entryTypes using the fieldLayouts your field is attached to
+        $entryTypes = (new Query())
+            ->select(['entrytypes.handle'])
+            ->from(['{{%entrytypes}} entrytypes'])
+            ->innerJoin('{{%fieldlayoutfields}} fieldlayoutfields', '[[entrytypes.fieldLayoutId]] = [[fieldlayoutfields.layoutId]]')
+            ->where(Db::parseParam('fieldlayoutfields.fieldId', $fieldId))
+            ->column();
+
+        return $entryTypes;
+    }
+
     /**
      * Determine whether or not an element is connected to the gateway (ie. Stripe).
      *
