@@ -145,10 +145,68 @@ h3 {
 .table-of-contents__link--active {
 }
 
+/* Smaller sidebar arrow icon */
+
+.menu__caret::before,
+.menu__link--sublist-caret::after {
+  transform: rotate(180deg) scale(60%);
+}
+
+.menu__list-item--collapsed .menu__caret::before,
+.menu__list-item--collapsed .menu__link--sublist::after {
+  transform: rotateZ(90deg) scale(60%);
+}
+
 /* API Sidebar */
 
 .theme-doc-sidebar-item-hidden,
 .theme-doc-sidebar-item-label-hidden > .menu__list-item-collapsible:first-of-type {
   display: none;
   visibility: hidden;
+}
+
+.theme-doc-sidebar-api .theme-doc-sidebar-item-category-level-4 a {
+  font-weight: normal;
+}
+
+/* API Sidebar - Might want to finish this styling, and apply to other sidebar too */
+
+.theme-doc-sidebar-api .menu__list-item:not(:first-child) {
+  margin-top: 0;
+}
+
+.theme-doc-sidebar-api .menu__list .menu__list-item .menu__link {
+  padding-top: calc(var(--ifm-menu-link-padding-vertical) + 0.125rem);
+  padding-bottom: calc(var(--ifm-menu-link-padding-vertical) + 0.125rem);
+  border-radius: 0 !important;
+}
+
+.menu__list-item-collapsible {
+  border-radius: 0 !important;
+}
+
+.theme-doc-sidebar-api .theme-doc-sidebar-item-category-level-4 > .menu__list,
+.theme-doc-sidebar-api .theme-doc-sidebar-item-category-level-4 > .menu__list .menu__list {
+  margin-left: var(--ifm-menu-link-padding-horizontal);
+  /* padding-left: var(--ifm-menu-link-padding-horizontal); */
+  border-left: 1px solid var(--marketplace-color-light);
+}
+
+.theme-doc-sidebar-api .theme-doc-sidebar-item-category-level-4 .menu__list .menu__list-item {
+}
+
+.theme-doc-sidebar-api .theme-doc-sidebar-item-category-level-4 .menu__list .menu__list-item .menu__link {
+  padding-left: var(--ifm-menu-link-padding-horizontal);
+}
+
+.theme-doc-sidebar-api .theme-doc-sidebar-item-category-level-4 .menu__list .menu__link {
+  border-left: 3px solid rgba(0, 0, 0, 0);
+  transform: translateX(-2px);
+  width: calc(100% + 2px);
+  transition: border ease-in-out 0.3s;
+}
+
+.theme-doc-sidebar-api .theme-doc-sidebar-item-category-level-4 .menu__list .menu__link--active {
+  border-color: var(--ifm-color-primary-dark);
+  background: transparent;
 }
