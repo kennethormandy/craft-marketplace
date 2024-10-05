@@ -1,8 +1,8 @@
 {
   "position": 100,
   "label": "API",
-  "collapsible": true,
-  "collapsed": true,
+  "collapsible": false,
+  "collapsed": false,
   "className": "theme-doc-sidebar-item-hidden",
   "customProps": {
     "description": "This description can be used in the swizzled DocCard"

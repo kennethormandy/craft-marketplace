@@ -1,3 +1,5 @@
 {
-  "className": "theme-doc-sidebar-item-label-hidden"
+  "className": "theme-doc-sidebar-item-label-hidden",
+  "collapsible": false,
+  "collapsed": false
 }
