@@ -51,6 +51,8 @@
   --ifm-menu-color-active: var(--ifm-color-primary-dark);
   --ifm-menu-color-background-active: var(--ifm-hover-overlay);
   --ifm-menu-color-background-hover: var(--ifm-hover-overlay);
+  --ifm-hr-background-color: var(--ifm-toc-border-color);
+  --ifm-blockquote-border-color: var(--ifm-toc-border-color);
 
   --docusaurus-highlighted-code-line-bg: hsl(276, 20%, 90%, 1.0);
 }
