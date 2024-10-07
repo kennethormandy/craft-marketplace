@@ -231,9 +231,14 @@ class Marketplace extends BasePlugin
                     $fieldLayout = $elementFieldLayoutBehavior->getFieldLayout();
                 }
             } else {
-
-                // Typical case
-                $fieldLayout = $element->getFieldLayout();
+                if (method_exists($element, 'getSection')) {
+                    $section = $element->getSection();
+                    if ($section) {
+                        $fieldLayout = $element->getFieldLayout();
+                    }
+                } else {
+                    $fieldLayout = $element->getFieldLayout();
+                }
             }
         } catch (\yii\base\InvalidConfigException) {
         }
@@ -627,7 +632,7 @@ class Marketplace extends BasePlugin
     // TODO Move to service, ex. ConvertService?
     /**
      * Normalize from Craft format into Stripe format, ex. $50 * (10^2) = 5000
-     * 
+     *
      * @param float $craftPrice The amount in Craft’s format, ex. 50.00
      * @param string $currencyCountryCode The ISO country code for the transaction
      * @return int The amount in Stripe’s format, ex. 5000
@@ -651,7 +656,7 @@ class Marketplace extends BasePlugin
 
     /**
      * Normalize from Stripe format into Craft format, ex. 5000 / (10^2) = 50
-     * 
+     *
      * @param int $amount The amount in Stripe format, ex. 5000
      * @param string $currencyCountryCode The ISO country code for the transaction
      * @return float The amount in Stripe format, ex. 50.00
