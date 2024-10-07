@@ -42,11 +42,6 @@ class Settings extends Model
     public string $providerHandle = 'marketplaceStripeExpress';
 
     /**
-     * Whether or not to make the deprecated Marketplace Payee Field available.
-     */
-    public bool $usePayeeFieldType = false;
-
-    /**
      * Returns the Client ID setting.
      */
     public function getClientId(): string

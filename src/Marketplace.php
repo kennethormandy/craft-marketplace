@@ -31,7 +31,6 @@ use craft\web\twig\variables\CraftVariable;
 use craft\web\View;
 use kennethormandy\marketplace\behaviors\MarketplaceAccount as MarketplaceAccountBehavior;
 use kennethormandy\marketplace\fields\MarketplaceConnectButton as MarketplaceConnectButtonField;
-use kennethormandy\marketplace\fields\MarketplacePayee as MarketplacePayeeField;
 use kennethormandy\marketplace\models\Settings;
 use kennethormandy\marketplace\providers\StripeExpressProvider;
 use kennethormandy\marketplace\services\Accounts as AccountsService;
@@ -187,11 +186,6 @@ class Marketplace extends BasePlugin
             Fields::EVENT_REGISTER_FIELD_TYPES,
             function(RegisterComponentTypesEvent $event) {
                 $event->types[] = MarketplaceConnectButtonField::class;
-
-                $usePayeeFieldType = self::$plugin->settings->usePayeeFieldType;
-                if ($usePayeeFieldType) {
-                    $event->types[] = MarketplacePayeeField::class;
-                }
             }
         );
     }

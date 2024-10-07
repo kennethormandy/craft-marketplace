@@ -1,6 +1,12 @@
 # Release Notes for Marketplace
 
-## Unreleased
+## Unreleased (5.x)
+
+### Removed
+- Removed the deprecated Payee field type
+- Removed the deprecated `getPayeeHandle()` method
+
+## Unreleased (4.x)
 
 > [!NOTE]
 > [Please read the upgrade guide before upgrading Marketplace.](https://craft-marketplace.kennethormandy.com/docs/upgrading-from-v1) The changelog documents all public API changes, but for most use cases only a few changes from the upgrade guide are required.
