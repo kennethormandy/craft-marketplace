@@ -625,24 +625,38 @@ class Marketplace extends BasePlugin
     }
 
     // TODO Move to service, ex. ConvertService?
-    private function _toStripeAmount($craftPrice, $currencyCountryCode)
+    /**
+     * Normalize from Craft format into Stripe format, ex. $50 * (10^2) = 5000
+     * 
+     * @param float $craftPrice The amount in Craft’s format, ex. 50.00
+     * @param string $currencyCountryCode The ISO country code for the transaction
+     * @return int The amount in Stripe’s format, ex. 5000
+     */
+    private function _toStripeAmount(float $craftPrice, string $currencyCountryCode): int
     {
-        $currency = Commerce::getInstance()->getCurrencies()->getCurrencyByIso($currencyCountryCode);
+        $currencyService = Commerce::getInstance()->getCurrencies();
+        $currency = $currencyService->getCurrencyByIso($currencyCountryCode);
         
         if (!$currency) {
             throw new NotSupportedException('The currency “' . $currencyCountryCode . '” is not supported!');
         }
 
-        // https://git.io/JGqLi
-        // Ex. $50 * (10^2) = 5000
-        $amount = $craftPrice * (10 ** $currency->minorUnit);
+        /** @see https://github.com/craftcms/commerce-stripe/blob/bcfa0d7ee930a4710c0d43ae69830e135aa3a7c7/src/gateways/PaymentIntents.php#L308 */
+        $amount = (int) bcmul($craftPrice, 10 ** $currencyService->getSubunitFor($currency));
 
         $amount = (int) round($amount, 0);
 
         return $amount;
     }
 
-    private function _fromStripeAmount($amount, $currencyCountryCode)
+    /**
+     * Normalize from Stripe format into Craft format, ex. 5000 / (10^2) = 50
+     * 
+     * @param int $amount The amount in Stripe format, ex. 5000
+     * @param string $currencyCountryCode The ISO country code for the transaction
+     * @return float The amount in Stripe format, ex. 50.00
+     */
+    private function _fromStripeAmount(int $amount, string $currencyCountryCode): float
     {
         $currency = Commerce::getInstance()->getCurrencies()->getCurrencyByIso($currencyCountryCode);
 
@@ -650,9 +664,8 @@ class Marketplace extends BasePlugin
             throw new NotSupportedException('The currency “' . $currencyCountryCode . '” is not supported!');
         }
 
-        // https://git.io/JGqLi
-        // Ex. 5000 / (10^2) = 50
-        $craftPrice = $amount / (10 ** $currency->minorUnit);
+        /** @see https://github.com/craftcms/commerce-stripe/blob/bcfa0d7ee930a4710c0d43ae69830e135aa3a7c7/src/gateways/PaymentIntents.php#L308 */
+        $craftPrice = (float) bcmul($amount / (10 ** $currencyService->getSubunitFor($currency)));
 
         return $craftPrice;
     }
