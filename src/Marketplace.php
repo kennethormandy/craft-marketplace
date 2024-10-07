@@ -108,9 +108,6 @@ class Marketplace extends BasePlugin
             $this->controllerNamespace = 'kennethormandy\\marketplace\\console\\controllers';
         }
 
-        // Initialize the Auth module
-        Auth::registerModule();
-
         // Register services
         $this->setComponents([
             'handles' => HandlesService::class,
