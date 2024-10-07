@@ -21,7 +21,6 @@ use craft\commerce\Plugin as Commerce;
 use craft\commerce\services\Payments;
 use craft\commerce\stripe\base\Gateway as StripeGateway;
 use craft\commerce\stripe\events\BuildGatewayRequestEvent;
-use craft\elements\Entry;
 use craft\elements\User;
 use craft\events\DefineBehaviorsEvent;
 use craft\events\RegisterComponentTypesEvent;
@@ -206,7 +205,6 @@ class Marketplace extends BasePlugin
 
         // Attempt to get a field layout on an element
         try {
-
             if ($element instanceof \craft\elements\GlobalSet) {
 
                 // We should just be able to do: `$element->getFieldLayout();` but
@@ -215,14 +213,11 @@ class Marketplace extends BasePlugin
                 if ($elementFieldLayoutBehavior) {
                     $fieldLayout = $elementFieldLayoutBehavior->getFieldLayout();
                 }
-
             } else {
 
                 // Typical case
                 $fieldLayout = $element->getFieldLayout();
-
-            }            
-
+            }
         } catch (\yii\base\InvalidConfigException) {
         }
 
@@ -473,7 +468,6 @@ class Marketplace extends BasePlugin
                         /** @var craft\commerce\models\Transaction $purchaseTransaction */
                         $purchaseTransaction = $transaction;
                         break;
-
                     }
                 }
 

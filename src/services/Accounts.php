@@ -8,14 +8,13 @@ use craft\base\Element;
 use craft\elements\User;
 use craft\helpers\ArrayHelper;
 use craft\helpers\UrlHelper;
-use craft\web\Response;
 use kennethormandy\marketplace\events\AccountAccessEvent;
 use kennethormandy\marketplace\Marketplace;
 use Stripe\AccountLink;
-use Stripe\LoginLink;
 use Stripe\Exception\InvalidArgumentException;
 use Stripe\Exception\InvalidRequestException;
 use Stripe\Exception\PermissionException;
+use Stripe\LoginLink;
 use Stripe\StripeClient;
 use verbb\auth\Auth;
 
