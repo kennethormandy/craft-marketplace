@@ -305,7 +305,7 @@ class MarketplaceConnectButton extends Field implements PreviewableFieldInterfac
      *
      * @return string The input HTML.
      */
-    public function getInputHtml($value, ?ElementInterface $element = null): string
+    public function getInputHtml(mixed $value, ?ElementInterface $element = null): string
     {
         // Register our asset bundle
         // Craft::$app->getView()->registerAssetBundle(MarketplaceConnectButtonFieldAsset::class);
