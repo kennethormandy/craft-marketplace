@@ -126,6 +126,7 @@ class Marketplace extends BasePlugin
             $this->_defineBehaviors();
             $this->_registerVariables();
             $this->_registerSiteTemplateRoot();
+            $this->_registerFieldTypes();
             $this->_attachEventHandlers();
         });
     }
@@ -177,6 +178,25 @@ class Marketplace extends BasePlugin
                 $event->roots[$this->id] = $baseDir;
             }
         });
+    }
+    
+    /**
+     * Register Marketplace’s custom connect button field type.
+     */
+    private function _registerFieldTypes(): void
+    {
+        Event::on(
+            Fields::class,
+            Fields::EVENT_REGISTER_FIELD_TYPES,
+            function(RegisterComponentTypesEvent $event) {
+                $event->types[] = MarketplaceConnectButtonField::class;
+
+                $usePayeeFieldType = self::$plugin->settings->usePayeeFieldType;
+                if ($usePayeeFieldType) {
+                    $event->types[] = MarketplacePayeeField::class;
+                }
+            }
+        );
     }
 
     private function _defineBehaviors(): void
@@ -291,16 +311,6 @@ class Marketplace extends BasePlugin
                 }
             }
         });
-
-        // Register our fields
-        Event::on(
-            Fields::class,
-            Fields::EVENT_REGISTER_FIELD_TYPES,
-            function(RegisterComponentTypesEvent $event) {
-                $event->types[] = MarketplaceConnectButtonField::class;
-                $event->types[] = MarketplacePayeeField::class;
-            }
-        );
 
         // Full and Parial refunds are supported here.
         // TODO Could provide more options around this, ex: Who is responsible

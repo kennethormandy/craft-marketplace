@@ -19,6 +19,7 @@
 - Added new a `marketplace/accounts/replace` and `remove` console commands for, ex. moving from Stripe Live mode in production to Test mode locally
 
 ## Changed
+- Changed the the Payee field type to be opt-in via the `usePayeeFieldType` setting, in favour of determining the payee in the `EVENT_AFTER_DETERMINE_PAYEE` event
 - Updates Stripe from v7.x to v10.x to match the Commerce Stripe gateway
 - Renamed `kennethormandy\marketplace\services\AccountsService` → `kennethormandy\marketplace\services\Accounts`
 - Renamed `kennethormandy\marketplace\services\FeesService` → `kennethormandy\marketplace\services\Fees`

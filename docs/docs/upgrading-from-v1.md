@@ -126,6 +126,25 @@ It should be set to an environment variable, and will almost certainly be the sa
 
 The default fee multiplier allows you to set a simple platform-wise percentage fee, ex. `0.05` for a 5% fee. In most cases, you’ll want to customize this using events, as described below under [Fees](#fees).
 
+### Use Payee Field Type
+
+Marketplace v1 had a user relationship field type to manually set a user-based payee on a product. To my knowledge, no one was using this field type; it is now deprecated and opt-in, and will be removed in the next major version of Marketplace.
+
+If you still require this field type, you can enable it again by creating a `config/marketplace.php` config file in your project, with the `usePayeeFieldType` setting:
+
+```php title=config/marketplace.php
+<?php
+
+return [
+    // Enable the deprecated Payee field type
+    'usePayeeFieldType' => true,
+];
+```
+
+If you were, in fact, using this field type and need help migrating your field’s content, feel free to [send me an email](mailto:hello+marketplace@kennethormandy.com) for a more comprehensive solution.
+
+The preferred approach (also supported in Marketplace v1) is described in both the [full tutorial](./tutorial.md) and the [Payees Event](./events/payees.md) docs.
+
 ### OAuth
 
 Onboarding Stripe Connect Express accounts using OAuth is not supported for new Stripe accounts, and deprecated for existing Stripe accounts.
