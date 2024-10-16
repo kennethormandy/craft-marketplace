@@ -669,30 +669,6 @@ class Marketplace extends BasePlugin
         return $craftPrice;
     }
 
-    // This logic is also very similar to Button input
-    private function _getPayeeFromOrder($order)
-    {
-        $payeeHandle = self::$plugin->handles->getPayeeHandle();
-        if ($order && $order['lineItems'] && count($order['lineItems']) >= 1) {
-            $firstLineItem = $order['lineItems'][0];
-            $product = $firstLineItem['purchasable']['product'];
-            if ($payeeHandle && $product) {
-                $payeeId = $product[$payeeHandle];
-                if ($payeeId) {
-                    $payee = User::find()
-              ->id($payeeId)
-              ->one();
-
-                    if ($payee) {
-                        return $payee;
-                    }
-                }
-            }
-        }
-
-        return null;
-    }
-
     /**
      * Whether or not the Pro edition of this plugin is being used.
      *
