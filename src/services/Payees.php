@@ -36,58 +36,16 @@ class Payees extends Component
         $event = new PayeeEvent();
         $event->lineItem = $lineItem;
         $event->accountId = null;
-        $purchasablePayeeUser = null;
 
         if ($this->hasEventHandlers(self::EVENT_BEFORE_DETERMINE_PAYEE)) {
             $this->trigger(self::EVENT_BEFORE_DETERMINE_PAYEE, $event);
         }
 
-        // It’s possible for this to be null, if they are only using
-        // Events to set the Payee, and not using any fields
-        $payeeHandle = Marketplace::$plugin->handles->getPayeeHandle();
-
-        if (
-            $payeeHandle &&
-            isset($purchasable[$payeeHandle]) &&
-            $purchasable[$payeeHandle] !== null &&
-            $purchasable[$payeeHandle]
-        ) {
-            if (is_numeric($purchasable[$payeeHandle])) {
-                // Craft Commerce v3 Digital Products
-                $payeeUserId = $purchasable[$payeeHandle];
-                $purchasablePayeeUser = User::find()->id($payeeUserId)->one();
-            } else {
-                // Craft Commerce v2 Digital Products?
-                $purchasablePayeeUser = $purchasable[$payeeHandle]->one();
-            }
-        } elseif (
-            $payeeHandle &&
-            isset($purchasable->product[$payeeHandle]) &&
-            $purchasable->product[$payeeHandle] !== null &&
-            $purchasable->product[$payeeHandle]
-        ) {
-            // Typcial products
-            $payeeUserId = $purchasable->product[$payeeHandle];
-
-            // The $payeeUserId actually a string that looks like an array,
-            // and that is working fine?
-            $purchasablePayeeUser = User::find()->id($payeeUserId)->one();
-        } else {
-            Marketplace::$plugin->log(
-                '[Marketplace] [Payees] No User Payee Account ID set in Craft CMS.',
-            );
-
-            // We don’t return here, because people can still use
-            // EVENT_AFTER_DETERMINE_PAYEE to set the a User Payee Account ID
-        }
+        // Marketplace no longer does anything between this “before” and “after”
+        // event. It used to look up a payee via a (now deprecated) Marketplace
+        // custom payee field on the purchasable.
 
         $payeeStripeAccountId = null;
-
-        if (isset($purchasablePayeeUser)) {
-            $stripeConnectHandle = Marketplace::$plugin->handles->getButtonHandle($purchasablePayeeUser);
-            $payeeStripeAccountId = $purchasablePayeeUser[$stripeConnectHandle];
-        }
-
         $event->accountId = $payeeStripeAccountId;
 
         if ($this->hasEventHandlers(self::EVENT_AFTER_DETERMINE_PAYEE)) {
