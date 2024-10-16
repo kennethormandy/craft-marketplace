@@ -325,8 +325,6 @@ class MarketplaceConnectButton extends Field implements PreviewableFieldInterfac
         // $jsonVars = Json::encode($jsonVars);
         // Craft::$app->getView()->registerJs("$('#{$namespacedId}-field').MarketplaceConnectButton(" . $jsonVars . ");");
 
-        $payeeHandle = Marketplace::$plugin->handles->getPayeeHandle();
-
         // Render the input template
         return Craft::$app->getView()->renderTemplate(
             'marketplace/_components/fields/MarketplaceConnectButton_input',
@@ -337,7 +335,6 @@ class MarketplaceConnectButton extends Field implements PreviewableFieldInterfac
                 'id' => $id,
                 'namespacedId' => $namespacedId,
                 'element' => $element,
-                'payeeHandle' => $payeeHandle,
                 'baseCpUrl' => UrlHelper::baseCpUrl(),
                 'isConnected' => Marketplace::$plugin->accounts->isConnected($element),
             ]
