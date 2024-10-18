@@ -6,7 +6,9 @@
   "scripts": {
     "docusaurus": "docusaurus",
     "start": "docusaurus start",
-    "build": "docusaurus build",
+    "build:api": "ddev php phpDocumentor.phar --directory=./plugins/craft-marketplace/src --target=./plugins/craft-marketplace/docs/docs/api --template=vendor/saggre/phpdocumentor-markdown/themes/markdown --visibility=public --defaultpackagename=Marketplace --title=Marketplace",
+    "build:docs": "docusaurus build",
+    "build": "npm run build:api; npm run build:docs",
     "swizzle": "docusaurus swizzle",
     "predeploy": "npm run build",
     "deploy": "surge ./build https://craft-marketplace.kennethormandy.com",
