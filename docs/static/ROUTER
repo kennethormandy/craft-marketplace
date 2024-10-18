@@ -1,9 +1,9 @@
-307    docs/                     docs/getting-started/installation
+307    /docs/                     /docs/getting-started/installation
 
-301    docs/console-commands     docs/advanced/console-commands
-301    docs/events/fees          docs/advanced/events#fees-events
-301    docs/events/payees        docs/advanced/events#payees-events
-301    docs/guides/dynamically-set-the-payee docs/advanced/events#payees-events
-301    docs/accounts             docs/templating/accounts
-301    docs/upgrading-from-v1    docs/getting-started/upgrading-from-v1
-301    docs/fees                 docs/advanced/adjusters
+301    /docs/console-commands     /docs/advanced/console-commands
+301    /docs/events/fees          /docs/advanced/events#fees-events
+301    /docs/events/payees        /docs/advanced/events#payees-events
+301    /docs/guides/dynamically-set-the-payee /docs/advanced/events#payees-events
+301    /docs/accounts             /docs/templating/accounts
+301    /docs/upgrading-from-v1    /docs/getting-started/upgrading-from-v1
+301    /docs/fees                 /docs/advanced/adjusters
