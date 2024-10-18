@@ -52,13 +52,28 @@
   --ifm-menu-color-background-active: var(--ifm-hover-overlay);
   --ifm-menu-color-background-hover: var(--ifm-hover-overlay);
   --ifm-hr-background-color: var(--ifm-toc-border-color);
+  --ifm-blockquote-border-left-width: 0.25em;
   --ifm-blockquote-border-color: var(--ifm-toc-border-color);
+  --ifm-code-padding-horizontal: 0.1em;
+  --ifm-code-padding-vertical: 0.1em;
 
   --docusaurus-highlighted-code-line-bg: hsl(276, 20%, 90%, 1.0);
+
+  /* Not a variable for some reason */
+  --code-inline-border: 1px solid var(--ifm-blockquote-border-color);
 }
 
 html {
   scroll-behavior: smooth;
+}
+
+figure,
+figcaption {
+  margin: 0;
+}
+
+code {
+  border: var(--code-inline-border);
 }
 
 /* For readability concerns, you should choose a lighter palette in dark mode. */
