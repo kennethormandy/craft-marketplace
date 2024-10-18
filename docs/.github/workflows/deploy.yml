@@ -2,9 +2,10 @@ name: Deploy Docs
 
 on:
   workflow_dispatch:
-    # no settings
+    # No settings needed
   push:
-    branches: [ "main" ]
+    branches:
+      - 4.x
   # pull_request:
   #   branches: [ "main" ]
 
