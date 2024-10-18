@@ -2,12 +2,7 @@
 title: Installation
 ---
 
-## Concepts
-
-- Payees
-- [Fees](fees)
-- Apps (OAuth plugin)
-- Accounts
+In progress.
 
 ## Configuring your Stripe account
 
