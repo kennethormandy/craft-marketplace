@@ -110,7 +110,7 @@ Now, you’re ready to add the Stripe payment gateway, so customers will be able
 > 
 > - Publishable API Key
 > - Secret API Key
-> - Webhook Signing Secret (See [Webhooks](#webhooks) for details)
+> - Webhook Signing Secret (See [Webhooks](https://github.com/craftcms/commerce-stripe?tab=readme-ov-file#webhooks) for details)
 > 
 > Your **Publishable API Key** and **Secret API Key** can be found in (or generated from) your Stripe dashboard, within the **Developers** &rarr; **API Keys** tab. Read more about [Stripe API keys](https://stripe.com/docs/keys).
 > 
