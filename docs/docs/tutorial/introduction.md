@@ -1,11 +1,4 @@
----
-title: Tutorial
-sidebar_position: 1
----
-
-<!-- This is a test, not the most recent draft -->
-
-# Build a marketplace using Craft&nbsp;CMS
+# Build a marketplace using Craft CMS
 
 This guide will walk you through creating an example, coffee-themed marketplace that sells coffees from multiple roasters. It’s built using:
 
@@ -35,6 +28,7 @@ With your fresh install of Craft ready, install the aforementioned plugins. You 
 Install Commerce:
 
 ```sh
+# Install Craft Commerce
 ddev composer install craftcms/commerce
 ddev composer craft plugin/install commerce
 ```
@@ -58,13 +52,6 @@ ddev craft plugin/install marketplace
 ```
 
 ## Setup Craft Commerce
-
-<!--
-
-- Add coffee product type
-- Add a coffee product
-
--->
 
 Craft Commerce does not need much configuration at this stage of the project—shipping, taxes, etc. can all be configured later based on how you want to run your marketplace.
 
@@ -98,9 +85,11 @@ Add one or two more coffee products—just enough to give us something to work w
 
 ### Add a payment gateway
 
-Now, you’re ready to add the Stripe payment gateway, so customers will be able to checkout and pay.
+Now, you’re ready to add the Stripe payment gateway, so customers will actually be able to checkout and pay.
 
->  To add a Stripe payment gateway, open the Craft control panel, navigate to **Commerce** → **System Settings** → **Gateways**, and click **+ New gateway**.
+As described in the [Stripe for Craft Commerce gateway README](https://github.com/craftcms/commerce-stripe/tree/4.x?tab=readme-ov-file#setup):
+
+>  …open the Craft control panel, navigate to **Commerce** → **System Settings** → **Gateways**, and click **+ New gateway**.
 > 
 > Your gateway’s **Name** should make sense to administrators _and_ customers (especially if you’re using the example templates).
 > 
@@ -110,16 +99,17 @@ Now, you’re ready to add the Stripe payment gateway, so customers will be able
 > 
 > - Publishable API Key
 > - Secret API Key
-> - Webhook Signing Secret (See [Webhooks](https://github.com/craftcms/commerce-stripe?tab=readme-ov-file#webhooks) for details)
+> - Webhook Signing Secret (See [Webhooks](#webhooks) for details)
 > 
 > Your **Publishable API Key** and **Secret API Key** can be found in (or generated from) your Stripe dashboard, within the **Developers** &rarr; **API Keys** tab. Read more about [Stripe API keys](https://stripe.com/docs/keys).
 > 
-> > [!NOTE]
-> > To prevent secrets leaking into project config, put them in your `.env` file, then use the special [environment variable syntax](https://craftcms.com/docs/4.x/config/#control-panel-settings) in the gateway settings.
+> :::note
+> 
+> To prevent secrets leaking into project config, put them in your `.env` file, then use the special [environment variable syntax](https://craftcms.com/docs/4.x/config/#control-panel-settings) in the gateway settings.
+>
+> :::
 > 
 > Stripe provides different keys for testing—use those until you are ready to launch, then replace the testing keys in the live server’s `.env` file.
-
-https://github.com/craftcms/commerce-stripe/tree/4.x?tab=readme-ov-file#setup
 
 <!-- Set the keys to environment variables—it’s best practice, and we’re going to use them again for Marketplace -->
 
@@ -144,15 +134,15 @@ You should see something like this in the browser:
 
 ![](https://picsum.photos/id/13/2500/1667)
 
-## Setup Marketplace
+Run through a test order, and make sure you can see that the payment has gone through within Stripe. If you can see it, then your Commerce site is setup correctly, and you’re ready to move onto the next step.
 
-So far, our Craft Commerce site only supports us selling our own products. We want to support multiple vendors.
+## Content Modelling
 
-Let’s start making use of Marketplace.
+So far, our Craft Commerce site only supports us selling our own products. We want to support multiple vendors, so we need to make some edits to our [content model](https://craftcms.com/docs/getting-started-tutorial/configure/) to do this.
 
 ### Create the connection field
 
-First, create a new Marketplace Connect Button field.
+First, create a new Marketplace Connect Button field, provided by the Marketplace plugin.
 
 It will represent the connection between Stripe and Craft. For our coffee marketplace, we’ll label it “Platform Connection.”
 
@@ -160,11 +150,7 @@ It will represent the connection between Stripe and Craft. For our coffee market
 
 ### Create a section for vendors
 
-<!--
-
-Decide on a term: Payee, Connected Accounts, Sellers, Vendors. Or use Roasters for the sake of the tutorial.
-
--->
+<!-- Decide on a term: Payee, Connected Accounts, Sellers, Vendors. Or use Roasters for the sake of the tutorial. -->
 
 Your marketplace will need to onboard vendors.
 
@@ -196,20 +182,291 @@ We’re also going to need an Entries field, so we can relate these roaster Entr
 
 Now, we have a few roasters and a few coffees (manually) filled in on our marketplace—but nothing has changed on the front-end for end customers. There is still no way to see a specific coffee is coming from a specific roaster. Let’s change that!
 
-Go back to Commerce → System Settings → Product Types → Coffee → Product Fields to edit the 
+Go back to **Commerce** → **System Settings** → **Product Types** → **Coffee** → **Product Fields**, to edit your existing Coffee product type. Add the new Roaster field:
 
-<!-- 
+![](https://picsum.photos/id/13/2500/1667)
 
-- Add the field to the coffee product type, so we know which coffee belongs to which roaster
-- Create some more roaster entries
-- Edit the coffee products you’ve made so far, and give each one to a different roaster
+This will make it possible for you to select which product is from which roaster.
+
+At this stage, we’re doing this all manually within Craft, but once your Marketplace is entirely setup and ready to onboard vendors, this would get filled in automatically when a vendor creates a new product for themselves.
+
+If you have, say, three example coffees and three example roasters, let’s edit each coffee to make it from a different roaster:
+
+![](https://picsum.photos/id/13/2500/1667)
+
+### Create a user group
+
+In the next section, we’re also going to start onboarding example users. We also need to know which users work for roasters (as opposed to being end customers), and specifically what roaster they work for.
+
+First, go to **Settings** → **Users** → **User Groups**, and add your first user group called Roaster Team Members.
+
+![](https://picsum.photos/id/13/2500/1667)
+
+For now, anyone in this group should have permissions to edit entries in the Roasters section.
+
+### Edit the user field layout
+
+Under **User Fields**, you’ll be able to add the Roaster field to the user field layout. This will let you relate users to a roaster, in the same way you related a product to a roaster.
+
+![](https://picsum.photos/id/13/2500/1667)
+
+If you’d like, you can take this a step further and user Craft’s conditional fields so that this Roaster field is only visible on a user when they are in the Roaster Team Member user group.
+
+![](https://picsum.photos/id/13/2500/1667)
+
+Create another example user or two for us to work with, put them in the Roaster Team Members user group, and relate each one to a different roaster.
+
+![](https://picsum.photos/id/13/2500/1667)
+
+## Setup Marketplace
+
+You now have content filled in for a few roasters, and the roasters have a user on the team, and a coffee available for sale.
+
+Now, we’ll start making use of the Marketplace plugin to bring this all together into something functional.
+
+Navigate to **Settings** → **Plugins** → **Marketplace**, add in your secret key from Stripe.
+
+Here, you can also set a global fee for your platform. In this example, we’re going to keep a 10% fee for all sales on the platform, so fill in `0.10`:
+
+![](https://picsum.photos/id/13/2500/1667)
+
+Instead of using a global fee, you can entirely customize this fee based on the product, vendor, price, etc. using [events](./events/fees-event). This global setting is here for the most basic use case, where you have a single percentage fee for the entire platform, with no exceptions. That’s what we’re going to use it for here.
+
+### Onboard a vendor
+
+- Add yourself to an roaster
+- Onboard a vendor through the control panel
+- Stripe Connect flow
+- Okay, but you aren’t really going to give every vendor access to the control panel, are you?
+
+### Create a custom dashboard area
+
+We need an area where roaster employees can login to the platform, and have a simplified interface to only manage the things we want them to manage—namely, their roaster details (ex. description, logo), the basic details of their products, and access their Stripe dashboard.
+
+They don’t need full access to the Craft control panel to do this.
+
+To support this, we are effectively implementing a version of the official [Front-End User Accounts](https://craftcms.com/knowledge-base/front-end-user-accounts) guide.
+
+However, this area will *only* be for roasters. We already have a default account area (via the Commerce example templates) where *customers* can edit their profile, see their past orders, etc. Now, we need an account area for roasters that are selling the coffee.
+
+Create a new file, `templates/roaster-admin/login.twig`:
+
+```twig
+<h1>Login</h1>
+
+<form method="post" accept-charset="UTF-8">
+  {{ csrfInput() }}
+  {{ actionInput('users/login') }}
+
+  {# Redirect users to the vendor admin area #}
+  {{ redirectInput( '/roaster-admin' ) }}
+
+  <label>
+    <div>Email</div>
+    {{ input('email', 'loginName', '' }}
+  </label>
+
+  <label>
+    <div>Password</div>
+    {{ input('password', 'password', '' }}
+  </label>
+
+  <button>Login</button>
+
+  {% if errorMessage is defined %}
+    <p>{{ errorMessage }}</p>
+  {% endif %}
+</form>
+```
+
+You can also create `templates/roaster-admin/index.twig`, to give them something to see once they login:
+
+```twig
+{# Look up the section by its handle: #}
+{% set roasterSection = craft.app.sections.getSectionByHandle('roasters') %}
+
+{% requireLogin %}
+{% requirePermission "saveEntries:#{roasterSection.uid}" %}
+
+<h1>Hello {{ currentUser.fullName }}!</h1>
+
+<p>You have permission to edit details about the roaster.</p>
+```
+
+This is described in more detail in Craft’s [User Management](https://craftcms.com/docs/4.x/user-management.html#checking-permissions) documentation. For our purposes, it’s sufficient for creating a login form that will work for our roaster employee users, but not for customers.
+
+<!--
+
+TODO
+
+We can extend our template further to add looking up the roaster based on the user, and then showing the Stripe connection button
 
 -->
 
-***
+Now, we need to add some new users (besides us) that can actually go and use this roaster. For the sake of our example, let’s say we are early on in our marketplace’s life, and we are going to manually create and approve every roaster and every user within it—we aren’t offering public registration yet.
 
-- After setting up multiple vendors, and the basic dashboard, the tutorial could say coming soon, more tutorial:
-	- Single or “fixed” products across multiple vendors
-	- Multiple products with more things to fill in in the dashboard
+### Login as a different user
 
-For now, further reading is front-end user form
+- Login to the account area as one of the other users you set up
+- Onboard with Stripe through your new dashboard area
+
+## Template
+
+The marketplace is ready to use, but customers aren’t going to easily be able to tell which roaster sells which coffee. Let’s make a few small changes to the example templates, to make that more obvious.
+
+In the Cart, you might show the roaster name as part of the line item:
+
+```twig title="templates/shop/cart/index.twig"
+{# Query the roaster associated with the product #}
+{% set roaster = item.purchasable.product.roaster.one() ?? null %}
+
+{% if roaster %}
+  <div class="mb-1 text-xs">{{ roaster.title }}</div>
+{% endif %}
+```
+
+Giving you something like this:
+
+![](https://picsum.photos/id/13/2500/1667)
+
+Similarly, you might want to show the roaster name in the product grid and product detail page, too:
+
+```twig title="templates/shop/products/_product.twig"
+<!-- highlight-next-line -->
+{% set roaster = product.roaster.one() %}
+
+<div class="text-sm w-2/3">
+  <!-- highlight-next-line -->
+  {{ roaster.title|default('') }}
+</div>
+<div class="relative text-lg text-bold mb-2 flex items-baseline leading-tight">
+  <div class="w-2/3">
+    <a class=" text-blue-500 hover:text-blue-600" href="{{ product.url }}">
+      {{ product.title|title }}
+    </a>
+  </div>
+  <div class="w-1/3 text-right">
+    <span>{{ product.defaultPriceAsCurrency }}</span>
+  </div>
+</div>
+<p class="text-sm">
+  {{ product.description|default('This is a pretend product description, placeholdering here for you to swap with something better.')|t }}
+</p>
+```
+
+```twig title="templates/shop/products/_includes/grid.twig"
+<!-- highlight-next-line -->
+{% set roaster = product.roaster.one() %}
+
+<div class="text-sm w-2/3">
+  <!-- highlight-next-line -->
+  {{ roaster.title|default('') }}
+</div>
+<div class="relative text-lg text-bold mb-2 flex items-baseline leading-tight">
+  <div class="w-2/3">
+    <a class=" text-blue-500 hover:text-blue-600" href="{{ product.url }}">
+      {{ product.title|title }}
+    </a>
+  </div>
+  <div class="w-1/3 text-right">
+    <span>{{ product.defaultPriceAsCurrency }}</span>
+  </div>
+</div>
+<p class="text-sm">
+  {{ product.description|default('This is a pretend product description, placeholdering here for you to swap with something better.')|t }}
+</p>
+```
+
+I’ve made a few other small changes to distinguish coffees: a description field, to override the placeholder description, and a colour field to give each different roaster a Tailwind colour class to use.
+
+![](https://picsum.photos/id/13/2500/1667)
+
+## Checkout
+
+Now, you have at least two different roasters onboarded, each with a different coffee. Customers can tell which roaster we are purchasing different coffees from—but can still add whichever ones they want to our cart.
+
+If we were to checkout with both products in our cart, we’d expect the end customer would pay once for the total, we’d keep a 10% fee, and each roaster would get their remaining portion of the money—all without any manual payout management from us.
+
+In a new private browsing window, so you aren’t already logged into Craft, visit the site, add both products to your cart, and checkout.
+
+![](https://picsum.photos/id/13/2500/1667)
+
+The example templates allow you to skip filling in the shipping portion of the order, by using the step headings. You can skip ahead to payment.
+
+Choose the Stripe gateway, and complete payment using the Stripe test card number:
+
+```
+4242 4242 4242 4242
+```
+
+You can fill in any valid date and CVC code.
+
+![](https://picsum.photos/id/13/2500/1667)
+
+You have successfully made a purchase from your new marketplace!
+
+### Review the transaction on Stripe
+
+Now, you’ll want to take your customer hat off, and put your business hat back on. Let’s switch over to your platform’s Stripe dashboard, to see how this transaction appears.
+
+You can see the payment went through:
+
+This includes the metadata that Commerce includes automatically, like the order ID and order number, making it easy to find the corresponding order in Craft Commerce.
+
+It also includes <cite>transaction group</cite>, which indicates payment splitting has occurred.
+
+![](https://picsum.photos/id/13/2500/1667)
+
+At the time of writing, this isn’t linked in the Stripe dashboard, but you can copy this ID and search it. This will take you to a view showing the transaction group:
+
+![](https://picsum.photos/id/13/2500/1667)
+
+{/*
+
+Breakdown of order, we ordered one $10 coffee and one $12 coffee, and we took a 10% fee on each of them. So the result should be:
+
+<table>
+<tr>
+<td>Marketplace fee</td><td>$2.20</td>
+</tr>
+<tr>
+<td>Roaster 1</td><td>$9.00</td>
+</tr>
+<tr>
+<td>Roaster 2</td><td>$10.80</td>
+</tr>
+<tr>
+<th>Total</td><td>$22.00</td>
+</tr>
+</table>
+
+We can see that reflected in the Stripe results:
+
+![](https://picsum.photos/id/13/2500/1667)
+
+The Stripe account has kept $2.20, and a transfer has been made to one account for $9.00, and another account for $10.80. The `acct_` IDs that are referenced are the same ones you’ll see if you visit the entries for Roaster 1 and Roaster 2.
+
+We can even go back and login as Roaster 1 again—imagining we want to check on our payouts ourselves—and login to our own Stripe Express dashboard. It will show us that we have one $9.00 payout pending.
+
+![](https://picsum.photos/id/13/2500/1667)
+
+## What’s next
+
+What’s next, ie. stuff that isn’t going to be in this tutorial
+
+Maybe don’t even include product management yet? Or only the very most basic stuff?
+
+For customers
+- Add individual vendor pages, ex. `/roasters/example-roaster`, which lists all the products from a single roaster
+
+For vendors
+- Create and edit products
+- Advanced handling of permissions, based on their roaster instead of technically being able to edit any entry
+- Vendor user registration
+	- Could allow public sign up by roasters, likely with a pending approval step
+	- Once the roaster has successfully signed up, you could allow them to register new users within that
+- Could do fixed product, multiple vendors. Ex. Maybe this marketplace only sells medium roasts, so you have a single medium roast product that every roaster can edit, and they don’t create new products.
+
+For administrators
+
+*/}
