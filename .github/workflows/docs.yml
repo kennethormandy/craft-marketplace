@@ -5,7 +5,8 @@ on:
     # No settings needed
   push:
     branches:
-      - 4.x
+    # Can’t run this until we can gen API docs on GH Actions too
+    #   - 4.x
   # pull_request:
   #   branches: [ "main" ]
 
