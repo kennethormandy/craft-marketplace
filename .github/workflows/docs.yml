@@ -1,9 +1,16 @@
 name: Deploy Docs
 
 on:
+  workflow_dispatch:
+    # No settings needed
   push:
     branches:
-      - main
+      - 4.x
+  # pull_request:
+  #   branches: [ "main" ]
+
+defaults:
+  working-directory: ./docs
 
 jobs:
   build:
@@ -11,36 +18,48 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [18.x]
+        node-version: [22.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-      - uses: actions/checkout@v3
-        with:
-          persist-credentials: false
+    - uses: actions/checkout@v4
+      with:
+        persist-credentials: false
 
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'npm'
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
 
-      - uses: actions/cache@v3.2.2
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
+    - uses: actions/cache@v4
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
 
-      - name: "npm install"
-        run: |
-          cd docs
-          npm ci
+    - name: clean install
+      run: |
+        npm ci
 
-      - name: "npm build and deploy"
-        run: |
-          cd docs
-          npm run build --if-present
-          npm run deploy:ci --if-present
-        env:
-          SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
-          FATHOM_SITE_ID: ${{ secrets.FATHOM_SITE_ID }}
+    # - name: test
+    #   run: npm test
+
+    - name: build docs
+      run: |
+        npm run build --if-present
+      env: 
+        FATHOM_SITE_ID: ${{ secrets.FATHOM_SITE_ID }}
+        SITE_URL: ${{ secrets.SITE_URL }}
+
+    - name: deploy
+      run: |
+        # As a run script, to keep it with manual deploy command:
+        npm run deploy:ci
+
+        # Custom in actions:
+        # npx surge ./public ${{ secrets.SITE_URL }}
+      env:
+        SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
+        SITE_URL: ${{ secrets.SITE_URL }}
