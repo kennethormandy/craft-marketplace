@@ -68,7 +68,7 @@ const config = {
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       prism: {
-        theme: prismThemes.oneLight,
+        theme: prismThemes.oneDark,
         darkTheme: prismThemes.oneDark,
         additionalLanguages: ['php', 'twig', 'bash'],
       },
