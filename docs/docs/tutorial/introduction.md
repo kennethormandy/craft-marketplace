@@ -409,29 +409,38 @@ You have successfully made a purchase from your new marketplace!
 
 ### Review the transaction on Stripe
 
-Now, you’ll want to take your customer hat off, and put your business hat back on. Let’s switch over to your platform’s Stripe dashboard, to see how this transaction appears.
+Your stint pretending to the be the customer is over—you can now return to your marketplace business-runner persona.
 
-You can see the payment went through:
+Let’s switch over to your platform’s Stripe dashboard, to see how this transaction appears.
+
+You can see the payment went through on Stripe:
 
 ![](https://picsum.photos/id/13/2500/1667)
 
-This includes the metadata that Commerce includes automatically, like the order ID and order number, making it easy to find the corresponding order in Craft Commerce.
+This transaction has the metadata that Commerce includes automatically, like the order ID and order number, making it easy to find the corresponding order in Craft Commerce.
 
 It also includes <cite>transaction group</cite>, which indicates payment splitting has occurred.
 
 ![](https://picsum.photos/id/13/2500/1667)
 
-At the time of writing, this isn’t linked in the Stripe dashboard, but you can copy this ID and search it. This will take you to a view showing the transaction group:
+At the time of writing, this ID isn’t a clickable link in the Stripe dashboard, but you can copy it and search it. This will take you to a different view showing all the details you need about this group of transactions:
 
 ![](https://picsum.photos/id/13/2500/1667)
 
-{/*
+Let’s check the payment splitting has occurred as we expect.
 
-Breakdown of order, we ordered one $10 coffee and one $12 coffee, and we took a 10% fee on each of them. So the result should be:
+The original order was for one $10 coffee and one $12 coffee. The marketplace we’re building took a 10% fee on each of them. So the result should be:
 
 <table>
+<thead>
 <tr>
-<td>Marketplace fee</td><td>$2.20</td>
+<th>Payee</th>
+<th>Amount</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Marketplace (via fee)</td><td>$2.20</td>
 </tr>
 <tr>
 <td>Roaster 1</td><td>$9.00</td>
@@ -439,9 +448,12 @@ Breakdown of order, we ordered one $10 coffee and one $12 coffee, and we took a 
 <tr>
 <td>Roaster 2</td><td>$10.80</td>
 </tr>
+</tbody>
+<tfoot>
 <tr>
-<th>Total</td><td>$22.00</td>
+<th>Total</th><td>$22.00</td>
 </tr>
+</tfoot>
 </table>
 
 We can see that reflected in the Stripe results:
@@ -453,6 +465,8 @@ The Stripe account has kept $2.20, and a transfer has been made to one account f
 We can even go back and login as Roaster 1 again—imagining we want to check on our payouts ourselves—and login to our own Stripe Express dashboard. It will show us that we have one $9.00 payout pending.
 
 ![](https://picsum.photos/id/13/2500/1667)
+
+{/*
 
 ## What’s next
 
