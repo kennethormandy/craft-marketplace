@@ -50,6 +50,9 @@
   --ifm-hero-background-color: var(--ifm-background-color);
   --ifm-menu-link-padding-horizontal: 0.75em;
   --ifm-toc-border-color: hsl(276, 20%, 90%);
+  /* --ifm-toc-padding-vertical: 0.65rem; */
+  /* --ifm-toc-padding-horizontal: 0.5rem; */
+
   --ifm-navbar-shadow: none;
   --ifm-hover-overlay: var(--ifm-toc-border-color);
   --ifm-menu-link-padding-vertical: 0.3em;
@@ -174,6 +177,22 @@ h3 {
 }
 
 /* Table of Contents */
+
+/* .theme-doc-toc-desktop .table-of-contents > li:first-child {
+  margin-top: 0.5rem;
+} */
+
+.theme-doc-toc-desktop .table-of-contents li a {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  width: 100%;
+  white-space: nowrap;
+  word-break: keep-all;
+}
+
+/* .theme-doc-toc-desktop .table-of-contents__link {
+  line-height: 1.5;
+} */
 
 .table-of-contents__link--active {
 }
