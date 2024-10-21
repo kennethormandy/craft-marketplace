@@ -1,6 +1,12 @@
-# Build a marketplace using Craft CMS
+---
+title: Build a marketplace using Craft CMS
+---
 
-This guide will walk you through creating an example, coffee-themed marketplace that sells coffees from multiple roasters. It’s built using:
+# Build a marketplace using Craft&nbsp;CMS
+
+This guide will walk you through creating an example, coffee-themed marketplace that sells coffees from multiple roaster businesses. 
+
+It’s built using:
 
 - [Craft CMS](https://craftcms.com/docs/4.x/)
 - [Craft Commerce](https://craftcms.com/docs/commerce/4.x/)
@@ -57,11 +63,11 @@ Craft Commerce does not need much configuration at this stage of the project—s
 
 The only thing we really need is to add is a product type, so new products can be added, and the Stripe payment gateway, so customers can checkout.
 
-### Add a product type
+### Create a product type
 
-Add a new “Coffee” product type under Commerce → System Settings → Product Types.
+Make a new “Coffee” product type under **Commerce → System Settings → Product Types**.
 
-![](https://picsum.photos/id/13/2500/1667)
+![](./1-create-a-product-type.png)
 
 For now, you can set the Automatic SKU Format to:
 
@@ -71,19 +77,19 @@ For now, you can set the Automatic SKU Format to:
 
 …or leave it blank. We’ll customize it later in the tutorial.
 
-### Add a new product
+### Create a product
 
-Now, it’s possible to add new products under Commerce → Products.
-
-![](https://picsum.photos/id/13/2500/1667)
+Now, it’s possible to add new products under **Commerce → Products**.
 
 Let’s add medium roast coffee available for purchase:
 
-I’ve added two variants: a whole bean option, for people who want to grind the coffee themselves, and a pre-ground option.
+![](./2-create-a-product.png)
 
-Add one or two more coffee products—just enough to give us something to work with for now.
+I’ve created two variants: a whole bean option, for people who want to grind the coffee themselves, and a pre-ground option. 
 
-### Add a payment gateway
+Create one or two more coffee products—just enough to give us something to work with for now.
+
+### Create a payment gateway
 
 Now, you’re ready to add the Stripe payment gateway, so customers will actually be able to checkout and pay.
 
@@ -111,8 +117,6 @@ As described in the [Stripe for Craft Commerce gateway README](https://github.co
 > 
 > Stripe provides different keys for testing—use those until you are ready to launch, then replace the testing keys in the live server’s `.env` file.
 
-<!-- Set the keys to environment variables—it’s best practice, and we’re going to use them again for Marketplace -->
-
 ### Use the example templates
 
 Craft Commerce comes with [full-featured example templates](https://craftcms.com/docs/commerce/4.x/example-templates.html). We’re going to use these for the user-facing portion of our Marketplace in this tutorial. Copy the templates into your project with the following console command:
@@ -132,7 +136,7 @@ ddev launch shop
 
 You should see something like this in the browser:
 
-![](https://picsum.photos/id/13/2500/1667)
+![An ecommerce store named “The Coffee Shop,” using the default Craft Commerce templates, with two coffee products for sale.](./3-use-the-example-templates.png)
 
 Run through a test order, and make sure you can see that the payment has gone through within Stripe. If you can see it, then your Commerce site is setup correctly, and you’re ready to move onto the next step.
 
@@ -146,27 +150,25 @@ First, create a new Marketplace Connect Button field, provided by the Marketplac
 
 It will represent the connection between Stripe and Craft. For our coffee marketplace, we’ll label it “Platform Connection.”
 
-![](https://picsum.photos/id/13/2500/1667)
+![](./4-create-the-connection-field.png)
 
 ### Create a section for vendors
 
 <!-- Decide on a term: Payee, Connected Accounts, Sellers, Vendors. Or use Roasters for the sake of the tutorial. -->
 
-Your marketplace will need to onboard vendors.
-
-Typically, these will either be represented by [users](https://craftcms.com/docs/4.x/reference/element-types/users) or by [entries](https://craftcms.com/docs/4.x/reference/element-types/entries).
+Your marketplace will need to onboard vendors. In Craft, these vendor organizations will either be represented by [users](https://craftcms.com/docs/4.x/reference/element-types/users) or by [entries](https://craftcms.com/docs/4.x/reference/element-types/entries).
 
 Like Craft, Marketplace leaves it up to you how to model content for your marketplace, but it’s almost always better to choose entries.
 
 This will allow multiple users login to and be associated with a single vendor—even if you don’t need that feature in the short term.
 
-For our coffee marketplace, create a new section called “Organizations.”
+For our coffee marketplace, create a new section called “Roasters.”
 
-![](https://picsum.photos/id/13/2500/1667)
+![](./5-create-a-section.png)
 
-Update the entry type name from “Default” to “Organization,” and add the new “Platform Connection” field to its field layout.
+Update the entry type name from “Default” to “Roaster,” and add the new “Platform Connection” field to its field layout.
 
-![](https://picsum.photos/id/13/2500/1667)
+![](./6-create-an-entry-type.png)
 
 As with the coffee products, you can now create a few example entries as content to work with:
 
@@ -228,7 +230,7 @@ Navigate to **Settings** → **Plugins** → **Marketplace**, add in your secret
 
 Here, you can also set a global fee for your platform. In this example, we’re going to keep a 10% fee for all sales on the platform, so fill in `0.10`:
 
-![](https://picsum.photos/id/13/2500/1667)
+![](./marketplace-settings.png)
 
 Instead of using a global fee, you can entirely customize this fee based on the product, vendor, price, etc. using [events](./events/fees-event). This global setting is here for the most basic use case, where you have a single percentage fee for the entire platform, with no exceptions. That’s what we’re going to use it for here.
 
@@ -393,13 +395,13 @@ In a new private browsing window, so you aren’t already logged into Craft, vis
 
 The example templates allow you to skip filling in the shipping portion of the order, by using the step headings. You can skip ahead to payment.
 
-Choose the Stripe gateway, and complete payment using the Stripe test card number:
+Choose the Stripe gateway, and complete payment using [the Stripe test card number](https://docs.stripe.com/testing#cards):
 
 ```
 4242 4242 4242 4242
 ```
 
-You can fill in any valid date and CVC code.
+You can fill in any valid date and <abbr title="Card Verification Code">CVC</abbr>.
 
 ![](https://picsum.photos/id/13/2500/1667)
 
@@ -410,6 +412,8 @@ You have successfully made a purchase from your new marketplace!
 Now, you’ll want to take your customer hat off, and put your business hat back on. Let’s switch over to your platform’s Stripe dashboard, to see how this transaction appears.
 
 You can see the payment went through:
+
+![](https://picsum.photos/id/13/2500/1667)
 
 This includes the metadata that Commerce includes automatically, like the order ID and order number, making it easy to find the corresponding order in Craft Commerce.
 
