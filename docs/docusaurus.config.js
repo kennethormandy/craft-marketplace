@@ -82,7 +82,7 @@ const config = {
         },
         items: [
           {
-            to: 'docs/',
+            to: '/docs/getting-started/installation ',
             activeBasePath: 'docs',
             label: 'Docs',
             position: 'left',
