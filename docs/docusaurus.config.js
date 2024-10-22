@@ -20,7 +20,7 @@ const config = {
   projectName: 'craft-marketplace',
 
   // We have broken links from API docs generation, which should be pointing to Yii and Craft docs
-  onBrokenLinks: 'warn', 
+  onBrokenLinks: 'warn',
   onBrokenMarkdownLinks: 'warn',
 
   i18n: {
