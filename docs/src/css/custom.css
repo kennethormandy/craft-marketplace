@@ -276,3 +276,10 @@ h3 {
 .hash-link::before {
   font-weight: normal;
 }
+
+/* Plugin – Zoom */
+
+.medium-zoom-overlay,
+.medium-zoom-image {
+  z-index: var(--ifm-z-index-fixed);
+}
