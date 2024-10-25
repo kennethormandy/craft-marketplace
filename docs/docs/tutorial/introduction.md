@@ -218,11 +218,7 @@ If you’d like, you can take this a step further and user Craft’s [conditiona
 
 Create another example user or two for us to work with, put them in the Roaster Team Members user group, and relate each one to a different roaster.
 
-<!--
-
-![](https://picsum.photos/id/13/2500/1667)
-
--->
+![](./13-create-example-users.png)
 
 ## Setup Marketplace
 
