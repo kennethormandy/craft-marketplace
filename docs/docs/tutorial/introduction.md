@@ -265,12 +265,12 @@ Create a new file, `templates/roaster-admin/login.twig`:
 
   <label>
     <div>Email</div>
-    {{ input('email', 'loginName', '' }}
+    {{ input('email', 'loginName', '') }}
   </label>
 
   <label>
     <div>Password</div>
-    {{ input('password', 'password', '' }}
+    {{ input('password', 'password', '') }}
   </label>
 
   <button>Login</button>
