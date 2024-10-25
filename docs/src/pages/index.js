@@ -1,14 +1,17 @@
-import clsx from 'clsx';
-import Link from '@docusaurus/Link';
-import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
-import Layout from '@theme/Layout';
-import HomepageFeatures from '@site/src/components/HomepageFeatures';
+import clsx from 'clsx'
+import Link from '@docusaurus/Link'
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext'
+import Layout from '@theme/Layout'
+import HomepageFeatures from '@site/src/components/HomepageFeatures'
 
-import Heading from '@theme/Heading';
-import styles from './index.module.css';
+import Heading from '@theme/Heading'
+import CodeBlock from '@theme/CodeBlock'
+import Tabs from '@theme/Tabs'
+import TabItem from '@theme/TabItem'
+import styles from './index.module.css'
 
 function HomepageHeader() {
-  const {siteConfig} = useDocusaurusContext();
+  const { siteConfig } = useDocusaurusContext()
   return (
     <header className={clsx('hero', styles.heroBanner)}>
       <div className="container">
@@ -19,25 +22,46 @@ function HomepageHeader() {
         <div className={styles.buttons}>
           <Link
             className="button button--primary button--lg"
-            to="/docs/getting-started/installation">
+            to="/docs/getting-started/installation"
+          >
             Get Started
           </Link>
         </div>
       </div>
     </header>
-  );
+  )
 }
 
 export default function Home() {
-  const {siteConfig} = useDocusaurusContext();
+  const { siteConfig } = useDocusaurusContext()
   return (
-    <Layout
-      title={siteConfig.title}
-      description={siteConfig.tagline}>
+    <Layout title={siteConfig.title} description={siteConfig.tagline}>
       <HomepageHeader />
       <main>
         <HomepageFeatures />
+        <div className="container">
+          <div className="row">
+            <div className="col" style={{ padding: '0 0 8em 0', maxWidth: '600px', marginLeft: 'auto', marginRight: 'auto' }}>
+              <Tabs>
+              <TabItem value="shell" label="Shell">
+                  <CodeBlock>
+                    {
+                      'composer require kennethormandy/craft-marketplace -w\nphp craft plugin/install marketplace'
+                    }
+                  </CodeBlock>
+                </TabItem>
+                <TabItem value="ddev" label="DDEV">
+                  <CodeBlock>
+                    {
+                      'ddev composer require kennethormandy/craft-marketplace -w\nddev craft plugin/install marketplace'
+                    }
+                  </CodeBlock>
+                </TabItem>
+              </Tabs>
+            </div>
+          </div>
+        </div>
       </main>
     </Layout>
-  );
+  )
 }

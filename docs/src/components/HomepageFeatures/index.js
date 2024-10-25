@@ -4,13 +4,10 @@ import styles from './styles.module.css'
 
 const FeatureList = [
   {
-    title: 'Set Payees',
+    title: 'Onboard Accounts',
     Svg: null,
     description: (
-      <>
-        Let Users sell Craft Commerce Products, configured in the admin area, or
-        your front&#8209;end.
-      </>
+      <>Let vendors recieve payouts from your platform without manual work from you, via Stripe Connect.</>
     ),
   },
   {
@@ -18,8 +15,8 @@ const FeatureList = [
     Svg: null,
     description: (
       <>
-        Recieve a flat-rate or percentage-based fee on sales your Platform
-        makes.
+        Keep a simple percentage fee for all sales, or complete customize your
+        context-dependent fee.
       </>
     ),
   },
@@ -28,15 +25,14 @@ const FeatureList = [
     Svg: null,
     description: (
       <>
-        Add Stripe Connect to the{' '}
-        <a
+        Marketplace adds support for split payments to the <a
           href="https://plugins.craftcms.com/commerce-stripe"
           target="_blank"
           rel="noopener"
         >
           Stripe Payment Gateway
         </a>{' '}
-        you already use to process payments.
+        you already use.
       </>
     ),
   },

@@ -12,7 +12,7 @@ import { themes as prismThemes } from 'prism-react-renderer'
 const config = {
   title: 'Marketplace',
   tagline:
-    'Make your Craft Commerce site into a Marketplace, using Stripe Connect.',
+    'Make your Craft Commerce site into a Marketplace, via Stripe Connect.',
   favicon: 'favicon.ico',
   url: 'https://craft-marketplace.kennethormandy.com',
   baseUrl: '/',
