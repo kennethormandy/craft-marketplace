@@ -306,17 +306,17 @@ You can also create `templates/roaster-admin/index.twig`, to give them something
 
 This is described in more detail in Craft’s [User Management](https://craftcms.com/docs/4.x/user-management.html#checking-permissions) documentation. For our purposes, it’s sufficient for creating a login form that will work for our roaster employee users, but not for customers.
 
-<!--
+<!-- TODO Image -->
 
-TODO
+In this template, we also query the roaster related to the user. With that, we can render a connection button so you can connect the Roaster to Stripe.
 
-We can extend our template further to add looking up the roaster based on the user, and then showing the Stripe connection button
+Clicking it will initiate the Stripe-hosted onboarding flow:
 
--->
-
-Now, we need to add some new users (besides us) that can actually go and use this roaster. For the sake of our example, let’s say we are early on in our marketplace’s life, and we are going to manually create and approve every roaster and every user within it—we aren’t offering public registration yet.
+Run through this, accepting Stripe’s prompts for pre-filling fake information in test mode. Once you’re done, you’ll be sent back to your platform.
 
 ### Login as a different user
+
+Now, we need to add some new users (besides us) that can actually go and use this roaster. For the sake of our example, let’s say we are early on in our marketplace’s life, and we are going to manually create and approve every roaster and every user within it—we aren’t offering public registration yet.
 
 - Login to the account area as one of the other users you set up
 - Onboard with Stripe through your new dashboard area
