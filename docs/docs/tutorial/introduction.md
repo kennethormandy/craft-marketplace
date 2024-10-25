@@ -329,7 +329,7 @@ In the Cart, you might show the roaster name as part of the line item:
 
 Giving you something like this:
 
-![](https://picsum.photos/id/13/2500/1667)
+![](./15-template-cart.png)
 
 Similarly, you might want to show the roaster name in the product grid and product detail page, too:
 
@@ -381,7 +381,7 @@ Similarly, you might want to show the roaster name in the product grid and produ
 
 I’ve made a few other small changes to distinguish coffees: a description field, to override the placeholder description, and a colour field to give each different roaster a Tailwind colour class to use.
 
-![](https://picsum.photos/id/13/2500/1667)
+![](./16-template-products.png)
 
 ## Checkout
 
@@ -389,9 +389,9 @@ Now, you have at least two different roasters onboarded, each with a different c
 
 If we were to checkout with both products in our cart, we’d expect the end customer would pay once for the total, we’d keep a 10% fee, and each roaster would get their remaining portion of the money—all without any manual payout management from us.
 
-In a new private browsing window, so you aren’t already logged into Craft, visit the site, add both products to your cart, and checkout.
+In a new private browsing window, so you aren’t already logged into Craft, visit the site, add at least two products to your cart, and checkout.
 
-![](https://picsum.photos/id/13/2500/1667)
+![](./17-checkout-cart.png)
 
 The example templates allow you to skip filling in the shipping portion of the order, by using the step headings. You can skip ahead to payment.
 
@@ -403,7 +403,7 @@ Choose the Stripe gateway, and complete payment using [the Stripe test card numb
 
 You can fill in any valid date and <abbr title="Card Verification Code">CVC</abbr>.
 
-![](https://picsum.photos/id/13/2500/1667)
+![](./18-checkout-payment.png)
 
 You have successfully made a purchase from your new marketplace!
 
@@ -415,17 +415,16 @@ Let’s switch over to your platform’s Stripe dashboard, to see how this trans
 
 You can see the payment went through on Stripe:
 
-![](https://picsum.photos/id/13/2500/1667)
+![](./19-stripe-transaction.png)
 
 This transaction has the metadata that Commerce includes automatically, like the order ID and order number, making it easy to find the corresponding order in Craft Commerce.
 
 It also includes <cite>transaction group</cite>, which indicates payment splitting has occurred.
 
-![](https://picsum.photos/id/13/2500/1667)
 
 At the time of writing, this ID isn’t a clickable link in the Stripe dashboard, but you can copy it and search it. This will take you to a different view showing all the details you need about this group of transactions:
 
-![](https://picsum.photos/id/13/2500/1667)
+![](./20-stripe-transaction-group.png)
 
 Let’s check the payment splitting has occurred as we expect.
 
@@ -456,15 +455,17 @@ The original order was for one $10 coffee and one $12 coffee. The marketplace we
 </tfoot>
 </table>
 
-We can see that reflected in the Stripe results:
-
-![](https://picsum.photos/id/13/2500/1667)
+We see that reflected in the Stripe results.
 
 The Stripe account has kept $2.20, and a transfer has been made to one account for $9.00, and another account for $10.80. The `acct_` IDs that are referenced are the same ones you’ll see if you visit the entries for Roaster 1 and Roaster 2.
 
 We can even go back and login as Roaster 1 again—imagining we want to check on our payouts ourselves—and login to our own Stripe Express dashboard. It will show us that we have one $9.00 payout pending.
 
+<!--
+
 ![](https://picsum.photos/id/13/2500/1667)
+
+-->
 
 {/*
 
