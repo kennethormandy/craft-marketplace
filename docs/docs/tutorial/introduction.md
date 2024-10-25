@@ -284,15 +284,24 @@ Create a new file, `templates/roaster-admin/login.twig`:
 You can also create `templates/roaster-admin/index.twig`, to give them something to see once they login:
 
 ```twig
-{# Look up the section by its handle: #}
-{% set roasterSection = craft.app.sections.getSectionByHandle('roasters') %}
+{# Query the product type by its handle #}
+{% set coffeeProductType = craft.commerce.productTypes.getProductTypeByHandle('coffee') %}
 
+{# Require the user to login #}
 {% requireLogin %}
-{% requirePermission "saveEntries:#{roasterSection.uid}" %}
+
+{# Require permission to create coffee products (sufficient for our purposes for now) #}
+{% requirePermission "commerce-createproducts:#{coffeeProductType.uid}" %}
+
+{# Query the roaster the user is part of #}
+{% set roaster = currentUser.roaster.one() %}
 
 <h1>Hello {{ currentUser.fullName }}!</h1>
 
-<p>You have permission to edit details about the roaster.</p>
+<p>Welcome to the {{ roaster.title }} dashboard.</p>
+
+{# Render a button to connect the roaster to Stripe Connect, via Marketplace #}
+{{ craft.marketplace.renderConnector(roaster) }}
 ```
 
 This is described in more detail in Craft’s [User Management](https://craftcms.com/docs/4.x/user-management.html#checking-permissions) documentation. For our purposes, it’s sufficient for creating a login form that will work for our roaster employee users, but not for customers.
