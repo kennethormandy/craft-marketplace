@@ -170,15 +170,13 @@ Update the entry type name from “Default” to “Roaster,” and add the new 
 
 ![](./6-create-an-entry-type.png)
 
-As with the coffee products, you can now create a few example entries as content to work with:
+As with the coffee products, you can now create a few example entries as content to work with.
 
-![](https://picsum.photos/id/13/2500/1667)
+### Create an entries field
 
-### Create an organization field
+We’re also going to need an entries field, so we can relate these Roaster entries to other things in Craft:
 
-We’re also going to need an Entries field, so we can relate these roaster Entries to other things in Craft:
-
-![](https://picsum.photos/id/13/2500/1667)
+![The “Create a new field” form, showing a new entries field labelled “Roasters” that can select “Roasters” as a source of the entries.](./7-create-an-entries-field.png)
 
 ### Update the Coffee product type and products
 
@@ -186,39 +184,45 @@ Now, we have a few roasters and a few coffees (manually) filled in on our market
 
 Go back to **Commerce** → **System Settings** → **Product Types** → **Coffee** → **Product Fields**, to edit your existing Coffee product type. Add the new Roaster field:
 
-![](https://picsum.photos/id/13/2500/1667)
+![The Craft field layout designer user interface, showing the new “Roaster” field in place.](./8-update-product-type.png)
 
 This will make it possible for you to select which product is from which roaster.
 
-At this stage, we’re doing this all manually within Craft, but once your Marketplace is entirely setup and ready to onboard vendors, this would get filled in automatically when a vendor creates a new product for themselves.
+This is just Craft, so you can also add any other fields that you like at this stage, like a product image or description.
+
+At this stage, we’re going to fill in some content manually within the Craft control panel. Once your admin area is completely build out, it wouldn’t be *you* as filling this in, but vendors, as the create products in your custom admin area.
 
 If you have, say, three example coffees and three example roasters, let’s edit each coffee to make it from a different roaster:
 
-![](https://picsum.photos/id/13/2500/1667)
+![A list of three example coffee products, in the Craft control panel.](9-create-example-content.png)
 
 ### Create a user group
 
 In the next section, we’re also going to start onboarding example users. We also need to know which users work for roasters (as opposed to being end customers), and specifically what roaster they work for.
 
-First, go to **Settings** → **Users** → **User Groups**, and add your first user group called Roaster Team Members.
+First, go to **Settings** → **Users** → **User Groups**, and add your first user group called “Roaster Team Members”.
 
-![](https://picsum.photos/id/13/2500/1667)
+![The Craft control panel showing the settings for a new user group.](./10-create-a-user-group.png)
 
-For now, anyone in this group should have permissions to edit entries in the Roasters section.
+For now, anyone in this group should have permissions to Edit, Create, and Delete “Coffee” products.
 
 ### Edit the user field layout
 
 Under **User Fields**, you’ll be able to add the Roaster field to the user field layout. This will let you relate users to a roaster, in the same way you related a product to a roaster.
 
-![](https://picsum.photos/id/13/2500/1667)
+![](./11-edit-the-user-field-layout.png)
 
-If you’d like, you can take this a step further and user Craft’s conditional fields so that this Roaster field is only visible on a user when they are in the Roaster Team Member user group.
+If you’d like, you can take this a step further and user Craft’s [conditional fields](https://craftquest.io/courses/whats-new-in-craft-cms-4/40475) so that this Roaster field is only visible on a user when they are in the Roaster Team Member user group.
 
-![](https://picsum.photos/id/13/2500/1667)
+![](./12-edit-the-user-field-layout-conditional.png)
 
 Create another example user or two for us to work with, put them in the Roaster Team Members user group, and relate each one to a different roaster.
 
+<!--
+
 ![](https://picsum.photos/id/13/2500/1667)
+
+-->
 
 ## Setup Marketplace
 
