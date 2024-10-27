@@ -220,6 +220,8 @@ Create another example user or two for us to work with, put them in the Roaster 
 
 ![](./13-create-example-users.png)
 
+You’ll impersonate one of these users in the next section, as if you were onboarding their coffee company onto the marketplace.
+
 ## Setup Marketplace
 
 You now have content filled in for a few roasters, and the roasters have a user on the team, and a coffee available for sale.
@@ -232,94 +234,141 @@ Here, you can also set a global fee for your platform. In this example, we’re 
 
 ![](./marketplace-settings.png)
 
-Instead of using a global fee, you can entirely customize this fee based on the product, vendor, price, etc. using [events](./events/fees-event). This global setting is here for the most basic use case, where you have a single percentage fee for the entire platform, with no exceptions. That’s what we’re going to use it for here.
-
-### Onboard a vendor
-
-- Add yourself to an roaster
-- Onboard a vendor through the control panel
-- Stripe Connect flow
-- Okay, but you aren’t really going to give every vendor access to the control panel, are you?
+Instead of using a global fee, you can entirely customize this fee based on the product, vendor, price, etc. using [events](./events/fees-event). This global setting is here for the most basic use case, where you have a single percentage fee for the entire platform, with no exceptions. That’s what we’re going to use it for in our example coffee marketplace.
 
 ### Create a custom dashboard area
 
+Now, you’re ready to onboard your first roaster to your marketplace.
+
 We need an area where roaster employees can login to the platform, and have a simplified interface to only manage the things we want them to manage—namely, their roaster details (ex. description, logo), the basic details of their products, and access their Stripe dashboard.
 
-They don’t need full access to the Craft control panel to do this.
+They don’t need full access to the Craft control panel to do this—and you probably wouldn’t want them to have it regardless.
 
-To support this, we are effectively implementing a version of the official [Front-End User Accounts](https://craftcms.com/knowledge-base/front-end-user-accounts) guide.
+To facilitate this, we are effectively implementing a version of the official [Front-End User Accounts](https://craftcms.com/knowledge-base/front-end-user-accounts) guide.
 
 However, this area will *only* be for roasters. We already have a default account area (via the Commerce example templates) where *customers* can edit their profile, see their past orders, etc. Now, we need an account area for roasters that are selling the coffee.
 
-Create a new file, `templates/roaster-admin/login.twig`:
+We’ll call this area the Roaster Admin. Create a very basic new layout for it in `templates/roaster-admin/_layout.twig`:
 
-```twig
-<h1>Login</h1>
+```twig title="templates/roaster-admin/_layout.twig"
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ title ?? 'Roaster Admin' }}</title>
 
-<form method="post" accept-charset="UTF-8">
-  {{ csrfInput() }}
-  {{ actionInput('users/login') }}
+	{#
+	  Pico CSS is not required, but gives us some basic
+    styling without markup changes for our demo.
+  #}
+  <link href="https://cdn.jsdelivr.net/npm/@picocss/pico@2.0.6/css/pico.classless.blue.min.css " rel="stylesheet">
+</head>
+<body>
+  <main>
+    {% block main %}
+    {% endblock %}
+  </main>
+</body>
+</html>
+```
 
-  {# Redirect users to the vendor admin area #}
-  {{ redirectInput( '/roaster-admin' ) }}
+Create a new template in `templates/roaster-admin/login.twig`:
 
-  <label>
-    <div>Email</div>
-    {{ input('email', 'loginName', '') }}
-  </label>
+```twig title="templates/roaster-admin/login.twig"
+{% extends 'roaster-admin/_layout' %}
 
-  <label>
-    <div>Password</div>
-    {{ input('password', 'password', '') }}
-  </label>
+{% block main %}
 
-  <button>Login</button>
+  <h1>Login</h1>
 
-  {% if errorMessage is defined %}
-    <p>{{ errorMessage }}</p>
-  {% endif %}
-</form>
+  <form method="post" accept-charset="UTF-8">
+    {{ csrfInput() }}
+    {{ actionInput('users/login') }}
+
+    {# Redirect users to the vendor admin area #}
+    {{ redirectInput( '/roaster-admin' ) }}
+
+    <label>
+      <div>Email</div>
+      {{ input('email', 'loginName', '') }}
+    </label>
+
+    <label>
+      <div>Password</div>
+      {{ input('password', 'password', '') }}
+    </label>
+
+    <button>Login</button>
+
+    {% if errorMessage is defined %}
+      <p>{{ errorMessage }}</p>
+    {% endif %}
+  </form>
+
+{% endblock %}
 ```
 
 You can also create `templates/roaster-admin/index.twig`, to give them something to see once they login:
 
-```twig
-{# Query the product type by its handle #}
-{% set coffeeProductType = craft.commerce.productTypes.getProductTypeByHandle('coffee') %}
+```twig title="templates/roaster-admin/index.twig"
+{% extends 'roaster-admin/_layout' %}
 
-{# Require the user to login #}
-{% requireLogin %}
+{% block main %}
 
-{# Require permission to create coffee products (sufficient for our purposes for now) #}
-{% requirePermission "commerce-createproducts:#{coffeeProductType.uid}" %}
+  {# Query the product type by its handle #}
+  {% set coffeeProductType = craft.commerce.productTypes.getProductTypeByHandle('coffee') %}
 
-{# Query the roaster the user is part of #}
-{% set roaster = currentUser.roaster.one() %}
+  {# Require the user to login #}
+  {% requireLogin %}
 
-<h1>Hello {{ currentUser.fullName }}!</h1>
+  {# Require permission to create coffee products (sufficient for our purposes for now) #}
+  {% requirePermission "commerce-createproducts:#{coffeeProductType.uid}" %}
 
-<p>Welcome to the {{ roaster.title }} dashboard.</p>
+  {# Query the roaster the user is part of #}
+  {% set roaster = currentUser.roaster.one() %}
 
-{# Render a button to connect the roaster to Stripe Connect, via Marketplace #}
-{{ craft.marketplace.renderConnector(roaster) }}
+  <h1>Hello {{ currentUser.fullName ?? 'there' }}!</h1>
+
+  {% if not roaster %}
+
+    <p>Please ask the marketplace owner to associate your account with a roaster.</p>
+
+  {% else %}
+
+    <p>Welcome to the {{ roaster.title ?? 'roaster' }} dashboard.</p>
+
+    {# Render a button to connect the roaster to Stripe Connect, via Marketplace #}
+    {{ craft.marketplace.renderConnector(roaster) }}
+
+  {% endif %}
+
+{% endblock %}
 ```
 
-This is described in more detail in Craft’s [User Management](https://craftcms.com/docs/4.x/user-management.html#checking-permissions) documentation. For our purposes, it’s sufficient for creating a login form that will work for our roaster employee users, but not for customers.
+This is described in more detail in Craft’s [User Management](https://craftcms.com/docs/4.x/user-management.html#checking-permissions) documentation. For our purposes, it’s sufficient for creating a login form that will work for our roaster employee users, but is not for customers.
 
-<!-- TODO Image -->
+### Impersonate a user
+
+Now, we need to add some new users (besides us) that can actually go and use the roaster admin.
+
+For the sake of our example, let’s say we are early on in our marketplace’s life, and we are going to manually create and approve every roaster and every user within it—we aren’t offering public registration yet.
+
+Go to one of the new, fake users you created, and impersonate their account:
+
+![The “Copy impersonation URL” option in a dropdown on the user profile page, in the Craft control panel.](./14-impersonate-a-user.png)
+
+### Connect to Stripe
+
+![](./14-roaster-admin.png)
 
 In this template, we also query the roaster related to the user. With that, we can render a connection button so you can connect the Roaster to Stripe.
 
 Clicking it will initiate the Stripe-hosted onboarding flow:
 
+![](./14-roaster-admin-connect.png)
+
 Run through this, accepting Stripe’s prompts for pre-filling fake information in test mode. Once you’re done, you’ll be sent back to your platform.
-
-### Login as a different user
-
-Now, we need to add some new users (besides us) that can actually go and use this roaster. For the sake of our example, let’s say we are early on in our marketplace’s life, and we are going to manually create and approve every roaster and every user within it—we aren’t offering public registration yet.
-
-- Login to the account area as one of the other users you set up
-- Onboard with Stripe through your new dashboard area
 
 ## Template
 
@@ -429,7 +478,6 @@ You can see the payment went through on Stripe:
 This transaction has the metadata that Commerce includes automatically, like the order ID and order number, making it easy to find the corresponding order in Craft Commerce.
 
 It also includes <cite>transaction group</cite>, which indicates payment splitting has occurred.
-
 
 At the time of writing, this ID isn’t a clickable link in the Stripe dashboard, but you can copy it and search it. This will take you to a different view showing all the details you need about this group of transactions:
 
