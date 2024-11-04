@@ -23,7 +23,7 @@ At the end of the tutorial, you’ll have a better understanding of how you can 
 
 ## Requirements
 
-This guide assumes you and are also running [DDEV](https://ddev.readthedocs.io/en/stable/) for local development, just like in [Craft’s quick start](https://craftcms.com/docs/5.x/install.html#quick-start) and more comprehensive [getting started tutorial](https://craftcms.com/docs/getting-started-tutorial/).
+This guide assumes you and are also running [DDEV](https://ddev.readthedocs.io/en/stable/) for local development, just like in [Craft’s quick start](https://craftcms.com/docs/4.x/install.html#quick-start) and more comprehensive [getting started tutorial](https://craftcms.com/docs/getting-started-tutorial/).
 
 If you are *not* using DDEV, all the console commands in this tutorial are still relevant, but don’t need to be prefixed with `ddev`.
 
