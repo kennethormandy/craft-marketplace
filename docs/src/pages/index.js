@@ -3,6 +3,7 @@ import Link from '@docusaurus/Link'
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext'
 import Layout from '@theme/Layout'
 import HomepageFeatures from '@site/src/components/HomepageFeatures'
+import NewsletterForm from '@site/src/components/NewsletterForm'
 
 import Heading from '@theme/Heading'
 import CodeBlock from '@theme/CodeBlock'
@@ -34,6 +35,7 @@ function HomepageHeader() {
 
 export default function Home() {
   const { siteConfig } = useDocusaurusContext()
+
   return (
     <Layout title={siteConfig.title} description={siteConfig.tagline}>
       <HomepageHeader />
@@ -41,7 +43,12 @@ export default function Home() {
         <HomepageFeatures />
         <div className="container">
           <div className="row">
-            <div className="col" style={{ padding: '0 0 8em 0', maxWidth: '600px', marginLeft: 'auto', marginRight: 'auto' }}>
+            <div
+              className="col col--promo"
+              style={{
+                padding: '0 0 8em 0',
+              }}
+            >
               <Tabs>
                 <TabItem value="ddev" label="DDEV">
                   <CodeBlock language="shell">
@@ -60,6 +67,16 @@ export default function Home() {
               </Tabs>
             </div>
           </div>
+          {/* <div className="row">
+            <div
+              className="col col--promo"
+              style={{
+                padding: '2em 0 3em 0',
+              }}
+            >
+              <NewsletterForm />
+            </div>
+          </div> */}
         </div>
       </main>
     </Layout>

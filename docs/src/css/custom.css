@@ -289,3 +289,9 @@ h3 {
   user-select: none;
   opacity: 0.5;
 }
+
+.col--promo {
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
