@@ -2,6 +2,8 @@
 title: Build a marketplace using Craft CMS
 ---
 
+import RequirementsPartial from '../_shared/requirements.md'
+
 # Build a marketplace using Craft&nbsp;CMS
 
 This guide will walk you through creating an example, coffee-themed marketplace that sells coffees from multiple roaster businesses. 
@@ -29,39 +31,18 @@ If you are *not* using DDEV, all the console commands in this tutorial are still
 
 With your fresh install of Craft ready, install the aforementioned plugins. You can do this via the Plugin Store within the Craft control panel, or using the command line.
 
-### Craft Commerce
-
-Install Commerce:
-
-```sh
-# Install Craft Commerce
-ddev composer install craftcms/commerce
-ddev composer craft plugin/install commerce
-```
-
-### Stripe for Craft Commerce
-
-Install Stripe for Craft Commerce:
-
-```sh
-ddev composer install craftcms/commerce-stripe
-ddev craft plugin/install commerce-stripe
-```
-
-### Marketplace
-
-Install Marketplace:
-
-```sh
-ddev composer install kennethormandy/craft-marketplace
-ddev craft plugin/install marketplace
-```
+<RequirementsPartial />
 
 ## Setup Craft Commerce
 
-Craft Commerce does not need much configuration at this stage of the project—shipping, taxes, etc. can all be configured later based on how you want to run your marketplace.
+Craft Commerce does not need much configuration at this stage of the project.
 
-The only thing we really need is to add is a product type, so new products can be added, and the Stripe payment gateway, so customers can checkout.
+All your project needs is:
+
+- a product type, so new products can be added
+- the Stripe payment gateway, so customers can checkout
+
+Other features of Commerce like shipping, taxes, etc. can all be configured later, depending on how you want to run your marketplace.
 
 ### Create a product type
 

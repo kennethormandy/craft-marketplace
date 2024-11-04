@@ -2,7 +2,11 @@
 title: Installation
 ---
 
-In progress.
+import RequirementsPartial from '../_shared/requirements.md'
+
+## Requirements
+
+<RequirementsPartial />
 
 ## Configuring your Stripe account
 
