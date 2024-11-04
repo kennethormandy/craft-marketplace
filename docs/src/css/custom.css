@@ -265,12 +265,6 @@ h3 {
   background: transparent;
 }
 
-/* Theme – Markdown image */
-
-.img_node_modules-\@docusaurus-theme-classic-lib-theme-MDXComponents-Img-styles-module {
-  border: 1px solid var(--ifm-blockquote-border-color);
-}
-
 /* Hash Link */
 
 .hash-link::before {
@@ -279,7 +273,12 @@ h3 {
 
 /* Plugin – Zoom */
 
-.medium-zoom-overlay,
-.medium-zoom-image {
+.medium-zoom-image,
+.medium-zoom-overlay {
   z-index: var(--ifm-z-index-fixed);
+}
+
+.medium-zoom-image,
+.medium-zoom-image--opened {
+  border: 1px solid var(--ifm-blockquote-border-color);
 }
