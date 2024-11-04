@@ -44,14 +44,14 @@ export default function Home() {
             <div className="col" style={{ padding: '0 0 8em 0', maxWidth: '600px', marginLeft: 'auto', marginRight: 'auto' }}>
               <Tabs>
                 <TabItem value="ddev" label="DDEV">
-                  <CodeBlock>
+                  <CodeBlock language="shell">
                     {
                       'ddev composer require kennethormandy/craft-marketplace -w\nddev craft plugin/install marketplace'
                     }
                   </CodeBlock>
                 </TabItem>
                 <TabItem value="shell" label="Shell">
-                  <CodeBlock>
+                  <CodeBlock language="shell">
                     {
                       'composer require kennethormandy/craft-marketplace -w\nphp craft plugin/install marketplace'
                     }

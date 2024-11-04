@@ -282,3 +282,10 @@ h3 {
 .medium-zoom-image--opened {
   border: 1px solid var(--ifm-blockquote-border-color);
 }
+
+.language-shell .token-line::before,
+.language-sh .token-line::before  {
+  content: "> ";
+  user-select: none;
+  opacity: 0.5;
+}
