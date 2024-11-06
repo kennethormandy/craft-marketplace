@@ -47,12 +47,7 @@
 - Removed support for configuring fees visually via the settings in the control panel
 - Removed `marketplace/accounts/create-logout-link` action, which has no role in new account flow
 
-## Fixed
-- Fixed internal name of 
-
-***
-
-## v1.6.0 (never tagged?)
+## v1.6.0
 
 ### Added
 - Added support for connecting accounts to any Element, not just Users

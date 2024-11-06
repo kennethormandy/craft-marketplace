@@ -7,12 +7,13 @@ require('dotenv').config()
 // See: https://docusaurus.io/docs/api/docusaurus-config
 
 import { themes as prismThemes } from 'prism-react-renderer'
+import pluginImageZoom from 'docusaurus-plugin-image-zoom'
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'Marketplace',
   tagline:
-    'Make your Craft Commerce site into a Marketplace, using Stripe Connect.',
+    'Make your Craft Commerce site into a Marketplace, via Stripe Connect.',
   favicon: 'favicon.ico',
   url: 'https://craft-marketplace.kennethormandy.com',
   baseUrl: '/',
@@ -20,7 +21,7 @@ const config = {
   projectName: 'craft-marketplace',
 
   // We have broken links from API docs generation, which should be pointing to Yii and Craft docs
-  onBrokenLinks: 'warn', 
+  onBrokenLinks: 'warn',
   onBrokenMarkdownLinks: 'warn',
 
   i18n: {
@@ -28,6 +29,8 @@ const config = {
     locales: ['en'],
   },
   stylesheets: ['https://use.typekit.net/pbb3tpj.css'],
+
+  plugins: [pluginImageZoom],
 
   presets: [
     [
@@ -68,7 +71,7 @@ const config = {
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       prism: {
-        theme: prismThemes.oneLight,
+        theme: prismThemes.oneDark,
         darkTheme: prismThemes.oneDark,
         additionalLanguages: ['php', 'twig', 'bash'],
       },
@@ -82,7 +85,7 @@ const config = {
         },
         items: [
           {
-            to: 'docs/',
+            to: '/docs/getting-started/installation ',
             activeBasePath: 'docs',
             label: 'Docs',
             position: 'left',
@@ -146,6 +149,17 @@ const config = {
           },
         ],
         copyright: `Copyright © ${new Date().getFullYear()} Kenneth Ormandy Inc.`,
+      },
+
+      // https://gabrielcsapo.github.io/docusaurus-plugin-image-zoom/docs/getting-started/#options
+      zoom: {
+        background: {
+          light: 'var(--ifm-background-color)',
+          dark: 'var(--ifm-background-color)',
+        },
+        config: {
+          margin: 16,
+        },
       },
     }),
 }

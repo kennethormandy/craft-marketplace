@@ -97,7 +97,7 @@ class Accounts extends Component
      * @param $elementRef An element or element UID that could be used as an account, falling back to the current user.
      * @param $params Parameters to pass along to the gateway, namely `redirect` and `referrer`.
      * @return null|AccountLink A Stripe account link
-     * @since 2.0.0
+     * @since 4.0.0
      */
     public function createAccount(Element|string|null $elementRef = null, array $params = []): ?AccountLink
     {
@@ -170,10 +170,10 @@ class Accounts extends Component
     /**
      * Get an element with a MarketplaceConnectButton field, which holds the gateway account ID.
      *
-     * @param $elementRef - An element or element UID that could be used as an account, falling back to the current user.
-     * @param $fallbackToCurrentUser - Whether or not the current user should be returned when no valid account is found. Defaults to `true`.
-     * @return Element - An element with an account ID on the field, if valid (ie. it exists, and has the field with a value).
-     * @since 2.0.0
+     * @param $elementRef An element or element UID that could be used as an account, falling back to the current user.
+     * @param $fallbackToCurrentUser Whether or not the current user should be returned when no valid account is found. Defaults to `true`.
+     * @return Element An element with an account ID on the field, if valid (ie. it exists, and has the field with a value).
+     * @since 4.0.0
      */
     public function getAccount(Element|string|null $elementRef, bool $fallbackToCurrentUser = true): ?Element
     {
@@ -196,8 +196,8 @@ class Accounts extends Component
     /**
      * Determine whether or not an element is connected to the gateway (ie. Stripe).
      *
-     * @param $elementRef - An element or element UID that could be used as an account, falling back to the current user.
-     * @since 2.0.0
+     * @param $elementRef An element or element UID that could be used as an account, falling back to the current user.
+     * @since 4.0.0
      */
     public function isConnected(Element|string|null $elementRef)
     {
@@ -257,8 +257,8 @@ class Accounts extends Component
     /**
      * Get an account-like element, which may or may not be an active account yet.
      *
-     * @param $elementRef - An element or element UID that could be used as an account, falling back to the current user.
-     * @param $fallbackToCurrentUser - Whether or not the current user should be returned when no valid account is found. Defaults to `true`.
+     * @param $elementRef An element or element UID that could be used as an account, falling back to the current user.
+     * @param $fallbackToCurrentUser Whether or not the current user should be returned when no valid account is found. Defaults to `true`.
      * @return Element
      */
     private function _getElementByRef(Element|string|null $elementRef, bool $fallbackToCurrentUser = true): ?Element
@@ -378,8 +378,8 @@ class Accounts extends Component
     }
 
     /**
-     * @param $redirectUrl - URL, which might be hashed (POST from input) or not (GET param)
-     * @return string|null - A valid, hashed URL to redirect to, or null if there is no valid URL (with the expectation you’ll fallback to the referrer).
+     * @param $redirectUrl URL, which might be hashed (POST from input) or not (GET param)
+     * @return string|null A valid, hashed URL to redirect to, or null if there is no valid URL (with the expectation you’ll fallback to the referrer).
      */
     private function _getRedirectUrl($redirectUrl = null): ?string
     {

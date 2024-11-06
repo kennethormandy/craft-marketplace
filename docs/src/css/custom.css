@@ -4,7 +4,10 @@
  * work well for content-centric websites.
  */
 
-/**
+ @import url('https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600&display=swap&text=%E2%86%90%E2%86%92%E2%86%96%E2%86%97%E2%86%98%E2%9C%93');
+ @import url('https://fonts.googleapis.com/css2?family=Fira+Mono:wght@400;500;700&family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+ /**
  * You can override the default Infima variables here.
  * https://github.com/facebookincubator/infima/blob/main/packages/core/styles/common/variables.pcss
  * https://github.com/facebookincubator/infima/blob/main/packages/core/styles/common/variables-dark.pcss
@@ -26,14 +29,17 @@
   --ifm-color-primary-lightest:#ae9fb3;
 
   /* Unchanged defaults */
-  /* --ifm-code-font-size: 95%; */
+  --ifm-code-font-size: 100%;
   /* --ifm-font-size-base: 100%; */
   /* --ifm-line-height-base: 1.4; */
-  /* --ifm-font-family-base: Avenir Next, sans-serif; */
-  /* --ifm-heading-font-family: Avenir Next, sans-serif; */
+  --ifm-font-family-base: 'Fira Sans', Verdana, serif;
+  --ifm-heading-font-family: 'Fira Sans', Verdana, sans-serif;
+  --ifm-font-family-monospace: 'Fira Mono', SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
 
   /* Customized */
   --doc-sidebar-width: 250px !important;
+
+  --ifm-font-weight-bold: 500;
   --ifm-container-width: 800px;
   --ifm-container-width-xl: 1052px;
   --ifm-spacing-horizontal: calc(var(--ifm-global-spacing) * 1);
@@ -44,6 +50,9 @@
   --ifm-hero-background-color: var(--ifm-background-color);
   --ifm-menu-link-padding-horizontal: 0.75em;
   --ifm-toc-border-color: hsl(276, 20%, 90%);
+  /* --ifm-toc-padding-vertical: 0.65rem; */
+  /* --ifm-toc-padding-horizontal: 0.5rem; */
+
   --ifm-navbar-shadow: none;
   --ifm-hover-overlay: var(--ifm-toc-border-color);
   --ifm-menu-link-padding-vertical: 0.3em;
@@ -52,13 +61,40 @@
   --ifm-menu-color-background-active: var(--ifm-hover-overlay);
   --ifm-menu-color-background-hover: var(--ifm-hover-overlay);
   --ifm-hr-background-color: var(--ifm-toc-border-color);
+  --ifm-blockquote-border-left-width: 0.25em;
   --ifm-blockquote-border-color: var(--ifm-toc-border-color);
+  --ifm-code-padding-horizontal: 0.1em;
+  --ifm-code-padding-vertical: 0.1em;
 
-  --docusaurus-highlighted-code-line-bg: hsl(276, 20%, 90%, 1.0);
+  /* Not its own variable for some reason */
+  --code-inline-border: 1px solid var(--ifm-blockquote-border-color);
+
+  /* Light theme, with light code theme */
+  /* --docusaurus-highlighted-code-line-bg: hsl(276, 20%, 90%, 1.0); */
+  /* --code-block-border: 1px solid 1px solid var(--ifm-blockquote-border-color); */
+
+  /* Light theme, with dark code theme */
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+  --code-block-border: 1px solid #1c1f24;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+figure,
+figcaption {
+  margin: 0;
+}
+
+code {
+  border: var(--code-inline-border);
+  vertical-align: unset;
 }
 
 /* For readability concerns, you should choose a lighter palette in dark mode. */
-[data-theme='dark'] {
+[data-theme='dark'],
+html[data-theme='dark'] {
   /*
   --ifm-color-primary: #25c2a0;
   --ifm-color-primary-dark: #21af90;
@@ -68,6 +104,7 @@
   --ifm-color-primary-lighter: #32d8b4;
   --ifm-color-primary-lightest: #4fddbf;
   */
+  --ifm-background-color: hsl(282, 19%, 10%);
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }
 
@@ -114,12 +151,12 @@
 }
 
 .theme-code-block {
-  border: 1px solid var(--ifm-toc-border-color);
+  border: var(--code-block-border);
   box-shadow: none !important;
 }
 
 .theme-code-block > [class^="codeBlockTitle"] {
-  border-bottom: 1px solid var(--ifm-toc-border-color);  
+  border-bottom: var(--code-block-border);  
 }
 
 .footer {
@@ -128,19 +165,36 @@
 
 /* Headings */
 
-/* h1 {
-  font-weight: 200;
+h1 {
+  font-weight: 600;
+  line-height: 1.15;
 }
 
 h2 {
-  font-weight: 300;
+  font-weight: 600;
 }
 
 h3 {
-  font-weight: 400;
-} */
+  font-weight: 600;
+}
 
 /* Table of Contents */
+
+/* .theme-doc-toc-desktop .table-of-contents > li:first-child {
+  margin-top: 0.5rem;
+} */
+
+.theme-doc-toc-desktop .table-of-contents li a {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  width: 100%;
+  white-space: nowrap;
+  word-break: keep-all;
+}
+
+/* .theme-doc-toc-desktop .table-of-contents__link {
+  line-height: 1.5;
+} */
 
 .table-of-contents__link--active {
 }
@@ -209,4 +263,35 @@ h3 {
 .theme-doc-sidebar-api .theme-doc-sidebar-item-category-level-4 .menu__list .menu__link--active {
   border-color: var(--ifm-color-primary-dark);
   background: transparent;
+}
+
+/* Hash Link */
+
+.hash-link::before {
+  font-weight: normal;
+}
+
+/* Plugin – Zoom */
+
+.medium-zoom-image,
+.medium-zoom-overlay {
+  z-index: var(--ifm-z-index-fixed);
+}
+
+.medium-zoom-image,
+.medium-zoom-image--opened {
+  border: 1px solid var(--ifm-blockquote-border-color);
+}
+
+.language-shell .token-line::before,
+.language-sh .token-line::before  {
+  content: "> ";
+  user-select: none;
+  opacity: 0.5;
+}
+
+.col--promo {
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
 }

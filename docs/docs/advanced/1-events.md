@@ -1,6 +1,77 @@
 ---
-title: "Dynamically set the Payee"
+title: Events
 ---
+
+Marketplace includes a number of events that you can use to customize its behaviour for your project:
+
+- [Account Events](#accounts-events)
+- [Fees Events](#fees-events)
+- [Payee Events](#fees-events)
+
+To make use of these events, you’ll need a custom module in your project where you can listen for the events.
+
+You can do this by following Craft’s guide on [using events in a custom module](https://craftcms.com/knowledge-base/custom-module-events), or you can use the official [Generator](https://craftcms.com/docs/4.x/extend/generator.html) package to scaffold the module for you, ex:
+
+```sh
+composer require craftcms/generator --dev
+php craft make module
+```
+
+## Accounts Events
+
+- `kennethormandy\marketplace\services\Accounts`
+  - `Accounts::EVENT_BEFORE_ACCOUNT_ACCESS`
+  - `Accounts::EVENT_AFTER_ACCOUNT_ACCESS`
+
+### Before Account Access
+
+### After Account Access
+
+## Fees Events
+
+- `kennethormandy\marketplace\services\Fees`
+  - `Fees::EVENT_BEFORE_CALCULATE_FEES_AMOUNT`
+  - `Fees::EVENT_AFTER_CALCULATE_FEES_AMOUNT`
+
+### Before Calculate Fees
+
+### After Calculate Fees
+
+```php
+Event::on(
+    Fees::class,
+    Fees::EVENT_AFTER_CALCULATE_FEES_AMOUNT,
+    function (FeesEvent $event) {
+        $order = $event->order;
+        $lineItems = $order->lineItems;
+
+        // Example conditional. Check something in the
+        // product snapshot, and change the fee accordingly.
+        if (
+            $lineItems[0] &&
+            $lineItems[0]->snapshot['title'] === 'My specific product'
+        ) {
+            // Overwrite the total calculated fee amount on the event.
+            // This amount is set as an integer in “cents,” so in this case
+            // the Fee will be US$12.34 on a platform using US dollars.
+            $event->amount = 1234;
+        }
+
+        // In all other cases, the fee would be calculated using your
+        // existing global fee settings.
+    }
+);
+```
+
+## Payees Events
+
+- `kennethormandy\marketplace\services\Payees`
+  - `Payees::EVENT_BEFORE_DETERMINE_PAYEE`
+  - `Payees::EVENT_AFTER_DETERMINE_PAYEE`
+
+### Before Determine Payee
+
+### After Determine Payee
 
 How to dynamically support multiple Payees on a single set of products, or modify the Payee based on some other condition specific to your site.
 
@@ -80,18 +151,4 @@ class SiteModule extends Module
         );
     }
 }
-```
-
-In `app.php`, load your new module, as per usual:
-
-```php {4,7} title="app.php"
-return [
-    'modules' => [
-        'my-module' => \modules\Module::class,
-        'custom-payee-module' => \modules\SiteModule::class,
-    ],
-    'bootstrap' => [
-      'custom-payee-module',
-    ],
-];
 ```

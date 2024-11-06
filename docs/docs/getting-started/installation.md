@@ -1,14 +1,12 @@
 ---
-title: Getting started
-slug: /
+title: Installation
 ---
 
-## Concepts
+import RequirementsPartial from '../_shared/requirements.md'
 
-- Payees
-- [Fees](fees)
-- Apps (OAuth plugin)
-- Accounts
+## Requirements
+
+<RequirementsPartial />
 
 ## Configuring your Stripe account
 

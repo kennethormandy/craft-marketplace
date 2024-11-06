@@ -143,7 +143,7 @@ return [
 
 If you were, in fact, using this field type and need help migrating your field’s content, feel free to [send me an email](mailto:hello+marketplace@kennethormandy.com) for a more comprehensive solution.
 
-The preferred approach (also supported in Marketplace v1) is described in both the [full tutorial](./tutorial.md) and the [Payees Event](./events/payees.md) docs.
+The preferred approach (also supported in Marketplace v1) is described in both the [full tutorial](../tutorial/introduction.md) and the [Payees Event](../advanced/events.md#payees-events) docs.
 
 ### OAuth
 
@@ -159,7 +159,7 @@ Most platforms will either want or need to ignore this setting.
 
 ## Template Helpers
 
-There is a new Twig template helper, to generate the most common form patterns for you. You may which to remove your default account connection form in favour of the following:
+There is a new Twig template helper, to generate the most common form patterns for you. You may wish to remove your default account connection form, in favour of the following:
 
 ```twig
 {{ craft.marketplace.renderConnector() }}
