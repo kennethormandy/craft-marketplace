@@ -19,7 +19,7 @@ Make your Craft ecommerce site into a Marketplace: add payees to products, charg
 ## Resources
 
 - [Documentation](https://craft-marketplace.kennethormandy.com/docs/)
-- [Build a marketplace using Craft CMS tutorial](https://craft-marketplace.kennethormandy.com/docs/tutorial)
+- [Build a marketplace using Craft CMS tutorial](https://craft-marketplace.kennethormandy.com/docs/tutorial/introduction)
 
 <!--
 
