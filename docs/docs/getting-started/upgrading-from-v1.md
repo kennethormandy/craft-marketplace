@@ -159,7 +159,7 @@ Most platforms will either want or need to ignore this setting.
 
 ## Template Helpers
 
-There is a new Twig template helper, to generate the most common form patterns for you. You may which to remove your default account connection form in favour of the following:
+There is a new Twig template helper, to generate the most common form patterns for you. You may wish to remove your default account connection form, in favour of the following:
 
 ```twig
 {{ craft.marketplace.renderConnector() }}
