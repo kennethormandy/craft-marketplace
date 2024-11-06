@@ -7,7 +7,7 @@ use craft\elements\User;
 use craft\events\CancelableEvent;
 
 /**
- * @since 2.0.0
+ * @since 4.0.0
  */
 class AccountAccessEvent extends CancelableEvent
 {

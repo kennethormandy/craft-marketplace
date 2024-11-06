@@ -97,7 +97,7 @@ class Accounts extends Component
      * @param $elementRef An element or element UID that could be used as an account, falling back to the current user.
      * @param $params Parameters to pass along to the gateway, namely `redirect` and `referrer`.
      * @return null|AccountLink A Stripe account link
-     * @since 2.0.0
+     * @since 4.0.0
      */
     public function createAccount(Element|string|null $elementRef = null, array $params = []): ?AccountLink
     {
@@ -173,7 +173,7 @@ class Accounts extends Component
      * @param $elementRef - An element or element UID that could be used as an account, falling back to the current user.
      * @param $fallbackToCurrentUser - Whether or not the current user should be returned when no valid account is found. Defaults to `true`.
      * @return Element - An element with an account ID on the field, if valid (ie. it exists, and has the field with a value).
-     * @since 2.0.0
+     * @since 4.0.0
      */
     public function getAccount(Element|string|null $elementRef, bool $fallbackToCurrentUser = true): ?Element
     {
@@ -197,7 +197,7 @@ class Accounts extends Component
      * Determine whether or not an element is connected to the gateway (ie. Stripe).
      *
      * @param $elementRef - An element or element UID that could be used as an account, falling back to the current user.
-     * @since 2.0.0
+     * @since 4.0.0
      */
     public function isConnected(Element|string|null $elementRef)
     {
