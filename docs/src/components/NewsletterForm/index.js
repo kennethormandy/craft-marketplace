@@ -1,4 +1,5 @@
 import { useRef } from 'react'
+import clsx from 'clsx'
 import styles from './styles.module.css'
 
 function NewsletterForm() {
@@ -9,83 +10,73 @@ function NewsletterForm() {
   }
 
   return (
-    <div>
+    <div className={clsx('card', styles.card)} onClick={handleClick}>
       <div
         dangerouslySetInnerHTML={{
           __html: `<script src="https://f.convertkit.com/ckjs/ck.5.js"></script>`,
         }}
       />
-      <form // eslint-disable-line jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events
-        onClick={handleClick}
-        action="https://app.kit.com/forms/7323596/subscriptions"
-        method="post"
-        data-sv-form="7323596"
-        data-uid="f81d8f3e0c"
-      >
-        <div
-          dangerouslySetInnerHTML={{
-            __html: `<div style="display: none;" aria-hidden="true">
+      <div className={clsx('card__header', styles.cardHeader)}>
+        <h3>Quick emails for Craft CMS developers</h3>
+      </div>
+      <div className={clsx('card__body', styles.cardBody)}>
+        <p>
+          Build marketplaces, applications, and other complex products with
+          Craft CMS. Daily emails to help you get it done.
+        </p>
+      </div>
+      <div className={clsx('card__footer', styles.cardFooter)}>
+        <form // eslint-disable-line jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events
+          onClick={handleClick}
+          action="https://app.kit.com/forms/7323596/subscriptions"
+          method="post"
+          data-sv-form="7323596"
+          data-uid="f81d8f3e0c"
+        >
+          <div
+            dangerouslySetInnerHTML={{
+              __html: `<div style="display: none;" aria-hidden="true">
             <label for="website">Website</label><br>
             <input type="text" id="website" name="website" tabindex="-1" autocomplete="false" value="">
           </div>`,
-          }}
-        />
+            }}
+          />
 
-        <div className={styles.fields}>
-          <div className={styles.item}>
-            {/*
+          <div className={styles.newsletterFields}>
+            <div className={styles.newsletterFieldItem}>
+              {/*
             <label>First Name
             <input type="text" name="fields[first_name]" required />
             </label>
           */}
-            <label
-              className="hide"
-              htmlFor="email_address"
-              style={{
-                display: 'none',
-              }}
-            >
-              Email Address
-            </label>
-            <div>
+              <label className={styles.newsletterLabel} htmlFor="email_address">
+                Email Address
+              </label>
               <input
+                className={styles.newsletterInput}
                 ref={inputRef}
                 type="email"
                 id="email_address"
                 name="email_address"
                 placeholder="you@example.com"
                 required
-                style={{
-                  border: '1px solid',
-                  borderRight: 0,
-                  height: '100%',
-                  boxShadow: 'none',
-                }}
               />
             </div>
+            <div className={styles.item}>
+              <button
+                className={clsx(
+                  'button button--primary button--lg',
+                  styles.newsletterButton
+                )}
+              >
+                Subscribe
+              </button>
+            </div>
           </div>
-          <div className={styles.item}>
-            <button className="button button--primary button--lg">
-              Subscribe
-            </button>
-          </div>
-        </div>
-      </form>
-    </div>
-  )
-}
-
-function NewsletterCard() {
-  return (
-    <div className="card">
-      <div className="card__header">
-        <h3>Lorem Ipsum</h3>
-      </div>
-      <div className="card__body">
-        <NewsletterForm />
+        </form>
       </div>
     </div>
   )
 }
 
-export default NewsletterCard
+export default NewsletterForm
