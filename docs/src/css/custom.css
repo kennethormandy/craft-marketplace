@@ -170,9 +170,14 @@ html[data-theme='dark'] {
 
 /* Headings */
 
-h1 {
+h1,
+.blog-post-item-header-title {
   font-weight: 600;
-  line-height: 1.15;
+  line-height: calc(var(--ifm-heading-line-height) - 0.1);
+}
+
+.blog-post-item-header-title > a {
+  text-decoration: none;
 }
 
 h2 {
