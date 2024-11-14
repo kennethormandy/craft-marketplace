@@ -2,7 +2,7 @@ import { useRef } from 'react'
 import clsx from 'clsx'
 import styles from './styles.module.css'
 
-function NewsletterForm() {
+function NewsletterForm(props) {
   let inputRef = useRef(null)
 
   function handleClick() {
@@ -17,12 +17,11 @@ function NewsletterForm() {
         }}
       />
       <div className={clsx('card__header', styles.cardHeader)}>
-        <h3>Quick emails for Craft CMS developers</h3>
+        <h3>{props.header}</h3>
       </div>
       <div className={clsx('card__body', styles.cardBody)}>
         <p>
-          Build marketplaces, applications, and other complex products with
-          Craft CMS. Daily emails to help you get it done.
+          {props.body}
         </p>
       </div>
       <div className={clsx('card__footer', styles.cardFooter)}>
@@ -69,7 +68,7 @@ function NewsletterForm() {
                   styles.newsletterButton
                 )}
               >
-                Subscribe
+                {props.buttonLabel}
               </button>
             </div>
           </div>
@@ -77,6 +76,12 @@ function NewsletterForm() {
       </div>
     </div>
   )
+}
+
+NewsletterForm.defaultProps = {
+  header: 'Quick emails for Craft CMS developers',
+  body: 'Build marketplaces, applications, and other complex products with Craft CMS. Daily emails to help you get it done.',
+  buttonLabel: 'Subscribe',
 }
 
 export default NewsletterForm

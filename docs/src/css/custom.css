@@ -302,6 +302,12 @@ h3 {
   opacity: 0.5;
 }
 
+/* Blog Post – Apply spacing under cards */
+
+.markdown .card {
+  margin-bottom: calc(var(--ifm-paragraph-margin-bottom) * 1);
+}
+
 /* Promo – Max width for newsletter block */
 
 .col--promo {
