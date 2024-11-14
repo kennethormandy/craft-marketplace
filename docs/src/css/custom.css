@@ -293,6 +293,8 @@ h3 {
   border: 1px solid var(--ifm-blockquote-border-color);
 }
 
+/* Code Blocks – Commands */
+
 .language-shell .token-line::before,
 .language-sh .token-line::before  {
   content: "> ";
@@ -300,8 +302,10 @@ h3 {
   opacity: 0.5;
 }
 
-  .col--promo {
-    max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
-  }
+/* Promo – Max width for newsletter block */
+
+.col--promo {
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
