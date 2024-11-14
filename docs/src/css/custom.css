@@ -112,7 +112,12 @@ html[data-theme='dark'] {
   .container {
     padding-left: calc(var(--ifm-global-spacing) * 2);
     padding-right: calc(var(--ifm-global-spacing) * 2);
-  }  
+  }
+
+  /* Give it the styling as if `.padding-top--lg` was there, since we aren’t using breadcrumbs. */
+  .container.padding-top--md {
+    padding-top: 2rem !important;
+  }
 }
 
 .navbar {
