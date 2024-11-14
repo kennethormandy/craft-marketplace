@@ -290,8 +290,8 @@ h3 {
   opacity: 0.5;
 }
 
-.col--promo {
-  max-width: 600px;
-  margin-left: auto;
-  margin-right: auto;
-}
+  .col--promo {
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }

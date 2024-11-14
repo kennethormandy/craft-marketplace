@@ -46,7 +46,7 @@ export default function Home() {
             <div
               className="col col--promo"
               style={{
-                padding: '0 0 8em 0',
+                paddingBottom: '8em',
               }}
             >
               <Tabs>
@@ -67,16 +67,17 @@ export default function Home() {
               </Tabs>
             </div>
           </div>
-          {/* <div className="row">
+          <div className="row">
             <div
               className="col col--promo"
               style={{
-                padding: '2em 0 3em 0',
+                paddingTop: '2em',
+                paddingBottom: '3em',
               }}
             >
               <NewsletterForm />
             </div>
-          </div> */}
+          </div>
         </div>
       </main>
     </Layout>
