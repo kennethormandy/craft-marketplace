@@ -50,6 +50,7 @@
   --ifm-hero-background-color: var(--ifm-background-color);
   --ifm-menu-link-padding-horizontal: 0.75em;
   --ifm-toc-border-color: hsl(276, 20%, 90%);
+  --docusaurus-tag-list-border: var(--ifm-toc-border-color) !important;
   /* --ifm-toc-padding-vertical: 0.65rem; */
   /* --ifm-toc-padding-horizontal: 0.5rem; */
 
@@ -135,6 +136,10 @@ html[data-theme='dark'] {
 .theme-doc-sidebar-menu > .menu__list-item {
   margin-bottom: 1.5rem;
   padding-left: 0;
+}
+
+.clean-list li a {
+  line-height: calc(var(--ifm-line-height-base) - 0.1);
 }
 
 .menu {
@@ -306,6 +311,39 @@ h3 {
 
 .markdown .card {
   margin-bottom: calc(var(--ifm-paragraph-margin-bottom) * 1);
+}
+
+/* Blog Post – Tags, that are impractical to swizzle */
+
+.markdown + footer > .col > b,
+.theme-blog-footer-edit-meta-row > .col > b {
+  font-weight: normal;
+  display: none;
+}
+
+.markdown + footer > .col > b + ul,
+.theme-blog-footer-edit-meta-row > .col > b + ul {
+  margin-left: 0 !important;
+}
+
+.markdown + footer > .col > b + ul::before,
+.theme-blog-footer-edit-meta-row > .col > b + ul::before {
+  content: "Tags ";
+  padding-right: 0.2em;
+  font-size: 0.8em;
+}
+
+.markdown + footer > .col > b + ul > li > a,
+.theme-blog-footer-edit-meta-row > .col > b + ul > li > a {
+  padding: 0.2em 0.5em;
+  border-radius: 4px;
+  user-select: none;
+}
+
+/* Blog Post – Author */
+
+.avatar__subtitle {
+  margin-top: 0;
 }
 
 /* Promo – Max width for newsletter block */
