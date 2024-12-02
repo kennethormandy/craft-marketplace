@@ -3,7 +3,7 @@
 ## Unreleased
 
 > [!NOTE]
-> [Please read the upgrade guide before upgrading Marketplace.](https://craft-marketplace.kennethormandy.com/docs/upgrading-from-v1) The changelog documents all public API changes, but for most use cases only a few changes from the upgrade guide are required.
+> [Please read the upgrade guide before upgrading Marketplace.](https://craft-marketplace.kennethormandy.com/docs/getting-started/upgrading-from-v1/) The changelog documents all public API changes, but for most use cases only a few changes from the upgrade guide are required.
 
 ## Added
 - Added support for new Stripe account creation, without OAuth
