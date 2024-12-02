@@ -1,21 +1,21 @@
 ---
-slug: example-post
-title: Example Post
+slug: reintroducing-marketplace-for-craft-commerce
+title: Reintroducing Marketplace for Craft Commerce
 authors: kenneth
-tags: [example]
+tags: [4.x, 5.x]
 ---
 
-Blog posts support [Docusaurus Markdown features](https://docusaurus.io/docs/markdown-features), such as [MDX](https://mdxjs.com/).
+import NewsletterForm from '@site/src/components/NewsletterForm'
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque elementum dignissim ultricies. Fusce rhoncus ipsum tempor eros aliquam consequat. Lorem ipsum dolor sit amet.
 
 <!-- truncate -->
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque elementum dignissim ultricies. Fusce rhoncus ipsum tempor eros aliquam consequat. Lorem ipsum dolor sit amet
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque elementum dignissim ultricies. Fusce rhoncus ipsum tempor eros aliquam consequat. Lorem ipsum dolor sit amet.
 
-:::tip
+You can sign up to be eased into the tutorial here:
 
-This is a tip
-
-:::
+<NewsletterForm />
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque elementum dignissim ultricies. Fusce rhoncus ipsum tempor eros aliquam consequat. Lorem ipsum dolor sit amet
 

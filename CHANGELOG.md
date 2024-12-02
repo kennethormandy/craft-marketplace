@@ -9,11 +9,11 @@
 ## Unreleased (4.x)
 
 > [!NOTE]
-> [Please read the upgrade guide before upgrading Marketplace.](https://craft-marketplace.kennethormandy.com/docs/upgrading-from-v1) The changelog documents all public API changes, but for most use cases only a few changes from the upgrade guide are required.
+> [Please read the upgrade guide before upgrading Marketplace.](https://craft-marketplace.kennethormandy.com/docs/getting-started/upgrading-from-v1/) The changelog documents all public API changes, but for most use cases only a few changes from the upgrade guide are required.
 
 ## Added
 - Added support for new Stripe account creation, without OAuth
-- Added Client ID setting (final name TBD)
+- Added Client ID setting
 - Added ability to preview account IDs in element tables
 - Added AccountAccess event, to allow custom verification logic before creating Stripe account links
 - Added `craft.marketplace` Twig helpers
