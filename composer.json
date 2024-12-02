@@ -19,7 +19,7 @@
     "email": "hello@kennethormandy.com",
     "issues": "https://github.com/kennethormandy/craft-marketplace/issues?state=open",
     "source": "https://github.com/kennethormandy/craft-marketplace",
-    "docs": "https://github.com/kennethormandy/craft-marketplace/blob/master/README.md"
+    "docs": "https://craft-marketplace.kennethormandy.com"
   },
   "require": {
     "php": "^8.0.2",
