@@ -38,10 +38,9 @@ use kennethormandy\marketplace\services\Accounts as AccountsService;
 use kennethormandy\marketplace\services\Fees as FeesService;
 use kennethormandy\marketplace\services\Handles as HandlesService;
 use kennethormandy\marketplace\services\Payees as PayeesService;
+use kennethormandy\marketplace\services\Transfers as TransfersService;
 use kennethormandy\marketplace\variables\MarketplaceVariable;
-use Stripe\BalanceTransaction;
 use Stripe\Stripe;
-use Stripe\StripeClient;
 use Stripe\Transfer;
 use verbb\auth\Auth;
 use verbb\auth\base\OAuthProvider;
@@ -51,6 +50,9 @@ use verbb\auth\services\OAuth;
 use yii\base\Event;
 use yii\base\NotSupportedException;
 
+/**
+ * @property-read TransfersService $transfers
+ */
 class Marketplace extends BasePlugin
 {
     public const EDITION_LITE = 'lite';
@@ -117,6 +119,7 @@ class Marketplace extends BasePlugin
             'fees' => FeesService::class,
             'payees' => PayeesService::class,
             'accounts' => AccountsService::class,
+            'transfers' => TransfersService::class,
         ]);
 
         Craft::info('Marketplace plugin loaded', __METHOD__);
@@ -468,196 +471,10 @@ class Marketplace extends BasePlugin
             function(Event $event) {
                 /** @var Order $order */
                 $order = $event->sender;
-                $purchaseTransaction = null;
 
-                foreach ($order->transactions as $transaction) {
-                    // Stop at the first successful transaction, can also be failed
-                    // TODO Does auth and capture still create this?
-                    if ($transaction->type === 'purchase' && $transaction->status === 'success') {
-
-                        /** @var craft\commerce\models\Transaction $purchaseTransaction */
-                        $purchaseTransaction = $transaction;
-                        break;
-                    }
-                }
-
-                if (!$purchaseTransaction || !$purchaseTransaction->reference) {
-                    $this->log('No purchase transaction found on Order ' . $order->id, [], 'error');
-                    return;
-                }
-
-                $stripeResp = json_decode($purchaseTransaction->response);
-                $currencyCountryCode = $purchaseTransaction->paymentCurrency;
-
-                $this->log('Original transaction currency: ' . $currencyCountryCode);
-                $this->log('Transaction:');
-                $this->log(json_encode($purchaseTransaction));
-
-
-                $stripeCharge = null;
-
-                if ($stripeResp->latest_charge) {
-                    $stripe = $this->_getStripe();
-                    $stripeCharge = $stripe->charges->retrieve($stripeResp->latest_charge);
-                }
-
-                // TODO If we don’t have it, get all Stripe charges using:
-                // https://docs.stripe.com/api/charges/list
-                // Providing the payment intent
-
-                // // Get the first captured transaction
-                // if (
-                //     isset($stripeResp->charges) && $stripeResp->charges &&
-                //     isset($stripeResp->charges->data) && $stripeResp->charges->data &&
-                //     count($stripeResp->charges->data) >= 1
-                // ) {
-                //     foreach ($stripeResp->charges->data as $charge) {
-                //         $this->log(json_encode($charge));
-                //         if ($charge && $charge->captured && $charge->status === 'succeeded') {
-                //             $stripeCharge = $charge;
-                //             break;
-                //         }
-                //     }
-                // }
-
-                if (!$stripeCharge) {
-                    $this->log('No successful charge found on Order ' . $order->id, [], 'error');
-                    return;
-                }
-
-                $this->log('Charge:');
-                $this->log(json_encode($stripeCharge));
-
-                try {
-                    $balanceTransaction = BalanceTransaction::retrieve($stripeCharge->balance_transaction);
-                    $this->log('Balance transaction:');
-                    $this->log(json_encode($balanceTransaction));
-                } catch (\Exception $e) {
-                    $this->log('Marketplace transfer error', [], 'error');
-                    $this->log($e->getTraceAsString(), [], 'error');
-                }
-
-                $exchangeRate = $this->_getStripeExchangeRate($balanceTransaction, $currencyCountryCode);
-
-                foreach ($order->lineItems as $key => $lineItem) {
-                    $payeeCurrent = $this->payees->getAccountId($lineItem);
-
-                    $this->log('lineItem');
-                    $this->log(json_encode($lineItem));
-
-                    // If there isn’t a payee or a total on this line item, nothing to do
-                    if (!$payeeCurrent || $lineItem->total === (float) 0) {
-                        continue;
-                    }
-
-                    $this->log('Craft amount before currency conversion: ' . $lineItem->total);
-
-                    $lineItemTotal = $lineItem->total;
-
-                    // Calculate LineItem fee
-                    $feeAmountLineItem = $this->fees->calculateFeesAmount($lineItem, $order);
-
-                    if ($feeAmountLineItem) {
-                        $lineItemTotal = $lineItemTotal - $feeAmountLineItem;
-                    }
-
-                    // Don’t touch the subtotal, unless we really to have to
-                    if ($exchangeRate && $exchangeRate !== 1) {
-                        $lineItemTotal = $lineItem->total * $exchangeRate;
-                    }
-
-                    $this->log('Craft amount after currency conversion: ' . $lineItemTotal);
-
-                    $stripeAmount = $this->_toStripeAmount($lineItemTotal, $currencyCountryCode);
-                    $this->log('Stripe amount: ' . $stripeAmount);
-                    
-                    $this->log('In progress: Create transfer for ' . $payeeCurrent);
-
-                    $stripeTransferData = [
-                        'amount' => $stripeAmount,
-
-                        // Have to use the balance transaction currency
-                        // Ex. If the platform is using GBP (the settlement
-                        // currency), and the customer purchased using USD (the
-                        // presettlement currency), the balance transaction
-                        // and future payout will be in GBP, and therefore the
-                        // transfer has to be in GBP as well.
-                        'currency' => $balanceTransaction->currency,
-
-                        'destination' => $payeeCurrent,
-
-                        // Don’t need to create a `transfer_group`, Stripe
-                        // does this via the source_transaction
-                        'source_transaction' => $stripeCharge->id,
-                    ];
-
-                    try {
-                        $transferResult = Transfer::create($stripeTransferData);
-                        $this->log('Transfer Result');
-                        $this->log(json_encode($transferResult));
-                    } catch (\Exception $e) {
-                        $this->log('Marketplace transfer error', [], 'error');
-                        $this->log($e->getTraceAsString(), [], 'error');
-                    }
-                }
+                $this->transfers->createTransfersForOrder($order);
             }
         );
-    }
-
-    private function _getStripe(): StripeClient
-    {
-        $stripeSecretKey = $this->getSettings()->getSecretApiKey();
-        $stripe = new StripeClient($stripeSecretKey);
-
-        return $stripe;
-    }
-
-    private function _getStripeExchangeRate($stripeBalanceTransaction, $craftCurrencyCountryCode)
-    {
-        $exchangeRate = 1;
-
-        if (
-            strtolower($craftCurrencyCountryCode) !== strtolower($stripeBalanceTransaction) &&
-            $stripeBalanceTransaction->exchange_rate
-        ) {
-            // $this->log('Need to convert currency');
-            $exchangeRate = $stripeBalanceTransaction->exchange_rate;
-        }
-
-        return $exchangeRate;
-    }
-
-    // TODO Move to service, ex. ConvertService?
-    private function _toStripeAmount($craftPrice, $currencyCountryCode)
-    {
-        $currency = Commerce::getInstance()->getCurrencies()->getCurrencyByIso($currencyCountryCode);
-        
-        if (!$currency) {
-            throw new NotSupportedException('The currency “' . $currencyCountryCode . '” is not supported!');
-        }
-
-        // https://git.io/JGqLi
-        // Ex. $50 * (10^2) = 5000
-        $amount = $craftPrice * (10 ** $currency->minorUnit);
-
-        $amount = (int) round($amount, 0);
-
-        return $amount;
-    }
-
-    private function _fromStripeAmount($amount, $currencyCountryCode)
-    {
-        $currency = Commerce::getInstance()->getCurrencies()->getCurrencyByIso($currencyCountryCode);
-
-        if (!$currency) {
-            throw new NotSupportedException('The currency “' . $currencyCountryCode . '” is not supported!');
-        }
-
-        // https://git.io/JGqLi
-        // Ex. 5000 / (10^2) = 50
-        $craftPrice = $amount / (10 ** $currency->minorUnit);
-
-        return $craftPrice;
     }
 
     // This logic is also very similar to Button input
