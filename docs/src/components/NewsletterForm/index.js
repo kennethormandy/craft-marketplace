@@ -80,7 +80,7 @@ function NewsletterForm(props) {
 
 NewsletterForm.defaultProps = {
   header: 'Quick emails for Craft CMS developers',
-  body: 'Build marketplaces, applications, and other complex products with Craft CMS. Daily emails to help you get it done.',
+  body: 'Build marketplaces, applications, and other complex products with Craft CMS. Concise emails to help you get it done.',
   buttonLabel: 'Subscribe',
 }
 
