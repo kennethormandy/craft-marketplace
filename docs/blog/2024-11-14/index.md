@@ -5,7 +5,7 @@ authors: kenneth
 tags: [4.x, 5.x]
 ---
 
-import NewsletterForm from '@site/src/components/NewsletterForm'
+import NewsletterForm from 'docusaurus-theme-kennethormandy/src/components/NewsletterForm'
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque elementum dignissim ultricies. Fusce rhoncus ipsum tempor eros aliquam consequat. Lorem ipsum dolor sit amet.
 
