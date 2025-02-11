@@ -12,7 +12,7 @@ use verbb\auth\providers\Stripe as StripeAuthProvider;
 class StripeExpress extends StripeAuthProvider
 {
     /** @inheritdoc */
-    public function getBaseAuthorizationUrl()
+    public function getBaseAuthorizationUrl(): string
     {
         // https://docs.stripe.com/connect/oauth-reference#get-authorize
         return 'https://connect.stripe.com/express/oauth/authorize';

@@ -8,28 +8,28 @@ class StripeExpressResourceOwner extends StripeResourceOwner
 {
     /**
      * @inheritdoc
-     * @return ?bool
+     * @return bool
      */
-    public function getTransfersEnabled(): ?bool
+    public function getTransfersEnabled(): bool
     {
-        return $this->response['transfers_enabled'] ?? null;
+        return $this->response['transfers_enabled'] ?? false;
     }
 
     /**
      * @inheritdoc
-     * @return ?array
+     * @return array
      */
-    public function getCurrenciesSupported(): ?array
+    public function getCurrenciesSupported(): array
     {
-        return $this->response['currencies_supported'] ?? null;
+        return $this->response['currencies_supported'] ?? [];
     }
 
     /**
      * @inheritdoc
      * @return ?bool
      */
-    public function getManaged(): ?bool
+    public function getManaged(): bool
     {
-        return $this->response['managed'] ?? null;
+        return $this->response['managed'] ?? false;
     }
 }
