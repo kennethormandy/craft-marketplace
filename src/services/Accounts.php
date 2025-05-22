@@ -290,16 +290,18 @@ class Accounts extends Component
         $currentUser = Craft::$app->getUser();
         $currentUserIdentity = $currentUser->getIdentity();
         $elementType = null;
-
         $element = $this->getAccount($element);
-        $elementType = $element->className();
+        $accountId = null;
+
+        if ($element) {
+            $elementType = $element->className();
+            $accountIdHandle = Marketplace::$plugin->handles->getButtonHandle();
+            $accountId = $element->getFieldValue($accountIdHandle);
+        }
 
         if (!$element) {
             $isValid = false;
         }
-
-        $accountIdHandle = Marketplace::$plugin->handles->getButtonHandle();
-        $accountId = $element->getFieldValue($accountIdHandle);
 
         // User must either be:
         // - An admin
