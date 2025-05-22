@@ -1,6 +1,6 @@
 # Release Notes for Marketplace
 
-## Unreleased
+## 4.0.0 - 2025-05-22
 
 > [!NOTE]
 > [Please read the upgrade guide before upgrading Marketplace.](https://craft-marketplace.kennethormandy.com/docs/getting-started/upgrading-from-v1/) The changelog documents all public API changes, but for most use cases only a few changes from the upgrade guide are required.

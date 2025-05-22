@@ -1,7 +1,7 @@
 {
   "name": "kennethormandy/craft-marketplace",
   "description": "Make your Craft Commerce site into a Marketplace, via Stripe Connect.",
-  "version": "2.0.0-beta.1",
+  "version": "4.0.0",
   "type": "craft-plugin",
   "license": "proprietary",
   "keywords": [
