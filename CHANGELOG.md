@@ -1,5 +1,11 @@
 # Release Notes for Marketplace
 
+## Unreleased
+
+## Added
+- Added Transfers service, and moves existing after complete order handling into it
+- Added a console command for manually re-trying Stripe transfers on a Craft order
+
 ## 4.0.0 - 2025-05-22
 
 > [!NOTE]
