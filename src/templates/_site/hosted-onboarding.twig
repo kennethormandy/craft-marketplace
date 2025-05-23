@@ -7,7 +7,7 @@
   {% endif %}
 
   {# Customize the redirect, when applicable. Otherwise, defaults to the same page. #}
-  {% if params.redirect %}
+  {% if params.redirect is defined and params.redirect %}
     {{ redirectInput(params.redirect, { type: 'hidden' }) }}
   {% endif %}
 

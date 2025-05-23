@@ -7,8 +7,8 @@
   {% endif %}
 
   {# Customize the redirect, when applicable. Otherwise, defaults to the same page. #}
-  {% if params.redirect %}
-    {{ redirectInput(redirect, { type: 'hidden' }) }}
+  {% if params.redirect is defined and params.redirect %}
+    {{ redirectInput(params.redirect, { type: 'hidden' }) }}
   {% endif %}
 
   <button type="submit" data-test="connect" {{- attr(themeConfig.submitButton.attributes) -}}>
