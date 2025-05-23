@@ -6,6 +6,9 @@
 - Removed the deprecated Payee field type
 - Removed the deprecated `getPayeeHandle()` method
 
+### Fixed
+- Fixed missing error when trying to create account link with invalid element UID <!-- TODO Backport to 4.x -->
+
 ## Unreleased (4.x)
 
 ## Added
